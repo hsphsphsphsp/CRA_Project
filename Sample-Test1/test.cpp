@@ -12,49 +12,44 @@ public:
 	MOCK_METHOD(void, Write, (unsigned int, unsigned int), (override));
 };
 
-class TestScriptApp1Fixture : public Test
+class TestScriptAppFixture : public Test
 {
 public:
-	void SetUp() override
-	{
-		pTestScript = fTestScriptFactory.createScript(sScriptApp1, mockSSD);
-	}
+	const string SCRIPT_APP1 = "testscriptapp1";
+	const string SCRIPT_APP2 = "testscriptapp2";
 
 	NiceMock<MockSSD> mockSSD;
 	TestScriptFactory fTestScriptFactory;
 	TestScript* pTestScript;
-
-	string sScriptApp1 = "testscriptapp1";
-};
-
-class TestScriptApp2Fixture : public Test
-{
-public:
-	NiceMock<MockSSD> mockSsd;
-	TestScript* tScript;
-	TestScriptFactory fTestScriptFactory;
-private:
-	void SetUp() override
+protected:
+	void MakeScript(string scriptName)
 	{
-		tScript = fTestScriptFactory.createScript(sScriptName, mockSsd);
+		pTestScript = fTestScriptFactory.createScript(scriptName, mockSSD);
 	}
-
-	string sScriptName = "testscriptapp2";
+	
 };
 
-TEST_F(TestScriptApp1Fixture, TestScriptApp1_ConfirmCallFullWrite) {
+TEST_F(TestScriptAppFixture, TestScriptApp1_ConfirmCallFullWrite) {
+	MakeScript(SCRIPT_APP1);
+
 	EXPECT_CALL(mockSSD, Write)
 		.Times(pTestScript->GetSSDSize());
+
 	pTestScript->DoScript();
 }
 
-TEST_F(TestScriptApp1Fixture, TestScriptApp1_ConfirmCallFullRead) {
+TEST_F(TestScriptAppFixture, TestScriptApp1_ConfirmCallFullRead) {
+	MakeScript(SCRIPT_APP1);
+
 	EXPECT_CALL(mockSSD, Read)
 		.Times(pTestScript->GetSSDSize());
+
 	pTestScript->DoScript();
 }
 
-TEST_F(TestScriptApp1Fixture, TestScriptApp1_FailReadVerify) {
+TEST_F(TestScriptAppFixture, TestScriptApp1_FailReadVerify) {
+	MakeScript(SCRIPT_APP1);
+
 	EXPECT_CALL(mockSSD, Read)
 		.WillOnce(Return(0x0))
 		.WillOnce(Return(0x0))
@@ -63,14 +58,16 @@ TEST_F(TestScriptApp1Fixture, TestScriptApp1_FailReadVerify) {
 	EXPECT_THAT(pTestScript->DoScript(), Eq(false));
 }
 
-TEST_F(TestScriptApp2Fixture, TestDefaultReturnTrue)
+TEST_F(TestScriptAppFixture, TestDefaultReturnTrue)
 {
-	EXPECT_THAT(tScript->DoScript(), Eq(true));
+	MakeScript(SCRIPT_APP2);
+	EXPECT_THAT(pTestScript->DoScript(), Eq(true));
 }
-TEST_F(TestScriptApp2Fixture, TestBodyCall)
+TEST_F(TestScriptAppFixture, TestBodyCall)
 {
-	EXPECT_CALL(mockSsd, Read(2)).Times(1);
-	tScript->DoScript();
+	MakeScript(SCRIPT_APP2);
+	EXPECT_CALL(mockSSD, Read(2)).Times(1);
+	pTestScript->DoScript();
 }
 
 TEST(TestScriptApp2, TestScriptFactoryNull)
