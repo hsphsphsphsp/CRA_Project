@@ -19,6 +19,21 @@ public:
 	TestScriptFactory fTestScriptFactory;
 };
 
+class TestScriptApp2Fixture : public Test
+{
+public:
+	NiceMock<MockSSD> mockSsd;
+	TestScript* tScript;
+	TestScriptFactory fTestScriptFactory;
+private:
+	void SetUp() override
+	{
+		tScript = fTestScriptFactory.createScript(sScriptName, mockSsd);
+	}
+
+	string sScriptName = "testscriptapp2";
+};
+
 TEST_F(TestScriptApp1Fixture, TestScriptApp1_ConfirmCallFullWrite) {
 	TestScriptApp1 testScriptApp1(&mockSsd);
 	
@@ -61,25 +76,13 @@ TEST_F(TestScriptApp1Fixture, TestScriptApp1_Factory) {
 	EXPECT_THAT(pTestScriptApp1->DoScript(), Eq(true));
 }
 
-TEST(TestScriptApp2, TestDefaultReturnTrue)
+TEST_F(TestScriptApp2Fixture, TestDefaultReturnTrue)
 {
-	MockSSD mSsd;
-	TestScript* tScript;
-	string sScriptName = "testscriptapp2";
-	TestScriptFactory fTestScriptFactory;
-
-	tScript = fTestScriptFactory.createScript(sScriptName, mSsd);
 	EXPECT_THAT(tScript->DoScript(), Eq(true));
 }
-TEST(TestScriptApp2, TestBodyCall)
+TEST_F(TestScriptApp2Fixture, TestBodyCall)
 {
-	MockSSD mSsd;
-	TestScript* tScript;
-	string sScriptName = "testscriptapp2";
-	TestScriptFactory fTestScriptFactory;
-
-	tScript = fTestScriptFactory.createScript(sScriptName, mSsd);
-	EXPECT_CALL(mSsd, Read(2)).Times(1);
+	EXPECT_CALL(mockSsd, Read(2)).Times(1);
 	tScript->DoScript();
 }
 
