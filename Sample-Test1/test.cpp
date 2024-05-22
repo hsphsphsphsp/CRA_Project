@@ -15,50 +15,37 @@ public:
 class TestScriptApp1Fixture : public Test
 {
 public:
-	NiceMock<MockSSD> mockSsd;
+	void SetUp() override
+	{
+		pTestScript = fTestScriptFactory.createScript(sScriptApp1, mockSSD);
+	}
+
+	NiceMock<MockSSD> mockSSD;
 	TestScriptFactory fTestScriptFactory;
+	TestScript* pTestScript;
+
+	string sScriptApp1 = "testscriptapp1";
 };
 
 TEST_F(TestScriptApp1Fixture, TestScriptApp1_ConfirmCallFullWrite) {
-	TestScriptApp1 testScriptApp1(&mockSsd);
-	
-	EXPECT_CALL(mockSsd, Write)
-		.Times(testScriptApp1.nSSDSize);
-	testScriptApp1.DoScript();
+	EXPECT_CALL(mockSSD, Write)
+		.Times(pTestScript->GetSSDSize());
+	pTestScript->DoScript();
 }
 
 TEST_F(TestScriptApp1Fixture, TestScriptApp1_ConfirmCallFullRead) {
-	TestScriptApp1 testScriptApp1(&mockSsd);
-
-	EXPECT_CALL(mockSsd, Read)
-		.Times(testScriptApp1.nSSDSize);
-	testScriptApp1.DoScript();
+	EXPECT_CALL(mockSSD, Read)
+		.Times(pTestScript->GetSSDSize());
+	pTestScript->DoScript();
 }
 
 TEST_F(TestScriptApp1Fixture, TestScriptApp1_FailReadVerify) {
-	TestScriptApp1 testScriptApp1(&mockSsd);
-
-	EXPECT_CALL(mockSsd, Read)
+	EXPECT_CALL(mockSSD, Read)
 		.WillOnce(Return(0x0))
 		.WillOnce(Return(0x0))
 		.WillRepeatedly(Return(0xFF));
 
-	EXPECT_THAT(testScriptApp1.DoScript(), Eq(false));
-}
-
-TEST_F(TestScriptApp1Fixture, TestScriptApp1_Factory) {
-	TestScript* pTestScriptApp1 = fTestScriptFactory.createScript("testscriptapp1", mockSsd);
-
-	EXPECT_CALL(mockSsd, Read)
-		.WillOnce(Return(0x0))
-		.WillRepeatedly(Return(0xFF));
-
-	EXPECT_THAT(pTestScriptApp1->DoScript(), Eq(false));
-
-	EXPECT_CALL(mockSsd, Read)
-		.WillRepeatedly(Return(0));
-
-	EXPECT_THAT(pTestScriptApp1->DoScript(), Eq(true));
+	EXPECT_THAT(pTestScript->DoScript(), Eq(false));
 }
 
 TEST(TestScriptApp2, TestDefaultReturnTrue)

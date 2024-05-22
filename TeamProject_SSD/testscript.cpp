@@ -8,9 +8,14 @@ public:
 		ssd{ ssd }
 	{}
 	virtual bool DoScript() = 0;
+	unsigned int GetSSDSize() const
+	{
+		return nSSDSize;
+	}
 
 protected:
 	SSD* ssd;
+	unsigned int nSSDSize = 100;
 };
 
 class TestScriptApp1 : public TestScript
@@ -35,7 +40,6 @@ public:
 		}
 		return true;
 	}
-	unsigned int nSSDSize = 100;
 };
 class TestScriptApp2 : public TestScript
 {
