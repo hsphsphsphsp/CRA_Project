@@ -56,6 +56,10 @@ public:
 		{
 			return new TestScriptApp2(&ssd);
 		}
+		else if (sScriptName.compare("testscriptapp1") == 0)
+		{
+			return new TestScriptApp1(&ssd);
+		}
 		return nullptr;
 	}
 };
