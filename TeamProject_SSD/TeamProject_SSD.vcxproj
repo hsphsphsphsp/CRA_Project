@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ssd.cpp" />
+    <ClCompile Include="testscript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ssd.h" />

@@ -1,10 +1,17 @@
 #include "ssd.h"
 
-unsigned int Ssd::Read(unsigned int nAddr)
+unsigned int SSD::Read(unsigned int nAddr)
 {
-	return 0;
+	if (umDataSet.find(nAddr) == umDataSet.end()) 
+	{
+		return INVALID_DATA;
+	}
+	else
+	{
+		return umDataSet[nAddr];
+	}
 }
-void Ssd::Write(unsigned int nAddr, unsigned int value)
+void SSD::Write(unsigned int nAddr, unsigned int value)
 {
 
 }
