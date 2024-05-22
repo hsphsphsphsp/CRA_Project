@@ -1,5 +1,7 @@
 #pragma once
 #include <unordered_map>
+#include <fstream>
+#include <iomanip>
 using namespace std;
 
 class SSD
