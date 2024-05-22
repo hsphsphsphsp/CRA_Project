@@ -21,12 +21,12 @@ public:
 	bool DoScript() override
 	{
 		unsigned int nWriteValue = 0x0;
-
-		for (int i = 0; i < ssd->nSize; i++)
+		
+		for (int i = 0; i < nSSDSize; i++)
 		{
 			ssd->Write(i, nWriteValue);
 		}
-		for (int i = 0; i < ssd->nSize; i++)
+		for (int i = 0; i < nSSDSize; i++)
 		{
 			if (ssd->Read(i) != nWriteValue)
 			{
@@ -35,4 +35,5 @@ public:
 		}
 		return true;
 	}
+	unsigned int nSSDSize = 100;
 };

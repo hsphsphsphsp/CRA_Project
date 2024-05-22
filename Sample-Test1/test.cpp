@@ -22,7 +22,7 @@ TEST_F(TestScriptApp1Fixture, TestScriptApp1_ConfirmCallFullWrite) {
 	TestScriptApp1 testScriptApp1(&mockSsd);
 	
 	EXPECT_CALL(mockSsd, Write)
-		.Times(mockSsd.nSize);
+		.Times(testScriptApp1.nSSDSize);
 	testScriptApp1.DoScript();
 }
 
@@ -30,7 +30,7 @@ TEST_F(TestScriptApp1Fixture, TestScriptApp1_ConfirmCallFullRead) {
 	TestScriptApp1 testScriptApp1(&mockSsd);
 
 	EXPECT_CALL(mockSsd, Read)
-		.Times(mockSsd.nSize);
+		.Times(testScriptApp1.nSSDSize);
 	testScriptApp1.DoScript();
 }
 
