@@ -50,9 +50,9 @@ public:
 class TestScriptFactory
 {
 public:
-	TestScript* createScript(string s, SSD& ssd)
+	TestScript* createScript(string sScriptName, SSD& ssd)
 	{
-		if (s.compare("testscriptapp2") == 0)
+		if (sScriptName.compare("testscriptapp2") == 0)
 		{
 			return new TestScriptApp2(&ssd);
 		}
