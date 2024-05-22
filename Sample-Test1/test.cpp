@@ -45,10 +45,15 @@ TEST_F(TestScriptApp1Fixture, TestScriptApp1_FailReadVerify) {
 	EXPECT_THAT(testScriptApp1.DoScript(), Eq(false));
 }
 
-TEST(SSDTest, ReadLBANeverBeenWritten) {
-	unsigned int address = 0x0;
-	unsigned int ret = 0x00000000;
+class SSDFixture : public testing::Test {
+public:
 	SSD ssd;
 
-	EXPECT_EQ(ret, ssd.Read(address));
+	const int INVALID_DATA = 0x00000000;
+};
+
+TEST_F(SSDFixture, ReadLBANeverBeenWritten) {
+	unsigned int nAddr = 0x0;
+
+	EXPECT_EQ(INVALID_DATA, ssd.Read(nAddr));
 }
