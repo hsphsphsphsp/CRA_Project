@@ -16,6 +16,7 @@ class TestScriptApp1Fixture : public Test
 {
 public:
 	NiceMock<MockSSD> mockSsd;
+	TestScriptFactory fTestScriptFactory;
 };
 
 TEST_F(TestScriptApp1Fixture, TestScriptApp1_ConfirmCallFullWrite) {
@@ -43,6 +44,21 @@ TEST_F(TestScriptApp1Fixture, TestScriptApp1_FailReadVerify) {
 		.WillRepeatedly(Return(0xFF));
 
 	EXPECT_THAT(testScriptApp1.DoScript(), Eq(false));
+}
+
+TEST_F(TestScriptApp1Fixture, TestScriptApp1_Factory) {
+	TestScript* pTestScriptApp1 = fTestScriptFactory.createScript("testscriptapp1", mockSsd);
+
+	EXPECT_CALL(mockSsd, Read)
+		.WillOnce(Return(0x0))
+		.WillRepeatedly(Return(0xFF));
+
+	EXPECT_THAT(pTestScriptApp1->DoScript(), Eq(false));
+
+	EXPECT_CALL(mockSsd, Read)
+		.WillRepeatedly(Return(0));
+
+	EXPECT_THAT(pTestScriptApp1->DoScript(), Eq(true));
 }
 
 TEST(TestScriptApp2, TestDefaultReturnTrue)
