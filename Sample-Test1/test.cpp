@@ -45,6 +45,39 @@ TEST_F(TestScriptApp1Fixture, TestScriptApp1_FailReadVerify) {
 	EXPECT_THAT(testScriptApp1.DoScript(), Eq(false));
 }
 
+TEST(TestScriptApp2, TestDefaultReturnTrue)
+{
+	MockSSD mSsd;
+	TestScript* tScript;
+	string sScriptName = "testscriptapp2";
+	TestScriptFactory fTestScriptFactory;
+
+	tScript = fTestScriptFactory.createScript(sScriptName, mSsd);
+	EXPECT_THAT(tScript->DoScript(), Eq(true));
+}
+TEST(TestScriptApp2, TestBodyCall)
+{
+	MockSSD mSsd;
+	TestScript* tScript;
+	string sScriptName = "testscriptapp2";
+	TestScriptFactory fTestScriptFactory;
+
+	tScript = fTestScriptFactory.createScript(sScriptName, mSsd);
+	EXPECT_CALL(mSsd, Read(2)).Times(1);
+	tScript->DoScript();
+}
+
+TEST(TestScriptApp2, TestScriptFactoryNull)
+{
+	MockSSD mSsd;
+	TestScript* tScript;
+	string sScriptName = "testscriptapp33";
+	TestScriptFactory fTestScriptFactory;
+
+	tScript = fTestScriptFactory.createScript(sScriptName, mSsd);
+	EXPECT_THAT(tScript, Eq(nullptr));
+}
+
 class SSDFixture : public testing::Test {
 public:
 	SSD ssd;
