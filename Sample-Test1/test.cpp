@@ -116,3 +116,50 @@ TEST_F(SSDFixture, ReadLBANeverBeenWrittenResultFile) {
 		FAIL() << sFileName << " not exist.";
 	}
 }
+
+TEST_F(SSDFixture, WriteSDDNormalTest) {
+	bool isFirstWrite = true;
+	SSD ssd;
+	ifstream fin;
+	ofstream fout;
+	string index, value;
+	unordered_map<unsigned int, unsigned int> umExpectedDataSet;
+	unordered_map<unsigned int, unsigned int> umActualDataSet;
+
+	remove("nand.txt");
+
+	umExpectedDataSet.insert({ 0, 0x1122AABB });
+	umExpectedDataSet.insert({ 3, 0x11CCAABB });
+
+	fout.open("nand.txt");
+
+	for (const auto& pair : umExpectedDataSet) {
+		fout << pair.first << " " << "0x" << hex << pair.second << endl;
+	}
+
+	fout.close();
+
+	umExpectedDataSet.insert({ 17, 0x11AAFF44 });
+	ssd.Write(17, 0x11AAFF44);
+
+	fin.open("nand.txt");
+	while (!fin.eof())
+	{
+		fin >> index >> value;
+		umActualDataSet.insert({ stoi(index), stoi(value, nullptr, 16) });
+	}
+	fin.close();
+
+	if (umExpectedDataSet.size() != umActualDataSet.size()) {
+		cout << "Err: Size is different" << endl;
+		FAIL();
+	}
+
+	for (const auto& pair : umExpectedDataSet) {
+		auto it = umActualDataSet.find(pair.first);
+		if (it == umActualDataSet.end() || it->second != pair.second) {
+			cout << "Err: ActualDataSet has wrong value" << endl;
+			FAIL();
+		}
+	}
+}
