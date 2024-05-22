@@ -80,33 +80,46 @@ TEST(TestScriptApp2, TestScriptFactoryNull)
 	EXPECT_THAT(tScript, Eq(nullptr));
 }
 
-class SSDFixture : public testing::Test {
+class SSDFixture : public testing::Test 
+{
 public:
+	void SetUp() override 
+	{
+		fResultFile.open(sResultFileName);
+	}
+
+	void TearDown() override 
+	{
+		if (fResultFile.is_open()) 
+		{
+			fResultFile.close();
+		}
+	}
+
 	SSD ssd;
 	const int INVALID_DATA = 0x00000000;
+	string sResultFileName = "result.txt";
+	ifstream fResultFile;
 };
 
-TEST_F(SSDFixture, ReadLBANeverBeenWritten) {
-	unsigned int nAddr = 0x0;
-
-	EXPECT_EQ(INVALID_DATA, ssd.Read(nAddr));
+TEST_F(SSDFixture, ReadLBANeverBeenWritten) 
+{
+	EXPECT_EQ(INVALID_DATA, ssd.Read(0));
 }
 
-TEST_F(SSDFixture, ReadLBANeverBeenWrittenResultFile) {
-	unsigned int nAddr = 0x0;
-	string sFileName = "result.txt";
-	
-	ssd.Read(nAddr);
+TEST_F(SSDFixture, ReadLBANeverBeenWrittenResultFile) 
+{
+	ssd.Read(0);
 
-	std::ifstream inFile(sFileName);
-
-	if (inFile) {
+	if (fResultFile) 
+	{
 		unsigned int nValue = -1;
-		inFile >> std::hex >> nValue;
+		fResultFile >> hex >> nValue;
 
 		EXPECT_EQ(INVALID_DATA, nValue);
 	}
-	else {
-		FAIL() << sFileName << " not exist.";
+	else 
+	{
+		FAIL() << sResultFileName << " not exist.";
 	}
 }
