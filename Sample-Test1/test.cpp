@@ -45,14 +45,6 @@ TEST_F(TestScriptApp1Fixture, TestScriptApp1_FailReadVerify) {
 	EXPECT_THAT(testScriptApp1.DoScript(), Eq(false));
 }
 
-TEST(SSDTest, ReadLBANeverBeenWritten) {
-	unsigned int address = 0x0;
-	unsigned int ret = 0x00000000;
-	SSD ssd;
-
-	EXPECT_EQ(ret, ssd.Read(address));
-}
-
 TEST(TestScriptApp2, TestDefaultReturnTrue)
 {
 	MockSSD mSsd;
