@@ -4,19 +4,19 @@
 class TestScript
 {
 public:
-	TestScript(Ssd* ssd) :
+	TestScript(SSD* ssd) :
 		ssd{ ssd }
 	{}
 	virtual bool DoScript() = 0;
 
 protected:
-	Ssd* ssd;
+	SSD* ssd;
 };
 
 class TestScriptApp1 : public TestScript
 {
 public:
-	TestScriptApp1(Ssd* ssd) : TestScript{ ssd } {}
+	TestScriptApp1(SSD* ssd) : TestScript{ ssd } {}
 
 	bool DoScript() override
 	{
