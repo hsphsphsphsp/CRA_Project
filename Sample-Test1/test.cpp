@@ -12,8 +12,13 @@ public:
 	MOCK_METHOD(void, Write, (unsigned int, unsigned int), (override));
 };
 
-TEST(TestScriptApp1, TestScriptApp1_ConfirmCallFullWrite) {
+class TestScriptApp1Fixture : public Test
+{
+public:
 	NiceMock<MockSSD> mockSsd;
+};
+
+TEST_F(TestScriptApp1Fixture, TestScriptApp1_ConfirmCallFullWrite) {
 	TestScriptApp1 testScriptApp1(&mockSsd);
 	
 	EXPECT_CALL(mockSsd, Write)
@@ -21,8 +26,7 @@ TEST(TestScriptApp1, TestScriptApp1_ConfirmCallFullWrite) {
 	testScriptApp1.DoScript();
 }
 
-TEST(TestScriptApp1, TestScriptApp1_ConfirmCallFullRead) {
-	NiceMock<MockSSD> mockSsd;
+TEST_F(TestScriptApp1Fixture, TestScriptApp1_ConfirmCallFullRead) {
 	TestScriptApp1 testScriptApp1(&mockSsd);
 
 	EXPECT_CALL(mockSsd, Read)
@@ -30,8 +34,7 @@ TEST(TestScriptApp1, TestScriptApp1_ConfirmCallFullRead) {
 	testScriptApp1.DoScript();
 }
 
-TEST(TestScriptApp1, TestScriptApp1_FailReadVerify) {
-	NiceMock<MockSSD> mockSsd;
+TEST_F(TestScriptApp1Fixture, TestScriptApp1_FailReadVerify) {
 	TestScriptApp1 testScriptApp1(&mockSsd);
 
 	EXPECT_CALL(mockSsd, Read)
