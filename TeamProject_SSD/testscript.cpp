@@ -37,3 +37,25 @@ public:
 	}
 	unsigned int nSSDSize = 100;
 };
+class TestScriptApp2 : public TestScript
+{
+public:
+	TestScriptApp2(SSD* ssd) : TestScript{ ssd } {}
+	bool DoScript() override
+	{
+		ssd->Read(2);
+		return true;
+	}
+};
+class TestScriptFactory
+{
+public:
+	TestScript* createScript(string s, SSD& ssd)
+	{
+		if (s.compare("testscriptapp2") == 0)
+		{
+			return new TestScriptApp2(&ssd);
+		}
+		return nullptr;
+	}
+};
