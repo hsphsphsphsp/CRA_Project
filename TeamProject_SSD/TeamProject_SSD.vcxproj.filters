@@ -21,9 +21,27 @@
     <ClCompile Include="ssd.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="testscript.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShellTestApp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScriptFactory.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ssd.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ITestScript.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ShellTestApp.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScriptFactory.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>

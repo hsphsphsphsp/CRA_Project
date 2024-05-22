@@ -128,10 +128,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ShellTestApp.cpp" />
     <ClCompile Include="ssd.cpp" />
+    <ClCompile Include="testscript.cpp" />
+    <ClCompile Include="TestScriptFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ITestScript.h" />
+    <ClInclude Include="ShellTestApp.h" />
     <ClInclude Include="ssd.h" />
+    <ClInclude Include="TestScriptFactory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
