@@ -47,9 +47,37 @@ public:
 	TestScriptApp2(SSD* ssd) : TestScript{ ssd } {}
 	bool DoScript() override
 	{
-		ssd->Read(2);
+		unsigned int value = 1;
+		const int WRITE_AREA = 5;
+		int data[WRITE_AREA + 1];
+		//1
+
+		for (int nLoop = 0; nLoop < 30; nLoop++)
+		{
+			for (unsigned int nLba = 0; nLba <= 5; nLba++)
+			{
+				ssd->Write(nLba, value);
+				data[nLba] = value;
+			}
+		}
+		//2 - overwrite
+		value = 2;
+		for (unsigned int nLba = 0; nLba <= 5; nLba++)
+		{
+			ssd->Write(nLba, value);
+			data[nLba] = value;
+		}
+		//3 - verify (read and compare)
+		for (unsigned int nLba = 0; nLba <= 5; nLba++)
+		{
+			if (data[nLba] != ssd->Read(nLba))
+			{
+				return false;
+			}
+		}
 		return true;
 	}
+
 };
 class TestScriptFactory
 {
