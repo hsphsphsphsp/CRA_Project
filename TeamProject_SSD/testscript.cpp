@@ -1,7 +1,11 @@
 #include <string>
 #include "ssd.h"
 
-class TestScript
+class ITestScript {
+	virtual bool DoScript() = 0;
+};
+
+class TestScript : ITestScript
 {
 public:
 	TestScript(SSD* ssd) :
