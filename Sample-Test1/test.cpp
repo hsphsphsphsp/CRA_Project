@@ -43,8 +43,11 @@ TEST(TestScript, TestShellCallTestScript)
 	NiceMock<MockSSD> mockSSD;
 	ShellTestApp shellTestApp(&mockSSD);
 	
+	EXPECT_CALL(mockSSD, GetSSDSize())
+		.WillRepeatedly(Return(1));
+
 	EXPECT_CALL(mockSSD, Read)
-		.Times(AtLeast(0));
+		.Times(AtLeast(1));
 
 	shellTestApp.DoScript("testscriptapp1");
 }
