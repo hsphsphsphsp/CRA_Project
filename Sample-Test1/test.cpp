@@ -132,8 +132,10 @@ TEST_F(SSDFixture, WriteSDDNormalTest) {
 
 	umExpectedDataSet.insert({ 0, 0x1122AABB });
 	umExpectedDataSet.insert({ 3, 0x11CCAABB });
+	umExpectedDataSet.insert({ 7, 0xFFCCAABB });
 
-	fout.open("nand.txt");
+
+	fout.open(sNANDFileName);
 
 	for (const auto& pair : umExpectedDataSet) {
 		fout << dec << pair.first << " " << "0x" << uppercase << hex << setw(8) << setfill('0') << pair.second << endl;
@@ -144,11 +146,11 @@ TEST_F(SSDFixture, WriteSDDNormalTest) {
 	umExpectedDataSet.insert({ 17, 0x11AAFF44 });
 	ssd.Write(17, 0x11AAFF44);
 
-	fin.open("nand.txt");
+	fin.open(sNANDFileName);
 	while (!fin.eof())
 	{
 		fin >> strIndex >> strValue;
-		umActualDataSet.insert({ stoi(strIndex), stoi(strValue, nullptr, 16) });
+		umActualDataSet.insert({ stoi(strIndex), stoul(strValue, nullptr, 16) });
 	}
 	fin.close();
 
