@@ -5,7 +5,7 @@ ShellTestApp::ShellTestApp(SSD* pSsd) : pSsd{ pSsd } {
 
 }
 
-void ShellTestApp::write(unsigned int nLba, unsigned int nData) {
+void ShellTestApp::Write(unsigned int nLba, unsigned int nData) {
     try {
         for (int c = 0; c < CYCLE; c++)
             pSsd->Write(nLba, nData);
@@ -15,26 +15,26 @@ void ShellTestApp::write(unsigned int nLba, unsigned int nData) {
     }
 }
 
-void ShellTestApp::read(unsigned int nLba) {
+void ShellTestApp::Read(unsigned int nLba) {
 
 }
 
-void ShellTestApp::exit() {
+void ShellTestApp::Exit() {
+    
+}
+
+void ShellTestApp::Help() {
 
 }
 
-void ShellTestApp::help() {
+void ShellTestApp::FullWrite(unsigned int nData) {
 
 }
 
-void ShellTestApp::fullWrite(unsigned int nData) {
+void ShellTestApp::FullRead() {
 
 }
 
-void ShellTestApp::fullRead() {
-
-}
-
-void ShellTestApp::doScript(std::string sTestScriptName) {
+void ShellTestApp::DoScript(std::string sTestScriptName) {
 
 }

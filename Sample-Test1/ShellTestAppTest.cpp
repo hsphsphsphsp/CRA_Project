@@ -42,7 +42,7 @@ TEST_F(ShellTestAppFixture, writeOverLbaFailTest) {
     EXPECT_CALL(mSsd, Write(MAX_LBA_NUM, DATA))
         .WillOnce(testing::Throw(err));
 
-    pApp->write(MAX_LBA_NUM, DATA);
+    pApp->Write(MAX_LBA_NUM, DATA);
 }
 
 TEST_F(ShellTestAppFixture, writeInvalidDataFailTest) {
@@ -50,5 +50,5 @@ TEST_F(ShellTestAppFixture, writeInvalidDataFailTest) {
     EXPECT_CALL(mSsd, Write(LBA, INVALID_DATA))
         .WillOnce(testing::Throw(err));
 
-    pApp->write(LBA, INVALID_DATA);
+    pApp->Write(LBA, INVALID_DATA);
 }

@@ -8,20 +8,20 @@
 class ShellTestApp {
 public:
     ShellTestApp(SSD* pSsd);
+    
+    void Write(unsigned int nLba, unsigned int nData);
 
-    void write(unsigned int nLba, unsigned int nData);
+    void Read(unsigned int nLba);
 
-    void read(unsigned int nLba);
+    void Exit();
 
-    void exit();
+    void Help();
 
-    void help();
+    void FullWrite(unsigned int nData);
 
-    void fullWrite(unsigned int nData);
+    void FullRead();
 
-    void fullRead();
-
-    void doScript(std::string sTestScriptName);
+    void DoScript(std::string sTestScriptName);
 
 private:
     const unsigned int MAX_LBA_NUM = 100;
