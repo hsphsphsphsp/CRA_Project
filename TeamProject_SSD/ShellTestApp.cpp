@@ -15,7 +15,12 @@ void ShellTestApp::Write(unsigned int nLba, unsigned int nData) {
 }
 
 void ShellTestApp::Read(unsigned int nLba) {
-
+    try {
+        pSsd->Read(nLba);
+    }
+    catch (std::exception& e) {
+        std::cout << e.what() << std::endl;
+    }
 }
 
 void ShellTestApp::Exit() {
