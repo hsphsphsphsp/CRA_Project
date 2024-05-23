@@ -82,33 +82,6 @@ TEST(TestScript, TestShellCallTestScript)
 	shellTestApp.DoScript("testscriptapp1");
 }
 
-class SSDFixture : public testing::Test 
-{
-public:
-	void SetUp() override 
-	{
-		fResultFile.open(sResultFileName);
-	}
-
-	void TearDown() override 
-	{
-		if (fResultFile.is_open()) 
-		{
-			fResultFile.close();
-		}
-	}
-
-	SSD ssd;
-	const int INVALID_DATA = 0x00000000;
-	string sResultFileName = "result.txt";
-	ifstream fResultFile;
-};
-
-TEST_F(SSDFixture, Read_LBANeverBeenWritten) 
-{
-	remove("nand.txt");
-	EXPECT_EQ(INVALID_DATA, ssd.Read(0));
-}
 TEST_F(TestScriptAppFixture, TestScriptApp2_CheckWriteAgingExecutedCount)
 {
 	MakeScript(SCRIPT_APP2);
@@ -131,6 +104,7 @@ TEST_F(TestScriptAppFixture, TestScriptApp2_CheckWhenVerifySuccess)
 	}
 	EXPECT_THAT(pTestScript->DoScript(), Eq(true));
 }
+
 TEST_F(TestScriptAppFixture, TestScriptApp2_CheckWhenVerifyFail)
 {
 	MakeScript(SCRIPT_APP2);
@@ -142,19 +116,48 @@ TEST_F(TestScriptAppFixture, TestScriptApp2_CheckWhenVerifyFail)
 	EXPECT_THAT(pTestScript->DoScript(), Eq(false));
 }
 
-TEST_F(SSDFixture, Read_CreateResultFile) 
+class SSDFixture : public testing::Test
+{
+public:
+	void SetUp() override
+	{
+		fResultFile.open(sResultFileName);
+	}
+
+	void TearDown() override
+	{
+		if (fResultFile.is_open())
+		{
+			fResultFile.close();
+		}
+	}
+
+	SSD ssd;
+	const unsigned int INVALID_DATA = 0x00000000;
+	const unsigned int INVALID_LBA = 0xFF;
+	string sResultFileName = "result.txt";
+	ifstream fResultFile;
+};
+
+TEST_F(SSDFixture, Read_LBANeverBeenWritten)
+{
+	remove("nand.txt");
+	EXPECT_EQ(INVALID_DATA, ssd.Read(0));
+}
+
+TEST_F(SSDFixture, Read_CreateResultFile)
 {
 	remove("nand.txt");
 	ssd.Read(0);
 
-	if (fResultFile) 
+	if (fResultFile)
 	{
 		unsigned int nValue = -1;
 		fResultFile >> hex >> nValue;
 
 		EXPECT_EQ(INVALID_DATA, nValue);
 	}
-	else 
+	else
 	{
 		FAIL() << sResultFileName << " not exist.";
 	}
@@ -167,6 +170,17 @@ TEST_F(SSDFixture, Read_ReadAfterWrite)
 
 	ssd.Write(nAddr, nData);
 	EXPECT_EQ(nData, ssd.Read(nAddr));
+}
+
+TEST_F(SSDFixture, Read_InvalidLBA)
+{
+	EXPECT_THROW(ssd.Read(INVALID_LBA), exception);
+}
+
+TEST_F(SSDFixture, Write_InvalidLBA)
+{
+	unsigned int nData = 0x1122AABB;
+	EXPECT_THROW(ssd.Write(INVALID_LBA, nData), exception);
 }
 
 TEST_F(SSDFixture, WriteSDDNormalTest) {

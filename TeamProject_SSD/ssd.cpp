@@ -5,6 +5,8 @@
 
 unsigned int SSD::Read(unsigned int nAddr)
 {
+	ValidateParameter(nAddr);
+
 	unsigned int nReadValue = INVALID_DATA;
 	unordered_map<unsigned int, unsigned int> umDataSet;
 
@@ -18,6 +20,13 @@ unsigned int SSD::Read(unsigned int nAddr)
 	WriteHexValueToFile(nReadValue);
 
 	return nReadValue;
+}
+
+void SSD::ValidateParameter(unsigned int nAddr)
+{
+	if (nAddr < 0 || nAddr > 99) {
+		throw exception("INVALID COMMAND");
+	}
 }
 
 void SSD::ReadFromNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet)
@@ -50,6 +59,8 @@ bool SSD::IsLBAWritten(std::unordered_map<unsigned int, unsigned int>& umDataSet
 
 void SSD::Write(unsigned int nAddr, unsigned int value)
 {
+	ValidateParameter(nAddr);
+
 	SSD ssd;
 	ifstream fin;
 	ofstream fout;
