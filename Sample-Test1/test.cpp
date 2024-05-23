@@ -124,29 +124,27 @@ TEST_F(SSDFixture, Write_InvalidLBA)
 
 TEST_F(SSDFixture, Write_OverwriteData)
 {
-	unsigned int nAddr = 0;
+	unsigned int nLBA = 0;
 	unsigned int nData = 0xB622AABB;
 	unsigned int nNewData = 0xFFFFFFFF;
 
-	ssd.Write(nAddr, nData);
-	ssd.Write(nAddr, nNewData);
+	ssd.Write(nLBA, nData);
+	ssd.Write(nLBA, nNewData);
 
-	EXPECT_THAT(nData, Ne(ssd.Read(nAddr)));
-	EXPECT_THAT(nNewData, Eq(ssd.Read(nAddr)));
+	EXPECT_THAT(nData, Ne(ssd.Read(nLBA)));
+	EXPECT_THAT(nNewData, Eq(ssd.Read(nLBA)));
 }
 
-TEST_F(SSDFixture, WriteSDDNormalTest) {
-	SSD ssd;
+TEST_F(SSDFixture, Write_VerifyWriteFunctionWithRawFileData) {
 	ifstream fin;
 	ofstream fout;
-	string strIndex, strValue;
+	string sIndex, sValue;
 	unordered_map<unsigned int, unsigned int> umExpectedDataSet;
 	unordered_map<unsigned int, unsigned int> umActualDataSet;
 
 	umExpectedDataSet.insert({ 0, 0x1122AABB });
 	umExpectedDataSet.insert({ 3, 0x11CCAABB });
 	umExpectedDataSet.insert({ 7, 0xFFCCAABB });
-
 
 	fout.open(sNANDFileName);
 
@@ -162,8 +160,8 @@ TEST_F(SSDFixture, WriteSDDNormalTest) {
 	fin.open(sNANDFileName);
 	while (!fin.eof())
 	{
-		fin >> strIndex >> strValue;
-		umActualDataSet.insert({ stoi(strIndex), stoul(strValue, nullptr, 16) });
+		fin >> sIndex >> sValue;
+		umActualDataSet.insert({ stoi(sIndex), stoul(sValue, nullptr, 16) });
 	}
 	fin.close();
 
