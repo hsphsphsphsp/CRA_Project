@@ -215,6 +215,10 @@ TEST_F(ShellTestAppFixture, DISABLED_exitTest) {
 }
 
 TEST_F(ShellTestAppFixture, helpTest) {
+	EXPECT_CALL(mSsd, GetSSDSize())
+		.Times(1)
+		.WillRepeatedly(Return(MAX_LBA_NUM));
+
 	pApp->Help();
 }
 
