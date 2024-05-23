@@ -34,9 +34,9 @@ void SSD::ReadFromNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet
 	ifstream fin;
 	string sIndex, sValue;
 
-	if (_access("nand.txt", 0) == 0)
+	if (_access(&*sNandFileName.begin(), 0) == 0)
 	{
-		fin.open("nand.txt");
+		fin.open(sNandFileName);
 		while (!fin.eof())
 		{
 			fin >> sIndex >> sValue;
@@ -49,7 +49,7 @@ void SSD::ReadFromNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet
 void SSD::WriteHexValueToFile(unsigned int nValue)
 {
 	ofstream fResultFile(sResultFileName);
-	fResultFile << "0x" << hex << setw(8) << setfill('0') << nValue;
+	fResultFile << "0x" << uppercase << hex << setw(8) << setfill('0') << nValue;
 }
 
 bool SSD::IsLBAWritten(std::unordered_map<unsigned int, unsigned int>& umDataSet, const unsigned int& nAddr)
@@ -61,32 +61,22 @@ void SSD::Write(unsigned int nAddr, unsigned int value)
 {
 	ValidateParameter(nAddr);
 
-	SSD ssd;
-	ifstream fin;
-	ofstream fout;
-	string strIndex, strValue;
-	bool isFirstWrite = true;
+	unordered_map<unsigned int, unsigned int> umDataSet;
 
-	if (_access("nand.txt", 0) == 0) {
-		isFirstWrite = false;
-	}
-
-	if (!isFirstWrite) {
-		fin.open("nand.txt");
-		while (!fin.eof())
-		{
-			fin >> strIndex >> strValue;
-			umDataSet.insert({ stoi(strIndex), stoi(strValue, nullptr, 16) });
-		}
-		fin.close();
-	}
+	ReadFromNAND(umDataSet);
 
 	umDataSet.insert({ nAddr, value });
-	fout.open("nand.txt");
 
+	WriteToNAND(umDataSet);
+}
+
+void SSD::WriteToNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet)
+{
+	ofstream fout;
+
+	fout.open(sNandFileName);
 	for (const auto& pair : umDataSet) {
-		fout << dec << pair.first << " " << "0x" << hex << pair.second << endl;
+		fout << dec << pair.first << " " << "0x" << uppercase << hex << setw(8) << setfill('0') << pair.second << endl;
 	}
-
 	fout.close();
 }

@@ -184,11 +184,10 @@ TEST_F(SSDFixture, Write_InvalidLBA)
 }
 
 TEST_F(SSDFixture, WriteSDDNormalTest) {
-	bool isFirstWrite = true;
 	SSD ssd;
 	ifstream fin;
 	ofstream fout;
-	string index, value;
+	string strIndex, strValue;
 	unordered_map<unsigned int, unsigned int> umExpectedDataSet;
 	unordered_map<unsigned int, unsigned int> umActualDataSet;
 
@@ -198,7 +197,7 @@ TEST_F(SSDFixture, WriteSDDNormalTest) {
 	fout.open("nand.txt");
 
 	for (const auto& pair : umExpectedDataSet) {
-		fout << pair.first << " " << "0x" << hex << pair.second << endl;
+		fout << dec << pair.first << " " << "0x" << uppercase << hex << setw(8) << setfill('0') << pair.second << endl;
 	}
 
 	fout.close();
@@ -209,15 +208,12 @@ TEST_F(SSDFixture, WriteSDDNormalTest) {
 	fin.open("nand.txt");
 	while (!fin.eof())
 	{
-		fin >> index >> value;
-		umActualDataSet.insert({ stoi(index), stoi(value, nullptr, 16) });
+		fin >> strIndex >> strValue;
+		umActualDataSet.insert({ stoi(strIndex), stoi(strValue, nullptr, 16) });
 	}
 	fin.close();
 
-	if (umExpectedDataSet.size() != umActualDataSet.size()) {
-		cout << "Err: Size is different" << endl;
-		FAIL();
-	}
+	EXPECT_EQ(umExpectedDataSet.size(), umActualDataSet.size());
 
 	for (const auto& pair : umExpectedDataSet) {
 		auto it = umActualDataSet.find(pair.first);
