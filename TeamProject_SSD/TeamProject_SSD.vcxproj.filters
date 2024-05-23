@@ -27,16 +27,22 @@
     <ClCompile Include="ShellTestApp.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="SSDFileHandler.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ssd.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ShellTestApp.h">
-      <Filter>소스 파일</Filter>
+    <ClInclude Include="SSDFileHandler.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="testscript.h">
-      <Filter>소스 파일</Filter>
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ssd.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ShellTestApp.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
