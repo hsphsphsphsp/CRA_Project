@@ -16,6 +16,30 @@ public:
 	MOCK_METHOD(void, Write, (unsigned int, unsigned int), (override));
 };
 
+class MockTestScript : public ITestScript {
+public:
+	MOCK_METHOD(bool, DoScript, (), (override));
+};
+
+class ShellTestAppFixture : public testing::Test {
+public:
+	void SetUp() override {
+		pApp = new ShellTestApp(&mSsd);
+	}
+
+	ShellTestApp* pApp;
+	MockSSD mSsd;
+	MockTestScript mTestScript;
+
+	const unsigned int LBA = 0;
+	const unsigned int MAX_LBA_NUM = 100; //todo get MAX_LBA_NUM from SSD
+	const unsigned int DATA = 0xFFFFFFFF;
+	const unsigned int INVALID_DATA = 0X00000000;
+	const std::exception ERROR;
+	const std::string TESTSCRIPT1 = "testscriptapp2";
+	const std::string TESTSCRIPT2 = "testscriptapp1";
+};
+
 class TestScriptAppFixture : public Test
 {
 public:
