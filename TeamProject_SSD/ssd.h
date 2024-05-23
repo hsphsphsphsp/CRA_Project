@@ -5,6 +5,18 @@
 #include <iostream>
 using namespace std;
 
+class SSDFileHandler
+{
+public:
+	void ReadFromNANDFile(unordered_map<unsigned int, unsigned int>& umDataSet);
+	void WriteToNANDFile(unordered_map<unsigned int, unsigned int>& umDataSet);
+	void WriteHexReadValueToResultFile(unsigned int nValue);
+
+private:
+	const string sResultFileName = "result.txt";
+	const string sNandFileName = "nand.txt";
+};
+
 class SSD
 {
 public:
@@ -14,13 +26,9 @@ public:
 
 private:
 	void ValidateParameter(unsigned int nLBA);
-	void ReadFromNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet);
-	bool IsLBAWritten(const unsigned int& nLBA, std::unordered_map<unsigned int, unsigned int>& umDataSet);
-	void WriteHexReadValueToResultFile(unsigned int nReadValue);
-	void WriteToNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet);
+	bool IsLBAWritten(const unsigned int& nLBA, unordered_map<unsigned int, unsigned int>& umDataSet);
 	
+	SSDFileHandler ssdFileHandler;
 	const int MAX_LBA_COUNT = 100;
 	const int DEFAULT_READ_VALUE = 0x00000000;
-	const string sResultFileName = "result.txt";
-	const string sNandFileName = "nand.txt";
 };
