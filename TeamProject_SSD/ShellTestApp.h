@@ -11,7 +11,7 @@ public:
     
     void Write(unsigned int nLba, unsigned int nData);
 
-    void Read(unsigned int nLba);
+    int Read(unsigned int nLba);
 
     void Exit();
 
@@ -22,6 +22,8 @@ public:
     void FullRead();
 
     void DoScript(std::string sTestScriptName);
+
+    void Start();
 
 private:
     const unsigned int MAX_LBA_NUM = 100;
