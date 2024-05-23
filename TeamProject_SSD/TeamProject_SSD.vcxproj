@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ITestScript.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ShellTestApp.cpp" />
     <ClCompile Include="ssd.cpp" />
@@ -137,6 +138,7 @@
     <ClInclude Include="ITestScript.h" />
     <ClInclude Include="ShellTestApp.h" />
     <ClInclude Include="ssd.h" />
+    <ClInclude Include="testscript.h" />
     <ClInclude Include="TestScriptFactory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
