@@ -13,6 +13,8 @@ public:
 	void WriteHexReadValueToResultFile(unsigned int nValue);
 
 private:
+	bool IsNANDFileExist();
+
 	const string sResultFileName = "result.txt";
 	const string sNandFileName = "nand.txt";
 };
@@ -29,6 +31,6 @@ private:
 	bool IsLBAWritten(const unsigned int& nLBA, unordered_map<unsigned int, unsigned int>& umDataSet);
 	
 	SSDFileHandler ssdFileHandler;
-	const int MAX_LBA_COUNT = 100;
+	const int SSD_MAX_LBA = 99;
 	const int DEFAULT_READ_VALUE = 0x00000000;
 };
