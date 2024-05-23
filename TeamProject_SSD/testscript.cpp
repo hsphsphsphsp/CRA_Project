@@ -10,7 +10,7 @@ bool TestScriptApp1::DoScript()
 
 bool TestScriptApp1::FullReadVerify(unsigned int nWriteValue)
 {
-	for (int i = 0; i < GetSSDSize(); i++)
+	for (int i = 0; i < ssd->GetSSDSize(); i++)
 	{
 		if (ssd->Read(i) != nWriteValue)
 		{
@@ -22,7 +22,7 @@ bool TestScriptApp1::FullReadVerify(unsigned int nWriteValue)
 
 void TestScriptApp1::FullWrite(unsigned int nWriteValue)
 {
-	for (int i = 0; i < GetSSDSize(); i++)
+	for (int i = 0; i < ssd->GetSSDSize(); i++)
 	{
 		ssd->Write(i, nWriteValue);
 	}

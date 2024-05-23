@@ -15,15 +15,10 @@ public:
 	{
 	}
 	virtual bool DoScript() = 0;
-	unsigned int GetSSDSize() const
-	{
-		return nSSDSize;
-	}
+	int GetSSDSize() const { return ssd->GetSSDSize(); }
 
 protected:
 	SSD* ssd;
-private:
-	unsigned int nSSDSize = 100;
 };
 
 class TestScriptApp1 : public TestScript
