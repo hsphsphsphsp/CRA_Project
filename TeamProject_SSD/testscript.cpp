@@ -44,39 +44,54 @@ public:
 class TestScriptApp2 : public TestScript
 {
 public:
-	TestScriptApp2(SSD* ssd) : TestScript{ ssd } {}
+	TestScriptApp2(SSD* ssd) : TestScript{ ssd }
+	{
+		pTestData = (unsigned int*)malloc(sizeof(unsigned int*) * WRITE_AREA);
+	}
 	bool DoScript() override
 	{
-		unsigned int value = 1;
-		const int WRITE_AREA = 5;
-		int data[WRITE_AREA + 1];
-		//1
-
+		FirstWrite();
+		OverWrite();
+		if (Verify() != true)
+		{
+			return false;
+		}
+		return true;
+	}
+	void FirstWrite()
+	{
+		unsigned int value = 0xAAAABBBB;
 		for (int nLoop = 0; nLoop < 30; nLoop++)
 		{
-			for (unsigned int nLba = 0; nLba <= 5; nLba++)
+			for (unsigned int nLba = 0; nLba <= WRITE_AREA; nLba++)
 			{
 				ssd->Write(nLba, value);
-				data[nLba] = value;
+				pTestData[nLba] = value;
 			}
 		}
-		//2 - overwrite
-		value = 2;
-		for (unsigned int nLba = 0; nLba <= 5; nLba++)
+	}
+	void OverWrite()
+	{
+		unsigned int value = 0x12345678;
+		for (unsigned int nLba = 0; nLba <= WRITE_AREA; nLba++)
 		{
 			ssd->Write(nLba, value);
-			data[nLba] = value;
+			pTestData[nLba] = value;
 		}
-		//3 - verify (read and compare)
-		for (unsigned int nLba = 0; nLba <= 5; nLba++)
+	}
+	bool Verify()
+	{
+		for (unsigned int nLba = 0; nLba <= WRITE_AREA; nLba++)
 		{
-			if (data[nLba] != ssd->Read(nLba))
+			if (pTestData[nLba] != ssd->Read(nLba))
 			{
 				return false;
 			}
 		}
 		return true;
 	}
+	const int WRITE_AREA = 5;
+	unsigned int* pTestData;
 
 };
 class TestScriptFactory
