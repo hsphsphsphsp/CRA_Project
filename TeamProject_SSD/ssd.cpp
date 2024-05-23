@@ -2,17 +2,22 @@
 
 unsigned int SSD::Read(unsigned int nAddr)
 {
-	ofstream outFile("result.txt");
-	unsigned int nData = INVALID_DATA;
+	unsigned int nReadValue = INVALID_DATA;
 
 	if (IsLBAWritten(nAddr))
 	{
-		nData = umDataSet[nAddr];
+		nReadValue = umDataSet[nAddr];
 	}
 
-	outFile << "0x" << hex << setw(8) << setfill('0') << nData;
+	WriteHexValueToFile(nReadValue);
 
-	return nData;
+	return nReadValue;
+}
+
+void SSD::WriteHexValueToFile(unsigned int nValue)
+{
+	ofstream fResultFile(sResultFileName);
+	fResultFile << "0x" << hex << setw(8) << setfill('0') << nValue;
 }
 
 bool SSD::IsLBAWritten(const unsigned int& nAddr)
