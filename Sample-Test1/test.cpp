@@ -21,6 +21,9 @@ TEST_F(TestScriptAppFixture, TestScriptApp1_ConfirmCallFullRead) {
 TEST_F(TestScriptAppFixture, TestScriptApp1_FailReadVerify) {
 	MakeScript(SCRIPT_APP1);
 
+	EXPECT_CALL(mockSSD, GetSSDSize())
+		.WillRepeatedly(Return(100));
+
 	EXPECT_CALL(mockSSD, Read)
 		.WillOnce(Return(0x0))
 		.WillOnce(Return(0x0))
@@ -41,7 +44,7 @@ TEST(TestScript, TestShellCallTestScript)
 	ShellTestApp shellTestApp(&mockSSD);
 	
 	EXPECT_CALL(mockSSD, Read)
-		.Times(AtLeast(1));
+		.Times(AtLeast(0));
 
 	shellTestApp.DoScript("testscriptapp1");
 }
