@@ -177,3 +177,44 @@ TEST_F(SSDFixture, WriteSDDNormalTest) {
 		}
 	}
 }
+
+TEST_F(ShellTestAppFixture, writeSuccessTest) {
+	EXPECT_CALL(mSsd, Write(LBA, DATA))
+		.Times(1);
+	pApp->Write(LBA, DATA);
+}
+
+TEST_F(ShellTestAppFixture, writeOverLbaFailTest) {
+	EXPECT_CALL(mSsd, Write(MAX_LBA_NUM, DATA))
+		.WillOnce(testing::Throw(ERROR));
+
+	pApp->Write(MAX_LBA_NUM, DATA);
+}
+
+TEST_F(ShellTestAppFixture, writeInvalidDataFailTest) {
+	EXPECT_CALL(mSsd, Write(LBA, INVALID_DATA))
+		.WillOnce(testing::Throw(ERROR));
+
+	pApp->Write(LBA, INVALID_DATA);
+}
+
+TEST_F(ShellTestAppFixture, readSuccessTest) {
+	EXPECT_CALL(mSsd, Read(LBA))
+		.Times(1);
+	pApp->Read(LBA);
+}
+
+TEST_F(ShellTestAppFixture, readInvalidDataFailTest) {
+	EXPECT_CALL(mSsd, Read(MAX_LBA_NUM))
+		.WillOnce(testing::Throw(ERROR));
+
+	pApp->Read(MAX_LBA_NUM);
+}
+
+TEST_F(ShellTestAppFixture, DISABLED_exitTest) {
+	pApp->Exit();
+}
+
+TEST_F(ShellTestAppFixture, helpTest) {
+	pApp->Help();
+}
