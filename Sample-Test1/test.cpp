@@ -218,3 +218,23 @@ TEST_F(ShellTestAppFixture, DISABLED_exitTest) {
 TEST_F(ShellTestAppFixture, helpTest) {
 	pApp->Help();
 }
+
+TEST_F(ShellTestAppFixture, fullReadSuccessTest) {
+	EXPECT_CALL(mSsd, GetSSDSize())
+		.WillRepeatedly(Return(MAX_LBA_NUM));
+
+	EXPECT_CALL(mSsd, Read(_))
+		.Times(MAX_LBA_NUM);
+
+	pApp->FullRead();
+}
+
+TEST_F(ShellTestAppFixture, fullReadFailTest) {
+	EXPECT_CALL(mSsd, GetSSDSize())
+		.WillRepeatedly(Return(MAX_LBA_NUM));
+
+	EXPECT_CALL(mSsd, Read(_))
+		.WillOnce(testing::Throw(ERROR));
+	
+	pApp->FullRead();
+}
