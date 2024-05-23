@@ -1,6 +1,10 @@
 #include <string>
 #include "ssd.h"
 
+class ITestScript {
+	virtual bool DoScript() = 0;
+};
+
 class TestScript
 {
 public:
