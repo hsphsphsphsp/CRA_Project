@@ -396,3 +396,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.imlv
+
+# Output files
+nand.txt
+result.txt
