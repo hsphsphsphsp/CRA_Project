@@ -30,6 +30,9 @@
     <ClCompile Include="TestScriptFactory.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="ITestScript.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ssd.h">
@@ -42,6 +45,9 @@
       <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="TestScriptFactory.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="testscript.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>
