@@ -1,73 +1,70 @@
-#include <string>
-#include "ssd.h"
+#include "testscript.h"
 
 class ITestScript {
 	virtual bool DoScript() = 0;
 };
 
 class TestScript : ITestScript
+bool TestScriptApp1::DoScript()
 {
-public:
-	TestScript(SSD* ssd) :
-		ssd{ ssd }
-	{}
-	virtual bool DoScript() = 0;
-	unsigned int GetSSDSize() const
-	{
-		return nSSDSize;
-	}
+	unsigned int nWriteValue = 0x0;
 
-protected:
-	SSD* ssd;
-	unsigned int nSSDSize = 100;
-};
+	for (int i = 0; i < GetSSDSize(); i++)
+	{
+		ssd->Write(i, nWriteValue);
+	}
+	for (int i = 0; i < GetSSDSize(); i++)
+	{
+		if (ssd->Read(i) != nWriteValue)
+		{
+			return false;
+		}
+	}
+	return true;
+}
 
-class TestScriptApp1 : public TestScript
+bool TestScriptApp2::DoScript()
 {
-public:
-	TestScriptApp1(SSD* ssd) : TestScript{ ssd } {}
+	unsigned int value = 1;
+	const int WRITE_AREA = 5;
+	int data[WRITE_AREA + 1];
 
-	bool DoScript() override
+	//1
+	for (int nLoop = 0; nLoop < 30; nLoop++)
 	{
-		unsigned int nWriteValue = 0x0;
-		
-		for (int i = 0; i < nSSDSize; i++)
+		for (unsigned int nLba = 0; nLba <= 5; nLba++)
 		{
-			ssd->Write(i, nWriteValue);
+			ssd->Write(nLba, value);
+			data[nLba] = value;
 		}
-		for (int i = 0; i < nSSDSize; i++)
-		{
-			if (ssd->Read(i) != nWriteValue)
-			{
-				return false;
-			}
-		}
-		return true;
 	}
-};
-class TestScriptApp2 : public TestScript
+	//2 - overwrite
+	value = 2;
+	for (unsigned int nLba = 0; nLba <= 5; nLba++)
+	{
+		ssd->Write(nLba, value);
+		data[nLba] = value;
+	}
+	//3 - verify (read and compare)
+	for (unsigned int nLba = 0; nLba <= 5; nLba++)
+	{
+		if (data[nLba] != ssd->Read(nLba))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+TestScript* TestScriptFactory::createScript(string sScriptName, SSD& ssd)
 {
-public:
-	TestScriptApp2(SSD* ssd) : TestScript{ ssd } {}
-	bool DoScript() override
+	if (sScriptName.compare("testscriptapp2") == 0)
 	{
-		ssd->Read(2);
-		return true;
+		return new TestScriptApp2(&ssd);
 	}
-};
-class TestScriptFactory
-{
-public:
-	TestScript* createScript(string sScriptName, SSD& ssd)
+	else if (sScriptName.compare("testscriptapp1") == 0)
 	{
-		if (sScriptName.compare("testscriptapp2") == 0)
-		{
-			return new TestScriptApp2(&ssd);
-		}
-		else if (sScriptName.compare("testscriptapp1") == 0)
-		{
-			return new TestScriptApp1(&ssd);
-		}
-		return nullptr;
+		return new TestScriptApp1(&ssd);
 	}
-};
+	return nullptr;
+}
