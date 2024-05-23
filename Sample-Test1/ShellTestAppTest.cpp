@@ -1,6 +1,6 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "../TeamProject_SSD/ShellTestApp.cpp"
+#include "../TeamProject_SSD/ShellTestApp.h"
 
 class MockSSD : public SSD {
 public:
