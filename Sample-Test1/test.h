@@ -52,7 +52,7 @@ public:
 	}
 
 	SSD ssd;
-	const unsigned int INVALID_DATA = 0x00000000;
+	const unsigned int DEFAULT_READ_VALUE = 0x00000000;
 	const unsigned int INVALID_LBA = 0xFF;
 	string sResultFileName = "result.txt";
 	string sNANDFileName = "nand.txt";
