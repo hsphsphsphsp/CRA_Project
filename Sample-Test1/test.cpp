@@ -1,10 +1,12 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include <fstream>
 #include "../TeamProject_SSD/ssd.cpp"
 #include "../TeamProject_SSD/testscript.cpp"
 
 using namespace std;
 using namespace testing;
+
 
 class MockSSD : public SSD {
 public:
@@ -71,7 +73,6 @@ TEST(TestScriptApp2, TestScriptFactoryNull)
 class SSDFixture : public testing::Test {
 public:
 	SSD ssd;
-
 	const int INVALID_DATA = 0x00000000;
 };
 
@@ -111,4 +112,23 @@ TEST_F(TestScriptAppFixture, TestScriptApp2_CheckWhenVerifyFail)
 		EXPECT_CALL(mockSSD, Read(nLba)).WillRepeatedly(Return(nValue));
 	}
 	EXPECT_THAT(pTestScript->DoScript(), Eq(false));
+}
+
+TEST_F(SSDFixture, ReadLBANeverBeenWrittenResultFile) {
+	unsigned int nAddr = 0x0;
+	string sFileName = "result.txt";
+	
+	ssd.Read(nAddr);
+
+	std::ifstream inFile(sFileName);
+
+	if (inFile) {
+		unsigned int nValue = -1;
+		inFile >> std::hex >> nValue;
+
+		EXPECT_EQ(INVALID_DATA, nValue);
+	}
+	else {
+		FAIL() << sFileName << " not exist.";
+	}
 }
