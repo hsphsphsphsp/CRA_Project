@@ -135,7 +135,8 @@ TEST_F(SSDFixture, Write_OverwriteData)
 	EXPECT_THAT(nNewData, Eq(ssd.Read(nLBA)));
 }
 
-TEST_F(SSDFixture, Write_VerifyWriteFunctionWithRawFileData) {
+TEST_F(SSDFixture, Write_VerifyWriteFunctionWithRawFileData)
+{
 	ifstream fin;
 	ofstream fout;
 	string sIndex, sValue;
