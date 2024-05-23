@@ -1,30 +1,54 @@
 #include "ssd.h"
-
 #include <io.h>
 #include <string>
 
-unsigned int SSD::Read(unsigned int nAddr)
+unsigned int SSD::Read(unsigned int nLBA)
 {
-	ValidateParameter(nAddr);
+	ValidateParameter(nLBA);
 
-	unsigned int nReadValue = INVALID_DATA;
+	unsigned int nReadValue = DEFAULT_READ_VALUE;
 	unordered_map<unsigned int, unsigned int> umDataSet;
 
 	ReadFromNAND(umDataSet);
 
-	if (IsLBAWritten(umDataSet, nAddr))
+	if (IsLBAWritten(nLBA, umDataSet))
 	{
-		nReadValue = umDataSet[nAddr];
+		nReadValue = umDataSet[nLBA];
 	}
 
-	WriteHexValueToFile(nReadValue);
+	WriteHexReadValueToResultFile(nReadValue);
 
 	return nReadValue;
 }
 
-void SSD::ValidateParameter(unsigned int nAddr)
+void SSD::Write(unsigned int nLBA, unsigned int nValue)
 {
-	if (nAddr < 0 || nAddr > 99) {
+	ValidateParameter(nLBA);
+
+	unordered_map<unsigned int, unsigned int> umDataSet;
+
+	ReadFromNAND(umDataSet);
+
+	if (IsLBAWritten(nLBA, umDataSet))
+	{
+		umDataSet[nLBA] = nValue;
+	}
+	else
+	{
+		umDataSet.insert({ nLBA, nValue });
+	}
+
+	WriteToNAND(umDataSet);
+}
+
+int SSD::GetSSDSize()
+{
+	return MAX_LBA_COUNT;
+}
+
+void SSD::ValidateParameter(unsigned int nLBA)
+{
+	if (nLBA < 0 || nLBA > 99) {
 		throw exception("INVALID COMMAND");
 	}
 }
@@ -46,34 +70,15 @@ void SSD::ReadFromNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet
 	}
 }
 
-void SSD::WriteHexValueToFile(unsigned int nValue)
+bool SSD::IsLBAWritten(const unsigned int& nLBA, std::unordered_map<unsigned int, unsigned int>& umDataSet)
+{
+	return umDataSet.find(nLBA) != umDataSet.end();
+}
+
+void SSD::WriteHexReadValueToResultFile(unsigned int nValue)
 {
 	ofstream fResultFile(sResultFileName);
 	fResultFile << "0x" << uppercase << hex << setw(8) << setfill('0') << nValue;
-}
-
-bool SSD::IsLBAWritten(std::unordered_map<unsigned int, unsigned int>& umDataSet, const unsigned int& nAddr)
-{
-	return umDataSet.find(nAddr) != umDataSet.end();
-}
-
-void SSD::Write(unsigned int nAddr, unsigned int value)
-{
-	ValidateParameter(nAddr);
-
-	unordered_map<unsigned int, unsigned int> umDataSet;
-
-	ReadFromNAND(umDataSet);
-	if (IsLBAWritten(umDataSet, nAddr))
-	{
-		umDataSet[nAddr] = value;
-	}
-	else
-	{
-		umDataSet.insert({ nAddr, value });
-	}
-
-	WriteToNAND(umDataSet);
 }
 
 void SSD::WriteToNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet)
@@ -85,9 +90,4 @@ void SSD::WriteToNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet)
 		fout << dec << pair.first << " " << "0x" << uppercase << hex << setw(8) << setfill('0') << pair.second << endl;
 	}
 	fout.close();
-}
-
-int SSD::GetSSDSize()
-{
-	return MAX_LBA_COUNT;
 }

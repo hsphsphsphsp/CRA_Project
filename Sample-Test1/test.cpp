@@ -82,7 +82,7 @@ TEST_F(TestScriptAppFixture, TestScriptApp2_CheckWhenVerifyFail)
 
 TEST_F(SSDFixture, Read_LBANeverBeenWritten)
 {
-	EXPECT_EQ(INVALID_DATA, ssd.Read(0));
+	EXPECT_EQ(DEFAULT_READ_VALUE, ssd.Read(0));
 }
 
 TEST_F(SSDFixture, Read_CreateResultFile)
@@ -94,7 +94,7 @@ TEST_F(SSDFixture, Read_CreateResultFile)
 		unsigned int nValue = -1;
 		fResultFile >> hex >> nValue;
 
-		EXPECT_EQ(INVALID_DATA, nValue);
+		EXPECT_EQ(DEFAULT_READ_VALUE, nValue);
 	}
 	else
 	{
@@ -102,13 +102,13 @@ TEST_F(SSDFixture, Read_CreateResultFile)
 	}
 }
 
-TEST_F(SSDFixture, Read_ReadAfterWrite)
+TEST_F(SSDFixture, Read_ReadAfterWriteNormalValue)
 {
-	unsigned int nAddr = 0;
+	unsigned int nLBA = 0;
 	unsigned int nData = 0xB622AABB;
 
-	ssd.Write(nAddr, nData);
-	EXPECT_EQ(nData, ssd.Read(nAddr));
+	ssd.Write(nLBA, nData);
+	EXPECT_EQ(nData, ssd.Read(nLBA));
 }
 
 TEST_F(SSDFixture, Read_InvalidLBA)
