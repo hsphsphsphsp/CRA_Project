@@ -1,36 +1,4 @@
-#include "gmock/gmock.h"
-#include "gtest/gtest.h"
-#include <fstream>
-#include "../TeamProject_SSD/ssd.cpp"
-#include "../TeamProject_SSD/testscript.cpp"
-#include "../TeamProject_SSD/ShellTestApp.cpp"
-
-using namespace std;
-using namespace testing;
-
-
-class MockSSD : public SSD {
-public:
-	MOCK_METHOD(unsigned int, Read, (unsigned int), (override));
-	MOCK_METHOD(void, Write, (unsigned int, unsigned int), (override));
-};
-
-class TestScriptAppFixture : public Test
-{
-public:
-	const string SCRIPT_APP1 = "testscriptapp1";
-	const string SCRIPT_APP2 = "testscriptapp2";
-
-	NiceMock<MockSSD> mockSSD;
-	TestScriptFactory fTestScriptFactory;
-	TestScript* pTestScript;
-protected:
-	void MakeScript(string scriptName)
-	{
-		pTestScript = fTestScriptFactory.createScript(scriptName, mockSSD);
-	}
-	
-};
+#include "test.h"
 
 TEST_F(TestScriptAppFixture, TestScriptApp1_ConfirmCallFullWrite) {
 	MakeScript(SCRIPT_APP1);
@@ -60,20 +28,16 @@ TEST_F(TestScriptAppFixture, TestScriptApp1_FailReadVerify) {
 
 	EXPECT_THAT(pTestScript->DoScript(), Eq(false));
 }
-TEST(TestScriptFactory, TestScriptFactoryNull)
-{
-	MockSSD mockSSD;
-	TestScript* tScript;
-	string sScriptName = "testscriptapp_invalid";
-	TestScriptFactory fTestScriptFactory;
 
-	tScript = fTestScriptFactory.createScript(sScriptName, mockSSD);
-	EXPECT_THAT(tScript, Eq(nullptr));
+TEST_F(TestScriptAppFixture, TestScriptFactoryNull)
+{
+	MakeScript(SCRIPT_INVALID);
+	EXPECT_THAT(pTestScript, Eq(nullptr));
 }
 
 TEST(TestScript, TestShellCallTestScript)
 {
-	MockSSD mockSSD;
+	NiceMock<MockSSD> mockSSD;
 	ShellTestApp shellTestApp(&mockSSD);
 	
 	EXPECT_CALL(mockSSD, Read)
@@ -115,31 +79,6 @@ TEST_F(TestScriptAppFixture, TestScriptApp2_CheckWhenVerifyFail)
 	}
 	EXPECT_THAT(pTestScript->DoScript(), Eq(false));
 }
-
-class SSDFixture : public testing::Test
-{
-public:
-	void SetUp() override
-	{
-		fResultFile.open(sResultFileName);
-		remove(sNANDFileName.c_str());
-	}
-
-	void TearDown() override
-	{
-		if (fResultFile.is_open())
-		{
-			fResultFile.close();
-		}
-	}
-
-	SSD ssd;
-	const unsigned int INVALID_DATA = 0x00000000;
-	const unsigned int INVALID_LBA = 0xFF;
-	string sResultFileName = "result.txt";
-	string sNANDFileName = "nand.txt";
-	ifstream fResultFile;
-};
 
 TEST_F(SSDFixture, Read_LBANeverBeenWritten)
 {
