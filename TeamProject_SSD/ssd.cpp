@@ -2,21 +2,51 @@
 #include <io.h>
 #include <string>
 
+void SSDFileHandler::ReadFromNANDFile(unordered_map<unsigned int, unsigned int>& umDataSet)
+{
+	string sIndex, sValue;
+
+	if (_access(&*sNandFileName.begin(), 0) == 0)
+	{
+		ifstream fin(sNandFileName);
+		while (!fin.eof())
+		{
+			fin >> sIndex >> sValue;
+			umDataSet.insert({ stoi(sIndex), stoul(sValue, nullptr, 16) });
+		}
+	}
+}
+
+void SSDFileHandler::WriteToNANDFile(std::unordered_map<unsigned int, unsigned int>& umDataSet)
+{
+	ofstream fout(sNandFileName);
+
+	for (const auto& pair : umDataSet) 
+	{
+		fout << dec << pair.first << " " << "0x" << uppercase << hex << setw(8) << setfill('0') << pair.second << endl;
+	}
+}
+
+void SSDFileHandler::WriteHexReadValueToResultFile(unsigned int nValue)
+{
+	ofstream fResultFile(sResultFileName);
+	fResultFile << "0x" << uppercase << hex << setw(8) << setfill('0') << nValue;
+}
+
 unsigned int SSD::Read(unsigned int nLBA)
 {
 	ValidateParameter(nLBA);
 
 	unsigned int nReadValue = DEFAULT_READ_VALUE;
 	unordered_map<unsigned int, unsigned int> umDataSet;
-
-	ReadFromNAND(umDataSet);
+	ssdFileHandler.ReadFromNANDFile(umDataSet);
 
 	if (IsLBAWritten(nLBA, umDataSet))
 	{
 		nReadValue = umDataSet[nLBA];
 	}
 
-	WriteHexReadValueToResultFile(nReadValue);
+	ssdFileHandler.WriteHexReadValueToResultFile(nReadValue);
 
 	return nReadValue;
 }
@@ -26,8 +56,7 @@ void SSD::Write(unsigned int nLBA, unsigned int nValue)
 	ValidateParameter(nLBA);
 
 	unordered_map<unsigned int, unsigned int> umDataSet;
-
-	ReadFromNAND(umDataSet);
+	ssdFileHandler.ReadFromNANDFile(umDataSet);
 
 	if (IsLBAWritten(nLBA, umDataSet))
 	{
@@ -38,7 +67,7 @@ void SSD::Write(unsigned int nLBA, unsigned int nValue)
 		umDataSet.insert({ nLBA, nValue });
 	}
 
-	WriteToNAND(umDataSet);
+	ssdFileHandler.WriteToNANDFile(umDataSet);
 }
 
 int SSD::GetSSDSize()
@@ -48,46 +77,13 @@ int SSD::GetSSDSize()
 
 void SSD::ValidateParameter(unsigned int nLBA)
 {
-	if (nLBA < 0 || nLBA > 99) {
+	if (nLBA < 0 || nLBA > 99) 
+	{
 		throw exception("INVALID COMMAND");
 	}
 }
 
-void SSD::ReadFromNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet)
-{
-	ifstream fin;
-	string sIndex, sValue;
-
-	if (_access(&*sNandFileName.begin(), 0) == 0)
-	{
-		fin.open(sNandFileName);
-		while (!fin.eof())
-		{
-			fin >> sIndex >> sValue;
-			umDataSet.insert({ stoi(sIndex), stoul(sValue, nullptr, 16) });
-		}
-		fin.close();
-	}
-}
-
-bool SSD::IsLBAWritten(const unsigned int& nLBA, std::unordered_map<unsigned int, unsigned int>& umDataSet)
+bool SSD::IsLBAWritten(const unsigned int& nLBA, unordered_map<unsigned int, unsigned int>& umDataSet)
 {
 	return umDataSet.find(nLBA) != umDataSet.end();
-}
-
-void SSD::WriteHexReadValueToResultFile(unsigned int nValue)
-{
-	ofstream fResultFile(sResultFileName);
-	fResultFile << "0x" << uppercase << hex << setw(8) << setfill('0') << nValue;
-}
-
-void SSD::WriteToNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet)
-{
-	ofstream fout;
-
-	fout.open(sNandFileName);
-	for (const auto& pair : umDataSet) {
-		fout << dec << pair.first << " " << "0x" << uppercase << hex << setw(8) << setfill('0') << pair.second << endl;
-	}
-	fout.close();
 }
