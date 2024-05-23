@@ -122,6 +122,19 @@ TEST_F(SSDFixture, Write_InvalidLBA)
 	EXPECT_THROW(ssd.Write(INVALID_LBA, nData), exception);
 }
 
+TEST_F(SSDFixture, Write_OverwriteData)
+{
+	unsigned int nAddr = 0;
+	unsigned int nData = 0xB622AABB;
+	unsigned int nNewData = 0xFFFFFFFF;
+
+	ssd.Write(nAddr, nData);
+	ssd.Write(nAddr, nNewData);
+
+	EXPECT_THAT(nData, Ne(ssd.Read(nAddr)));
+	EXPECT_THAT(nNewData, Eq(ssd.Read(nAddr)));
+}
+
 TEST_F(SSDFixture, WriteSDDNormalTest) {
 	SSD ssd;
 	ifstream fin;
