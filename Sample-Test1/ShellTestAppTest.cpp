@@ -33,8 +33,8 @@ public:
 
 TEST_F(ShellTestAppFixture, writeSuccessTest) {
     EXPECT_CALL(mSsd, Write(LBA, DATA))
-        .Times(3);
-    pApp->write(LBA, DATA);
+        .Times(1);
+    pApp->Write(LBA, DATA);
 }
 
 TEST_F(ShellTestAppFixture, writeOverLbaFailTest) {

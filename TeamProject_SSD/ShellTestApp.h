@@ -25,7 +25,6 @@ public:
 
 private:
     const unsigned int MAX_LBA_NUM = 100;
-    const int CYCLE = 3;
     
     TestScript* testScript;
     SSD* pSsd;

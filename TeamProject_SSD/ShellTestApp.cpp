@@ -7,8 +7,7 @@ ShellTestApp::ShellTestApp(SSD* pSsd) : pSsd{ pSsd } {
 
 void ShellTestApp::Write(unsigned int nLba, unsigned int nData) {
     try {
-        for (int c = 0; c < CYCLE; c++)
-            pSsd->Write(nLba, nData);
+        pSsd->Write(nLba, nData);
     }
     catch (std::exception& e) {
         std::cout << e.what() << std::endl;
