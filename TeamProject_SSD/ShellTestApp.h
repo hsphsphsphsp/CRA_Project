@@ -25,9 +25,6 @@ public:
 
     void Start();
 
-private:
-    const unsigned int MAX_LBA_NUM = 100;
-
 private:    
     TestScript* testScript;
     SSD* pSsd;
