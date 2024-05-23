@@ -1,8 +1,4 @@
 #include "testscript.h"
-//
-//class ITestScript {
-//	virtual bool DoScript() = 0;
-//};
 
 bool TestScriptApp1::DoScript()
 {
