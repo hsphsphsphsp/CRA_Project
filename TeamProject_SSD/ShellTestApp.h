@@ -28,6 +28,4 @@ private:
     
     TestScript* testScript;
     SSD* pSsd;
-
-    FILE* fpResult;
 };

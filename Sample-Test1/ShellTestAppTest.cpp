@@ -27,6 +27,7 @@ public:
     const unsigned int MAX_LBA_NUM = 100; //todo get MAX_LBA_NUM from SSD
     const unsigned int DATA = 0xFFFFFFFF;
     const unsigned int INVALID_DATA = 0X00000000;
+    const std::exception ERROR;
     const std::string TESTSCRIPT1 = "testscriptapp2";
     const std::string TESTSCRIPT2 = "testscriptapp1";
 };
@@ -38,17 +39,32 @@ TEST_F(ShellTestAppFixture, writeSuccessTest) {
 }
 
 TEST_F(ShellTestAppFixture, writeOverLbaFailTest) {
-    exception err;
     EXPECT_CALL(mSsd, Write(MAX_LBA_NUM, DATA))
-        .WillOnce(testing::Throw(err));
+        .WillOnce(testing::Throw(ERROR));
 
     pApp->Write(MAX_LBA_NUM, DATA);
 }
 
 TEST_F(ShellTestAppFixture, writeInvalidDataFailTest) {
-    exception err;
     EXPECT_CALL(mSsd, Write(LBA, INVALID_DATA))
-        .WillOnce(testing::Throw(err));
+        .WillOnce(testing::Throw(ERROR));
 
     pApp->Write(LBA, INVALID_DATA);
+}
+
+TEST_F(ShellTestAppFixture, readSuccessTest) {
+    EXPECT_CALL(mSsd, Read(LBA))
+        .Times(1);
+    pApp->Read(LBA);
+}
+
+TEST_F(ShellTestAppFixture, readInvalidDataFailTest) {
+    EXPECT_CALL(mSsd, Read(MAX_LBA_NUM))
+        .WillOnce(testing::Throw(ERROR));
+
+    pApp->Read(MAX_LBA_NUM);
+}
+
+TEST_F(ShellTestAppFixture, DISABLED_exitTest) {
+    pApp->Exit();
 }
