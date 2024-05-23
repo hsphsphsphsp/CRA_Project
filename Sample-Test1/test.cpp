@@ -57,19 +57,6 @@ TEST_F(TestScriptAppFixture, TestScriptApp1_FailReadVerify) {
 
 	EXPECT_THAT(pTestScript->DoScript(), Eq(false));
 }
-
-TEST_F(TestScriptAppFixture, TestDefaultReturnTrue)
-{
-	MakeScript(SCRIPT_APP2);
-	EXPECT_THAT(pTestScript->DoScript(), Eq(true));
-}
-TEST_F(TestScriptAppFixture, TestBodyCall)
-{
-	MakeScript(SCRIPT_APP2);
-	EXPECT_CALL(mockSSD, Read(2)).Times(1);
-	pTestScript->DoScript();
-}
-
 TEST(TestScriptApp2, TestScriptFactoryNull)
 {
 	MockSSD mSsd;
@@ -92,4 +79,36 @@ TEST_F(SSDFixture, ReadLBANeverBeenWritten) {
 	unsigned int nAddr = 0x0;
 
 	EXPECT_EQ(INVALID_DATA, ssd.Read(nAddr));
+}
+TEST_F(TestScriptAppFixture, TestScriptApp2_CheckWriteAgingExecutedCount)
+{
+	MakeScript(SCRIPT_APP2);
+	unsigned int nValue = 1;
+	for (unsigned int nLba = 0; nLba <= 5; nLba++)
+		EXPECT_CALL(mockSSD, Write(nLba, nValue)).Times(30);
+	nValue = 2;
+	for (unsigned int nLba = 0; nLba <= 5; nLba++)
+		EXPECT_CALL(mockSSD, Write(nLba, nValue)).Times(1);
+	pTestScript->DoScript();
+}
+
+TEST_F(TestScriptAppFixture, TestScriptApp2_CheckWhenVerifySuccess)
+{
+	MakeScript(SCRIPT_APP2);
+	unsigned int nValue = 2;
+	for (unsigned int nLba = 0; nLba <= 5; nLba++)
+	{
+		EXPECT_CALL(mockSSD, Read).WillRepeatedly(Return(nValue));
+	}
+	EXPECT_THAT(pTestScript->DoScript(), Eq(true));
+}
+TEST_F(TestScriptAppFixture, TestScriptApp2_CheckWhenVerifyFail)
+{
+	MakeScript(SCRIPT_APP2);
+	unsigned int nValue = 3;
+	for (unsigned int nLba = 0; nLba <= 5; nLba++)
+	{
+		EXPECT_CALL(mockSSD, Read(nLba)).WillRepeatedly(Return(nValue));
+	}
+	EXPECT_THAT(pTestScript->DoScript(), Eq(false));
 }
