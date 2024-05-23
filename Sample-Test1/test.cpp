@@ -105,13 +105,15 @@ public:
 	ifstream fResultFile;
 };
 
-TEST_F(SSDFixture, ReadLBANeverBeenWritten) 
+TEST_F(SSDFixture, Read_LBANeverBeenWritten) 
 {
+	remove("nand.txt");
 	EXPECT_EQ(INVALID_DATA, ssd.Read(0));
 }
 
-TEST_F(SSDFixture, ReadLBANeverBeenWrittenResultFile) 
+TEST_F(SSDFixture, Read_CreateResultFile) 
 {
+	remove("nand.txt");
 	ssd.Read(0);
 
 	if (fResultFile) 
@@ -125,6 +127,15 @@ TEST_F(SSDFixture, ReadLBANeverBeenWrittenResultFile)
 	{
 		FAIL() << sResultFileName << " not exist.";
 	}
+}
+
+TEST_F(SSDFixture, Read_ReadAfterWrite)
+{
+	unsigned int nAddr = 0;
+	unsigned int nData = 0x1122AABB;
+
+	ssd.Write(nAddr, nData);
+	EXPECT_EQ(nData, ssd.Read(nAddr));
 }
 
 TEST_F(SSDFixture, WriteSDDNormalTest) {

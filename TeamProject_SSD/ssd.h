@@ -9,8 +9,9 @@ class SSD
 {
 public:
 	virtual unsigned int Read(unsigned int nAddr);
+	void ReadFromNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet);
 	void WriteHexValueToFile(unsigned int nReadValue);
-	bool IsLBAWritten(const unsigned int& nAddr);
+	bool IsLBAWritten(std::unordered_map<unsigned int, unsigned int>& umDataSet, const unsigned int& nAddr);
 	virtual void Write(unsigned int nAddr, unsigned int value);
 
 private:
