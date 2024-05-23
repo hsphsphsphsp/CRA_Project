@@ -4,6 +4,7 @@
 #include "gtest/gtest.h"
 #include <fstream>
 #include "../TeamProject_SSD/ssd.cpp"
+#include "../TeamProject_SSD/SSDFileHandler.cpp"
 #include "../TeamProject_SSD/testscript.cpp"
 #include "../TeamProject_SSD/ShellTestApp.cpp"
 

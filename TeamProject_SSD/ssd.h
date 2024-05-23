@@ -1,23 +1,8 @@
 #pragma once
 #include <unordered_map>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
+#include "SSDFileHandler.h"
+
 using namespace std;
-
-class SSDFileHandler
-{
-public:
-	void ReadFromNANDFile(unordered_map<unsigned int, unsigned int>& umDataSet);
-	void WriteToNANDFile(unordered_map<unsigned int, unsigned int>& umDataSet);
-	void WriteHexReadValueToResultFile(unsigned int nValue);
-
-private:
-	bool IsNANDFileExist();
-
-	const string sResultFileName = "result.txt";
-	const string sNandFileName = "nand.txt";
-};
 
 class SSD
 {
