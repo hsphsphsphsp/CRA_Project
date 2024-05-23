@@ -27,6 +27,8 @@ public:
 	TestScriptApp1(SSD* ssd) : TestScript{ ssd } {}
 
 	bool DoScript() override;
+	bool FullReadVerify(unsigned int nWriteValue);
+	void FullWrite(unsigned int nWriteValue);
 };
 
 class TestScriptApp2 : public TestScript
