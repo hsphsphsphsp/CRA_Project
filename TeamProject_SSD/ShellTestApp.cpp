@@ -15,15 +15,14 @@ void ShellTestApp::Write(unsigned int nLba, unsigned int nData) {
     }
 }
 
-int ShellTestApp::Read(unsigned int nLba) {
-    int nReadValue;
+void ShellTestApp::Read(unsigned int nLba) {
     try {
-        nReadValue = pSsd->Read(nLba);
+        unsigned int nData = pSsd->Read(nLba);
+        PrintBlockData(nLba, nData);
     }
     catch (std::exception& e) {
         std::cout << e.what() << std::endl;
     }
-    return nReadValue;
 }
 
 void ShellTestApp::Exit() {
@@ -39,7 +38,13 @@ void ShellTestApp::FullWrite(unsigned int nData) {
 }
 
 void ShellTestApp::FullRead() {
-
+    try {
+        for (unsigned int nLba = 0; nLba < GetSsdSize(); nLba++)
+            PrintBlockData(nLba, pSsd->Read(nLba));
+    }
+    catch (std::exception& e) {
+        std::cout << e.what() << std::endl;
+    }
 }
 
 void ShellTestApp::DoScript(std::string sTestScriptName) {
@@ -79,7 +84,7 @@ void ShellTestApp::Start()
 
             unsigned int nLba = stoi(qCmdBuffer.front());
             qCmdBuffer.pop();
-            cout << Read(nLba) << endl;
+            Read(nLba);
         }
         else if (sCmd == "w")
         {
@@ -113,4 +118,13 @@ void ShellTestApp::Start()
         }
         
     }
+}
+
+int ShellTestApp::GetSsdSize() {
+    return pSsd->GetSSDSize();
+}
+
+void ShellTestApp::PrintBlockData(unsigned int nLba, unsigned int nData) {
+    std::cout << "LBA  = " << dec << nLba << "\t";
+    std::cout << "DATA = 0x" << uppercase << hex << nData << std::endl;
 }

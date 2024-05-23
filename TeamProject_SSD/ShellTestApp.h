@@ -11,7 +11,7 @@ public:
     
     void Write(unsigned int nLba, unsigned int nData);
 
-    int Read(unsigned int nLba);
+    void Read(unsigned int nLba);
 
     void Exit();
 
@@ -27,7 +27,12 @@ public:
 
 private:
     const unsigned int MAX_LBA_NUM = 100;
-    
+
+private:    
     TestScript* testScript;
     SSD* pSsd;
+
+    int GetSsdSize();
+
+    void PrintBlockData(unsigned int nLba, unsigned int data);
 };

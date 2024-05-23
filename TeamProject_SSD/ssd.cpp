@@ -1,93 +1,89 @@
 #include "ssd.h"
-
 #include <io.h>
 #include <string>
 
-unsigned int SSD::Read(unsigned int nAddr)
+void SSDFileHandler::ReadFromNANDFile(unordered_map<unsigned int, unsigned int>& umDataSet)
 {
-	ValidateParameter(nAddr);
-
-	unsigned int nReadValue = INVALID_DATA;
-	unordered_map<unsigned int, unsigned int> umDataSet;
-
-	ReadFromNAND(umDataSet);
-
-	if (IsLBAWritten(umDataSet, nAddr))
-	{
-		nReadValue = umDataSet[nAddr];
-	}
-
-	WriteHexValueToFile(nReadValue);
-
-	return nReadValue;
-}
-
-void SSD::ValidateParameter(unsigned int nAddr)
-{
-	if (nAddr < 0 || nAddr > 99) {
-		throw exception("INVALID COMMAND");
-	}
-}
-
-void SSD::ReadFromNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet)
-{
-	ifstream fin;
 	string sIndex, sValue;
 
 	if (_access(&*sNandFileName.begin(), 0) == 0)
 	{
-		fin.open(sNandFileName);
+		ifstream fin(sNandFileName);
 		while (!fin.eof())
 		{
 			fin >> sIndex >> sValue;
 			umDataSet.insert({ stoi(sIndex), stoul(sValue, nullptr, 16) });
 		}
-		fin.close();
 	}
 }
 
-void SSD::WriteHexValueToFile(unsigned int nValue)
+void SSDFileHandler::WriteToNANDFile(std::unordered_map<unsigned int, unsigned int>& umDataSet)
+{
+	ofstream fout(sNandFileName);
+
+	for (const auto& pair : umDataSet) 
+	{
+		fout << dec << pair.first << " " << "0x" << uppercase << hex << setw(8) << setfill('0') << pair.second << endl;
+	}
+}
+
+void SSDFileHandler::WriteHexReadValueToResultFile(unsigned int nValue)
 {
 	ofstream fResultFile(sResultFileName);
 	fResultFile << "0x" << uppercase << hex << setw(8) << setfill('0') << nValue;
 }
 
-bool SSD::IsLBAWritten(std::unordered_map<unsigned int, unsigned int>& umDataSet, const unsigned int& nAddr)
+unsigned int SSD::Read(unsigned int nLBA)
 {
-	return umDataSet.find(nAddr) != umDataSet.end();
+	ValidateParameter(nLBA);
+
+	unsigned int nReadValue = DEFAULT_READ_VALUE;
+	unordered_map<unsigned int, unsigned int> umDataSet;
+	ssdFileHandler.ReadFromNANDFile(umDataSet);
+
+	if (IsLBAWritten(nLBA, umDataSet))
+	{
+		nReadValue = umDataSet[nLBA];
+	}
+
+	ssdFileHandler.WriteHexReadValueToResultFile(nReadValue);
+
+	return nReadValue;
 }
 
-void SSD::Write(unsigned int nAddr, unsigned int value)
+void SSD::Write(unsigned int nLBA, unsigned int nValue)
 {
-	ValidateParameter(nAddr);
+	ValidateParameter(nLBA);
 
 	unordered_map<unsigned int, unsigned int> umDataSet;
+	ssdFileHandler.ReadFromNANDFile(umDataSet);
 
-	ReadFromNAND(umDataSet);
-	if (IsLBAWritten(umDataSet, nAddr))
+	if (IsLBAWritten(nLBA, umDataSet))
 	{
-		umDataSet[nAddr] = value;
+		umDataSet[nLBA] = nValue;
 	}
 	else
 	{
-		umDataSet.insert({ nAddr, value });
+		umDataSet.insert({ nLBA, nValue });
 	}
 
-	WriteToNAND(umDataSet);
-}
-
-void SSD::WriteToNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet)
-{
-	ofstream fout;
-
-	fout.open(sNandFileName);
-	for (const auto& pair : umDataSet) {
-		fout << dec << pair.first << " " << "0x" << uppercase << hex << setw(8) << setfill('0') << pair.second << endl;
-	}
-	fout.close();
+	ssdFileHandler.WriteToNANDFile(umDataSet);
 }
 
 int SSD::GetSSDSize()
 {
 	return MAX_LBA_COUNT;
+}
+
+void SSD::ValidateParameter(unsigned int nLBA)
+{
+	if (nLBA < 0 || nLBA > 99) 
+	{
+		throw exception("INVALID COMMAND");
+	}
+}
+
+bool SSD::IsLBAWritten(const unsigned int& nLBA, unordered_map<unsigned int, unsigned int>& umDataSet)
+{
+	return umDataSet.find(nLBA) != umDataSet.end();
 }

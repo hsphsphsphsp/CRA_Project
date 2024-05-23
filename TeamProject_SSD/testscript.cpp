@@ -40,28 +40,28 @@ bool TestScriptApp2::DoScript()
 }
 void TestScriptApp2::FirstWrite()
 {
-	unsigned int value = 0xAAAABBBB;
+	unsigned int nWriteValue = 0xAAAABBBB;
 	for (int nLoop = 0; nLoop < 30; nLoop++)
 	{
-		for (unsigned int nLba = 0; nLba <= WRITE_AREA; nLba++)
+		for (unsigned int nLba = 0; nLba < IO_RANGE; nLba++)
 		{
-			ssd->Write(nLba, value);
-			pTestData[nLba] = value;
+			ssd->Write(nLba, nWriteValue);
+			pTestData[nLba] = nWriteValue;
 		}
 	}
 }
 void TestScriptApp2::OverWrite()
 {
-	unsigned int value = 0x12345678;
-	for (unsigned int nLba = 0; nLba <= WRITE_AREA; nLba++)
+	unsigned int nWriteValue = 0x12345678;
+	for (unsigned int nLba = 0; nLba < IO_RANGE; nLba++)
 	{
-		ssd->Write(nLba, value);
-		pTestData[nLba] = value;
+		ssd->Write(nLba, nWriteValue);
+		pTestData[nLba] = nWriteValue;
 	}
 }
 bool TestScriptApp2::Verify()
 {
-	for (unsigned int nLba = 0; nLba <= WRITE_AREA; nLba++)
+	for (unsigned int nLba = 0; nLba < IO_RANGE; nLba++)
 	{
 		if (pTestData[nLba] != ssd->Read(nLba))
 		{

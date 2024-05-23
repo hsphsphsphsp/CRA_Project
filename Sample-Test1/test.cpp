@@ -82,7 +82,7 @@ TEST_F(TestScriptAppFixture, TestScriptApp2_CheckWhenVerifyFail)
 
 TEST_F(SSDFixture, Read_LBANeverBeenWritten)
 {
-	EXPECT_EQ(INVALID_DATA, ssd.Read(0));
+	EXPECT_EQ(DEFAULT_READ_VALUE, ssd.Read(0));
 }
 
 TEST_F(SSDFixture, Read_CreateResultFile)
@@ -94,7 +94,7 @@ TEST_F(SSDFixture, Read_CreateResultFile)
 		unsigned int nValue = -1;
 		fResultFile >> hex >> nValue;
 
-		EXPECT_EQ(INVALID_DATA, nValue);
+		EXPECT_EQ(DEFAULT_READ_VALUE, nValue);
 	}
 	else
 	{
@@ -102,13 +102,13 @@ TEST_F(SSDFixture, Read_CreateResultFile)
 	}
 }
 
-TEST_F(SSDFixture, Read_ReadAfterWrite)
+TEST_F(SSDFixture, Read_ReadAfterWriteNormalValue)
 {
-	unsigned int nAddr = 0;
+	unsigned int nLBA = 0;
 	unsigned int nData = 0xB622AABB;
 
-	ssd.Write(nAddr, nData);
-	EXPECT_EQ(nData, ssd.Read(nAddr));
+	ssd.Write(nLBA, nData);
+	EXPECT_EQ(nData, ssd.Read(nLBA));
 }
 
 TEST_F(SSDFixture, Read_InvalidLBA)
@@ -176,4 +176,65 @@ TEST_F(SSDFixture, WriteSDDNormalTest) {
 			FAIL();
 		}
 	}
+}
+
+TEST_F(ShellTestAppFixture, writeSuccessTest) {
+	EXPECT_CALL(mSsd, Write(LBA, DATA))
+		.Times(1);
+	pApp->Write(LBA, DATA);
+}
+
+TEST_F(ShellTestAppFixture, writeOverLbaFailTest) {
+	EXPECT_CALL(mSsd, Write(MAX_LBA_NUM, DATA))
+		.WillOnce(testing::Throw(ERROR));
+
+	pApp->Write(MAX_LBA_NUM, DATA);
+}
+
+TEST_F(ShellTestAppFixture, writeInvalidDataFailTest) {
+	EXPECT_CALL(mSsd, Write(LBA, INVALID_DATA))
+		.WillOnce(testing::Throw(ERROR));
+
+	pApp->Write(LBA, INVALID_DATA);
+}
+
+TEST_F(ShellTestAppFixture, readSuccessTest) {
+	EXPECT_CALL(mSsd, Read(LBA))
+		.Times(1);
+	pApp->Read(LBA);
+}
+
+TEST_F(ShellTestAppFixture, readInvalidDataFailTest) {
+	EXPECT_CALL(mSsd, Read(MAX_LBA_NUM))
+		.WillOnce(testing::Throw(ERROR));
+
+	pApp->Read(MAX_LBA_NUM);
+}
+
+TEST_F(ShellTestAppFixture, DISABLED_exitTest) {
+	pApp->Exit();
+}
+
+TEST_F(ShellTestAppFixture, helpTest) {
+	pApp->Help();
+}
+
+TEST_F(ShellTestAppFixture, fullReadSuccessTest) {
+	EXPECT_CALL(mSsd, GetSSDSize())
+		.WillRepeatedly(Return(MAX_LBA_NUM));
+
+	EXPECT_CALL(mSsd, Read(_))
+		.Times(MAX_LBA_NUM);
+
+	pApp->FullRead();
+}
+
+TEST_F(ShellTestAppFixture, fullReadFailTest) {
+	EXPECT_CALL(mSsd, GetSSDSize())
+		.WillRepeatedly(Return(MAX_LBA_NUM));
+
+	EXPECT_CALL(mSsd, Read(_))
+		.WillOnce(testing::Throw(ERROR));
+	
+	pApp->FullRead();
 }
