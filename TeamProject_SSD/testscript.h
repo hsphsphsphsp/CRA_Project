@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include "ssd.h"
 
@@ -27,6 +28,7 @@ public:
 
 	bool DoScript() override;
 };
+
 class TestScriptApp2 : public TestScript
 {
 public:
@@ -48,5 +50,5 @@ private:
 class TestScriptFactory
 {
 public:
-	TestScript* createScript(string sScriptName, SSD& ssd);
+	static TestScript* createScript(string sScriptName, SSD& ssd);
 };

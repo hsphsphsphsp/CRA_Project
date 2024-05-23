@@ -3,6 +3,7 @@
 #include <fstream>
 #include "../TeamProject_SSD/ssd.cpp"
 #include "../TeamProject_SSD/testscript.cpp"
+#include "../TeamProject_SSD/ShellTestApp.cpp"
 
 using namespace std;
 using namespace testing;
@@ -68,6 +69,17 @@ TEST(TestScriptFactory, TestScriptFactoryNull)
 
 	tScript = fTestScriptFactory.createScript(sScriptName, mockSSD);
 	EXPECT_THAT(tScript, Eq(nullptr));
+}
+
+TEST(TestScript, TestShellCallTestScript)
+{
+	MockSSD mockSSD;
+	ShellTestApp shellTestApp(&mockSSD);
+	
+	EXPECT_CALL(mockSSD, Read)
+		.Times(AtLeast(1));
+
+	shellTestApp.DoScript("testscriptapp1");
 }
 
 class SSDFixture : public testing::Test 

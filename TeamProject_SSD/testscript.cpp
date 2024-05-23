@@ -1,10 +1,9 @@
 #include "testscript.h"
+//
+//class ITestScript {
+//	virtual bool DoScript() = 0;
+//};
 
-class ITestScript {
-	virtual bool DoScript() = 0;
-};
-
-class TestScript : ITestScript
 bool TestScriptApp1::DoScript()
 {
 	unsigned int nWriteValue = 0x0;
