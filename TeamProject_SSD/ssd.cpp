@@ -80,3 +80,8 @@ void SSD::WriteToNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet)
 	}
 	fout.close();
 }
+
+int SSD::GetSSDSize()
+{
+	return MAX_LBA_COUNT;
+}
