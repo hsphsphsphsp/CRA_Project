@@ -1,29 +1,33 @@
 #pragma once
 #include <cstdio>
+#include <iostream>
 #include <string>
 
-#include "ITestScript.h"
+#include "testscript.cpp"
 
 class ShellTestApp {
 public:
-    void write(unsigned int nLba, unsigned int nData);
+    ShellTestApp(SSD* pSsd);
+    
+    void Write(unsigned int nLba, unsigned int nData);
 
-    void read(unsigned int nLba);
+    void Read(unsigned int nLba);
 
-    void exit();
+    void Exit();
 
-    void help();
+    void Help();
 
-    void fullWrite(unsigned int nData);
+    void FullWrite(unsigned int nData);
 
-    void fullRead();
+    void FullRead();
 
-    void doScript(std::string sTestScriptName);
+    void DoScript(std::string sTestScriptName);
 
 private:
     const unsigned int MAX_LBA_NUM = 100;
     
-    ITestScript* testScript;
+    TestScript* testScript;
+    SSD* pSsd;
 
     FILE* fpResult;
 };

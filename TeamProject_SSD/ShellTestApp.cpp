@@ -1,31 +1,39 @@
 #include "ShellTestApp.h"
-#include "TestScriptFactory.h"
 
 
-void ShellTestApp::write(unsigned int nLba, unsigned int nData) {
-
-}
-
-void ShellTestApp::read(unsigned int nLba) {
+ShellTestApp::ShellTestApp(SSD* pSsd) : pSsd{ pSsd } {
 
 }
 
-void ShellTestApp::exit() {
+void ShellTestApp::Write(unsigned int nLba, unsigned int nData) {
+    try {
+        pSsd->Write(nLba, nData);
+    }
+    catch (std::exception& e) {
+        std::cout << e.what() << std::endl;
+    }
+}
+
+void ShellTestApp::Read(unsigned int nLba) {
 
 }
 
-void ShellTestApp::help() {
+void ShellTestApp::Exit() {
     
 }
 
-void ShellTestApp::fullWrite(unsigned int nData) {
+void ShellTestApp::Help() {
 
 }
 
-void ShellTestApp::fullRead() {
+void ShellTestApp::FullWrite(unsigned int nData) {
 
 }
 
-void ShellTestApp::doScript(std::string sTestScriptName) {
+void ShellTestApp::FullRead() {
+
+}
+
+void ShellTestApp::DoScript(std::string sTestScriptName) {
 
 }
