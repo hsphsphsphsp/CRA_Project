@@ -4,10 +4,12 @@ bool TestScriptApp1::DoScript()
 {
 	unsigned int nWriteValue = 0x0;
 
-	for (int i = 0; i < GetSSDSize(); i++)
-	{
-		ssd->Write(i, nWriteValue);
-	}
+	FullWrite(nWriteValue);
+	return FullReadVerify(nWriteValue);
+}
+
+bool TestScriptApp1::FullReadVerify(unsigned int nWriteValue)
+{
 	for (int i = 0; i < GetSSDSize(); i++)
 	{
 		if (ssd->Read(i) != nWriteValue)
@@ -16,6 +18,14 @@ bool TestScriptApp1::DoScript()
 		}
 	}
 	return true;
+}
+
+void TestScriptApp1::FullWrite(unsigned int nWriteValue)
+{
+	for (int i = 0; i < GetSSDSize(); i++)
+	{
+		ssd->Write(i, nWriteValue);
+	}
 }
 
 bool TestScriptApp2::DoScript()
@@ -60,7 +70,6 @@ bool TestScriptApp2::Verify()
 	}
 	return true;
 }
-
 
 TestScript* TestScriptFactory::createScript(string sScriptName, SSD& ssd)
 {
