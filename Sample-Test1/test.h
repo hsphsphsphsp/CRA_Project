@@ -14,6 +14,7 @@ class MockSSD : public SSD {
 public:
 	MOCK_METHOD(unsigned int, Read, (unsigned int), (override));
 	MOCK_METHOD(void, Write, (unsigned int, unsigned int), (override));
+	MOCK_METHOD(int, GetSSDSize, (), (override));
 };
 
 class MockTestScript : public ITestScript {

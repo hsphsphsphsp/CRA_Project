@@ -23,9 +23,13 @@ public:
 
     void DoScript(std::string sTestScriptName);
 
-private:
-    const unsigned int MAX_LBA_NUM = 100;
-    
+private:    
     TestScript* testScript;
     SSD* pSsd;
+
+    int GetSsdSize() {
+        return pSsd->GetSSDSize();
+    }
+
+    void PrintBlockData(unsigned int nLba, unsigned int data);
 };

@@ -16,7 +16,8 @@ void ShellTestApp::Write(unsigned int nLba, unsigned int nData) {
 
 void ShellTestApp::Read(unsigned int nLba) {
     try {
-        pSsd->Read(nLba);
+        unsigned int nData = pSsd->Read(nLba);
+        PrintBlockData(nLba, nData);
     }
     catch (std::exception& e) {
         std::cout << e.what() << std::endl;
@@ -36,7 +37,13 @@ void ShellTestApp::FullWrite(unsigned int nData) {
 }
 
 void ShellTestApp::FullRead() {
-
+    try {
+        for (unsigned int nLba = 0; nLba < GetSsdSize(); nLba++)
+            PrintBlockData(nLba, pSsd->Read(nLba));
+    }
+    catch (std::exception& e) {
+        std::cout << e.what() << std::endl;
+    }
 }
 
 void ShellTestApp::DoScript(std::string sTestScriptName) {
