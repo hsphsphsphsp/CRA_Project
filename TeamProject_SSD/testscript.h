@@ -36,8 +36,7 @@ class TestScriptApp2 : public TestScript
 public:
 	TestScriptApp2(SSD* ssd) : TestScript{ ssd }
 	{
-		pTestData = (unsigned int*)malloc(sizeof(unsigned int*) * WRITE_AREA);
-
+		pTestData = (unsigned int*)malloc(sizeof(unsigned int*) * (WRITE_AREA+1));
 	}
 
 	bool DoScript() override;
@@ -45,7 +44,7 @@ public:
 	void OverWrite();
 	bool Verify();
 private:
-	const int WRITE_AREA = 5;
+	const unsigned int WRITE_AREA = 5;
 	unsigned int* pTestData;
 };
 
