@@ -23,6 +23,8 @@ public:
 
     void DoScript(std::string sTestScriptName);
 
+    void Start();
+
 private:    
     TestScript* testScript;
     SSD* pSsd;
