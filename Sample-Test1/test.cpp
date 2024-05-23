@@ -105,7 +105,7 @@ TEST_F(SSDFixture, Read_CreateResultFile)
 TEST_F(SSDFixture, Read_ReadAfterWrite)
 {
 	unsigned int nAddr = 0;
-	unsigned int nData = 0x1122AABB;
+	unsigned int nData = 0xB622AABB;
 
 	ssd.Write(nAddr, nData);
 	EXPECT_EQ(nData, ssd.Read(nAddr));
@@ -122,6 +122,19 @@ TEST_F(SSDFixture, Write_InvalidLBA)
 	EXPECT_THROW(ssd.Write(INVALID_LBA, nData), exception);
 }
 
+TEST_F(SSDFixture, Write_OverwriteData)
+{
+	unsigned int nAddr = 0;
+	unsigned int nData = 0xB622AABB;
+	unsigned int nNewData = 0xFFFFFFFF;
+
+	ssd.Write(nAddr, nData);
+	ssd.Write(nAddr, nNewData);
+
+	EXPECT_THAT(nData, Ne(ssd.Read(nAddr)));
+	EXPECT_THAT(nNewData, Eq(ssd.Read(nAddr)));
+}
+
 TEST_F(SSDFixture, WriteSDDNormalTest) {
 	SSD ssd;
 	ifstream fin;
@@ -132,8 +145,10 @@ TEST_F(SSDFixture, WriteSDDNormalTest) {
 
 	umExpectedDataSet.insert({ 0, 0x1122AABB });
 	umExpectedDataSet.insert({ 3, 0x11CCAABB });
+	umExpectedDataSet.insert({ 7, 0xFFCCAABB });
 
-	fout.open("nand.txt");
+
+	fout.open(sNANDFileName);
 
 	for (const auto& pair : umExpectedDataSet) {
 		fout << dec << pair.first << " " << "0x" << uppercase << hex << setw(8) << setfill('0') << pair.second << endl;
@@ -144,11 +159,11 @@ TEST_F(SSDFixture, WriteSDDNormalTest) {
 	umExpectedDataSet.insert({ 17, 0x11AAFF44 });
 	ssd.Write(17, 0x11AAFF44);
 
-	fin.open("nand.txt");
+	fin.open(sNANDFileName);
 	while (!fin.eof())
 	{
 		fin >> strIndex >> strValue;
-		umActualDataSet.insert({ stoi(strIndex), stoi(strValue, nullptr, 16) });
+		umActualDataSet.insert({ stoi(strIndex), stoul(strValue, nullptr, 16) });
 	}
 	fin.close();
 

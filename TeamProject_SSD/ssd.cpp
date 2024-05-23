@@ -64,8 +64,14 @@ void SSD::Write(unsigned int nAddr, unsigned int value)
 	unordered_map<unsigned int, unsigned int> umDataSet;
 
 	ReadFromNAND(umDataSet);
-
-	umDataSet.insert({ nAddr, value });
+	if (IsLBAWritten(umDataSet, nAddr))
+	{
+		umDataSet[nAddr] = value;
+	}
+	else
+	{
+		umDataSet.insert({ nAddr, value });
+	}
 
 	WriteToNAND(umDataSet);
 }
