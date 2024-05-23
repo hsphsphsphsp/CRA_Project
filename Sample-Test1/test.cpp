@@ -122,6 +122,7 @@ public:
 	void SetUp() override
 	{
 		fResultFile.open(sResultFileName);
+		remove(sNANDFileName.c_str());
 	}
 
 	void TearDown() override
@@ -136,18 +137,17 @@ public:
 	const unsigned int INVALID_DATA = 0x00000000;
 	const unsigned int INVALID_LBA = 0xFF;
 	string sResultFileName = "result.txt";
+	string sNANDFileName = "nand.txt";
 	ifstream fResultFile;
 };
 
 TEST_F(SSDFixture, Read_LBANeverBeenWritten)
 {
-	remove("nand.txt");
 	EXPECT_EQ(INVALID_DATA, ssd.Read(0));
 }
 
 TEST_F(SSDFixture, Read_CreateResultFile)
 {
-	remove("nand.txt");
 	ssd.Read(0);
 
 	if (fResultFile)
@@ -191,8 +191,6 @@ TEST_F(SSDFixture, WriteSDDNormalTest) {
 	string index, value;
 	unordered_map<unsigned int, unsigned int> umExpectedDataSet;
 	unordered_map<unsigned int, unsigned int> umActualDataSet;
-
-	remove("nand.txt");
 
 	umExpectedDataSet.insert({ 0, 0x1122AABB });
 	umExpectedDataSet.insert({ 3, 0x11CCAABB });
