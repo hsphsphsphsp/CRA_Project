@@ -6,7 +6,7 @@ void SSDFileHandler::ReadFromNANDFile(unordered_map<unsigned int, unsigned int>&
 {
 	string sIndex, sValue;
 
-	if (_access(&*sNandFileName.begin(), 0) == 0)
+	if (IsNANDFileExist())
 	{
 		ifstream fin(sNandFileName);
 		while (!fin.eof())
@@ -31,6 +31,11 @@ void SSDFileHandler::WriteHexReadValueToResultFile(unsigned int nValue)
 {
 	ofstream fResultFile(sResultFileName);
 	fResultFile << "0x" << uppercase << hex << setw(8) << setfill('0') << nValue;
+}
+
+bool SSDFileHandler::IsNANDFileExist()
+{
+	return _access(&*sNandFileName.begin(), 0) == 0;
 }
 
 unsigned int SSD::Read(unsigned int nLBA)
@@ -72,12 +77,12 @@ void SSD::Write(unsigned int nLBA, unsigned int nValue)
 
 int SSD::GetSSDSize()
 {
-	return MAX_LBA_COUNT;
+	return SSD_MAX_LBA + 1; // LBA is 0 base.
 }
 
 void SSD::ValidateParameter(unsigned int nLBA)
 {
-	if (nLBA < 0 || nLBA > 99) 
+	if (nLBA < 0 || nLBA > SSD_MAX_LBA)
 	{
 		throw exception("INVALID COMMAND");
 	}
