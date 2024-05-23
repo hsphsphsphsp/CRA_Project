@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-#include "testscript.cpp"
+#include "testscript.h"
 
 class ShellTestApp {
 public:

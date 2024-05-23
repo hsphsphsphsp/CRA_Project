@@ -35,5 +35,11 @@ void ShellTestApp::FullRead() {
 }
 
 void ShellTestApp::DoScript(std::string sTestScriptName) {
-
+    testScript = TestScriptFactory::createScript(sTestScriptName, *pSsd);
+    
+    if (testScript == nullptr)
+    {
+        throw exception("INVALID SCRIPT NAME");
+    }
+    testScript->DoScript();
 }
