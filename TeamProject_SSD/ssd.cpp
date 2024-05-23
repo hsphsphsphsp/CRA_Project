@@ -40,7 +40,7 @@ void SSD::ReadFromNAND(std::unordered_map<unsigned int, unsigned int>& umDataSet
 		while (!fin.eof())
 		{
 			fin >> sIndex >> sValue;
-			umDataSet.insert({ stoi(sIndex), stoi(sValue, nullptr, 16) });
+			umDataSet.insert({ stoi(sIndex), stoul(sValue, nullptr, 16) });
 		}
 		fin.close();
 	}

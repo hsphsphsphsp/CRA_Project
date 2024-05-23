@@ -105,7 +105,7 @@ TEST_F(SSDFixture, Read_CreateResultFile)
 TEST_F(SSDFixture, Read_ReadAfterWrite)
 {
 	unsigned int nAddr = 0;
-	unsigned int nData = 0x1122AABB;
+	unsigned int nData = 0xB622AABB;
 
 	ssd.Write(nAddr, nData);
 	EXPECT_EQ(nData, ssd.Read(nAddr));
