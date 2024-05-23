@@ -20,36 +20,47 @@ bool TestScriptApp1::DoScript()
 
 bool TestScriptApp2::DoScript()
 {
-	unsigned int value = 1;
-	const int WRITE_AREA = 5;
-	int data[WRITE_AREA + 1];
-
-	//1
+	FirstWrite();
+	OverWrite();
+	if (Verify() != true)
+	{
+		return false;
+	}
+	return true;
+}
+void TestScriptApp2::FirstWrite()
+{
+	unsigned int value = 0xAAAABBBB;
 	for (int nLoop = 0; nLoop < 30; nLoop++)
 	{
-		for (unsigned int nLba = 0; nLba <= 5; nLba++)
+		for (unsigned int nLba = 0; nLba <= WRITE_AREA; nLba++)
 		{
 			ssd->Write(nLba, value);
-			data[nLba] = value;
+			pTestData[nLba] = value;
 		}
 	}
-	//2 - overwrite
-	value = 2;
-	for (unsigned int nLba = 0; nLba <= 5; nLba++)
+}
+void TestScriptApp2::OverWrite()
+{
+	unsigned int value = 0x12345678;
+	for (unsigned int nLba = 0; nLba <= WRITE_AREA; nLba++)
 	{
 		ssd->Write(nLba, value);
-		data[nLba] = value;
+		pTestData[nLba] = value;
 	}
-	//3 - verify (read and compare)
-	for (unsigned int nLba = 0; nLba <= 5; nLba++)
+}
+bool TestScriptApp2::Verify()
+{
+	for (unsigned int nLba = 0; nLba <= WRITE_AREA; nLba++)
 	{
-		if (data[nLba] != ssd->Read(nLba))
+		if (pTestData[nLba] != ssd->Read(nLba))
 		{
 			return false;
 		}
 	}
 	return true;
 }
+
 
 TestScript* TestScriptFactory::createScript(string sScriptName, SSD& ssd)
 {
