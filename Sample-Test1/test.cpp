@@ -202,6 +202,50 @@ TEST_F(SSDFixture, Erase_EraseRangeAfterWriteNormalValue)
 	EXPECT_EQ(DEFAULT_READ_VALUE, ssd.Read(nLBA2));
 }
 
+TEST_F(SSDFixture, CommandBuffer_SimpleWriteCommandIssueTest)
+{
+	unsigned int nLBA = 0;
+	unsigned int nValue = 0xB622AABB;
+
+	tuple<string, unsigned int, unsigned int> tExpectedResult = { "W", nLBA, nValue };
+
+	ssd.Write(nLBA, nValue);
+
+	ifstream fin(sCommandBufferFileName);
+	string sCmdType, sLBA, sValue;
+
+	if(fin.is_open())
+	{
+		fin >> sCmdType >> sLBA >> sValue;
+	}
+	
+	tuple<string, unsigned int, unsigned int> tWrittenDataToCmdBuffer = { sCmdType, stoi(sLBA), stoul(sValue, nullptr, 16) };
+
+	EXPECT_THAT(tExpectedResult == tWrittenDataToCmdBuffer, Eq(true));
+}
+
+TEST_F(SSDFixture, CommandBuffer_SimpleEraseCommandIssueTest)
+{
+	unsigned int nLBA = 0;
+	unsigned int nSize = 5;
+
+	tuple<string, unsigned int, unsigned int> tExpectedResult = { "E", nLBA, nSize };
+
+	ssd.Erase(nLBA, nSize);
+
+	ifstream fin(sCommandBufferFileName);
+	string sCmdType, sLBA, sValue;
+
+	if (fin.is_open())
+	{
+		fin >> sCmdType >> sLBA >> sValue;
+	}
+
+	tuple<string, unsigned int, unsigned int> tWrittenDataToCmdBuffer = { sCmdType, stoi(sLBA), stoul(sValue, nullptr, 16) };
+
+	EXPECT_THAT(tExpectedResult == tWrittenDataToCmdBuffer, Eq(true));
+}
+
 TEST_F(ShellTestAppFixture, writeSuccessTest) {
 	EXPECT_CALL(mSsd, Write(LBA, DATA))
 		.Times(1);
