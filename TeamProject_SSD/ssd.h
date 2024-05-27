@@ -1,32 +1,7 @@
 #pragma once
 #include "SSDFileHandler.h"
-#define R 0
-#define W 1
-#define E 2
+
 using namespace std;
-
-struct MyKey {
-	int first;
-	int second;
-};
-
-namespace std {
-	template <>
-	struct hash<MyKey> {
-		size_t operator()(const MyKey& key) const {
-			return hash<int>()(key.first) ^ hash<int>()(key.second);
-		}
-	};
-}
-
-namespace std {
-	template <>
-	struct equal_to<MyKey> {
-		bool operator()(const MyKey& lhs, const MyKey& rhs) const {
-			return lhs.first == rhs.first && lhs.second == rhs.second;
-		}
-	};
-}
 
 class SSD
 {
