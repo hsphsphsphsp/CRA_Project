@@ -20,7 +20,7 @@ public:
 	void CreateNewLog();
 	void TransFileToZip();
 	void Print(string sLog, string sFunctionName = __builtin_FUNCTION());
-	void RenameFile(std::string& sPathAndOldFileName, std::string& sNewFileName);
+	void RenameFile(string& sPathAndOldFileName, string& sNewFileName);
 	string ExtractFileName(const string& sFileName);
 	string GetTime();
 	int GetFileSize();
