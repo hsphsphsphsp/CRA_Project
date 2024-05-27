@@ -74,12 +74,17 @@ void Logger::Print(string sLog, string sFunctionName)
 }
 string Logger::GetTime()
 {
-	char result[100];
+	struct timeb timer_msec;
+	ftime(&timer_msec);
+	int milli = timer_msec.millitm;
+
 	time_t  timer;
 	struct tm t;
 	timer = time(NULL);
 	localtime_s(&t, &timer);
-	sprintf_s(result, sizeof(result), "%02d.%02d.%02d_%02d:%02d", t.tm_year - 100, t.tm_mon + 1, t.tm_mday, t.tm_hour, t.tm_min);
+
+	char result[100];
+	sprintf_s(result, sizeof(result), "%02d.%02d.%02d_%02dh_%02dm_%02ds_%03dms", t.tm_year - 100, t.tm_mon + 1, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec, milli);
 	return string(result);
 }
 int Logger::GetFileSize()
@@ -95,7 +100,7 @@ int Logger::GetFileSize()
 void Logger::CreateNewLog()
 {
 	string sOldFileName = sLogFolderPath + sLatestFileName;
-	string sNewFileName = "until_" + GetTime();
+	string sNewFileName = "until_" + GetTime() + ".log";
 
 	RenameFile(sOldFileName, sNewFileName);
 
