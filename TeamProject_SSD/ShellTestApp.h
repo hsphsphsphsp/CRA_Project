@@ -4,6 +4,9 @@
 #include <string>
 
 #include "testscript.h"
+#include "CommandFactory.h"
+
+class Command;
 
 class ShellTestApp {
 public:
@@ -28,6 +31,9 @@ public:
 private:    
     TestScript* testScript;
     SSD* pSsd;
+
+    CommandFactory commandFactory;
+    Command* pCommand;
 
     int GetSsdSize();
 
