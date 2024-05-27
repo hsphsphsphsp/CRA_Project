@@ -18,7 +18,7 @@ void ShellTestApp::Write(unsigned int nLba, unsigned int nData) {
 unsigned int ShellTestApp::Read(unsigned int nLba) {
     unsigned int nData = pSsd->GetDefaultReadValue();
     try {
-        unsigned int nData = pSsd->Read(nLba);
+        nData = pSsd->Read(nLba);
         PrintBlockData(nLba, nData);
     }
     catch (std::exception& e) {

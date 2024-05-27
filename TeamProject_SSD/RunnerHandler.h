@@ -17,15 +17,23 @@ public:
 	}
 
 	bool Runner();
+	
 private:
 	
-	RunnerHandler(ShellTestApp* shellTestApp) : shellTestApp(shellTestApp) {}
+	RunnerHandler(ShellTestApp* shellTestApp) : pShellTestApp(shellTestApp) {}
 	RunnerHandler& operator=(const RunnerHandler& other) = delete;
 	RunnerHandler(const RunnerHandler& other) = delete;
 
 	bool DoTestScenario();
+	bool DoFullWriteReadCompare();
+	bool DoWrite10AndCompare();
 
-	ShellTestApp* shellTestApp;
+	bool CheckRunnerFileExist();
+	void MakeCommandList();
+
+	void PrintRunMessageBeforeTest(std::string& command);
+
+	ShellTestApp* pShellTestApp;
 	RunnerFileHandler runnerFileHandler;
 	vector<string> commandList;
 
