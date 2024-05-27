@@ -17,17 +17,21 @@ void Logger::TransFileToZip()
     string sZipFileName = ExtractFileName(qLogFiles.front()) + ".zip";
     string sPathAndOldFileName = sLogFolderPath + qLogFiles.front();
 
-    string command = "ren " + sPathAndOldFileName + " " + sZipFileName;
+    RenameFile(sPathAndOldFileName, sZipFileName);
 
-    int result = std::system(command.c_str());
-
-    if (result == 0) {
-        std::cout << "Success to rename log file." << std::endl;
-    }
-    else {
-        std::cerr << "Fail to rename log file." << std::endl;
-    }
     qLogFiles.pop();
+}
+
+void Logger::RenameFile(string& sPathAndOldFileName, string& sNewFileName)
+{
+    string command = "ren " + sPathAndOldFileName + " " + sNewFileName;
+
+    int result = system(command.c_str());
+
+    if (result != 0) {
+        string sExceptionInfo = "Fail to rename " + sPathAndOldFileName + " -> " + sNewFileName;
+        throw exception(sExceptionInfo.c_str());
+    }
 }
 
 string Logger::ExtractFileName(const string& sFileName)
@@ -46,4 +50,3 @@ Logger::Logger()
 {
     sLogFolderPath = GetExeFilePath() + "\\" + "Log\\";
 }
-

@@ -16,6 +16,7 @@ public:
 	}
 	void CreateNewLog();
 	void TransFileToZip();
+	void RenameFile(std::string& sPathAndOldFileName, std::string& sNewFileName);
 	void Logging(string sLog);
 	string ExtractFileName(const string& sFileName);
 
