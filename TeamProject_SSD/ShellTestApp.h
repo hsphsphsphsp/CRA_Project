@@ -13,6 +13,8 @@ public:
 
     void Read(unsigned int nLba);
 
+    void Erase(unsigned int nLba, unsigned int nSize);
+
     void Exit();
 
     void Help();
