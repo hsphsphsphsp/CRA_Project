@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ShellTestApp.cpp" />
     <ClCompile Include="ssd.cpp" />
@@ -134,7 +135,9 @@
     <ClCompile Include="testscript.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="logger.h" />
     <ClInclude Include="ShellTestApp.h" />
+    <ClInclude Include="singleton.h" />
     <ClInclude Include="ssd.h" />
     <ClInclude Include="SSDFileHandler.h" />
     <ClInclude Include="testscript.h" />
