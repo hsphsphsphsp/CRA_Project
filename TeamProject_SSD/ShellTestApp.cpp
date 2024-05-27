@@ -197,7 +197,15 @@ void ShellTestApp::DoRunnerTestscenario(RunnerFileHandler& runnerFileHandler)
 
         TestScriptFactory fTestScriptFactory;
         TestScript* pTestScript = fTestScriptFactory.createScript(command, *pSsd);
-        bIsPassed = pTestScript->DoScript();
+
+        if (pTestScript == nullptr)
+        {
+            bIsPassed = false;
+        }
+        else
+        {
+            bIsPassed = pTestScript->DoScript();
+        }
 
         PrintRunnerResult(bIsPassed);
     }
@@ -208,7 +216,7 @@ void ShellTestApp::PrintRunnerResult(bool isPassed)
     if (isPassed)
         cout << "Pass" << endl;
     else
-        cout << "Fail...!" << endl;
+        cout << "Fail!" << endl;
 }
 
 int ShellTestApp::GetSsdSize() {
