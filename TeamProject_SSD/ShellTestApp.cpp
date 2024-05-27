@@ -179,7 +179,7 @@ void ShellTestApp::DoRunner(std::string& sCmd)
     RunnerFileHandler runnerFileHandler;
     if (!runnerFileHandler.IsRunnerListFileExist(sCmd))
     {
-        cout << sCmd << " file dos not exist." << endl;
+        cout << sCmd << " file does not exist." << endl;
         return;
     }
 
@@ -195,26 +195,10 @@ void ShellTestApp::DoRunnerTestscenario(RunnerFileHandler& runnerFileHandler)
         bool bIsPassed = true;
         cout << command << "   ---   Run...";
 
-        if (command == "FullWriteReadCompare")
-        {
-            bIsPassed = DoFullWriteReadCompare();
-        }
-        else if (command == "FullRead10AndCompare")
-        {
-            bIsPassed = DoFullRead10AndCompare();
-        }
-        else if (command == "Write10AndCompare")
-        {
-            bIsPassed = DoWrite10AndCompare();
-        }
-        else if (command == "Loop_WriteAndReadCompare")
-        {
-            bIsPassed = DoLoop_WriteAndReadCompare();
-        }
-        else
-        {
-            bIsPassed = false;
-        }
+        TestScriptFactory fTestScriptFactory;
+        TestScript* pTestScript = fTestScriptFactory.createScript(command, *pSsd);
+        bIsPassed = pTestScript->DoScript();
+
         PrintRunnerResult(bIsPassed);
     }
 }
@@ -225,71 +209,6 @@ void ShellTestApp::PrintRunnerResult(bool isPassed)
         cout << "Pass" << endl;
     else
         cout << "Fail...!" << endl;
-}
-
-bool ShellTestApp::DoFullWriteReadCompare()
-{
-    unsigned int nRefDataForFullWirteReadCompare = 0x123456678;
-    FullWrite(nRefDataForFullWirteReadCompare);
-    for (register int nandFileOffset = 0; nandFileOffset < GetSsdSize(); nandFileOffset++)
-    {
-        if (pSsd->Read(nandFileOffset) != nRefDataForFullWirteReadCompare)
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool ShellTestApp::DoFullRead10AndCompare()
-{
-    unsigned int nRefDataForFullWirteReadCompare = 0x123456678;
-    const int nLoopCount = 10;
-
-    FullWrite(nRefDataForFullWirteReadCompare);
-    for (int testCount = 0; testCount < nLoopCount; testCount) FullRead();
-
-    for (register int nandFileOffset = 0; nandFileOffset < GetSsdSize(); nandFileOffset++)
-    {
-        if (pSsd->Read(nandFileOffset) != nRefDataForFullWirteReadCompare)
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool ShellTestApp::DoWrite10AndCompare()
-{
-    unsigned int nWriteData = 0x12345678;
-    unsigned int nTargetAddr = 0x0;
-    int nTestEndCount = 10;
-
-    for (int testCount = 0; testCount < nTestEndCount; testCount++)
-    {
-        pSsd->Write(nTargetAddr, nWriteData);
-    }
-    if (nWriteData != pSsd->Read(nTargetAddr))
-    {
-        return false;
-    }
-    return true;
-}
-
-bool ShellTestApp::DoLoop_WriteAndReadCompare()
-{
-    unsigned int nWriteData = 0x12345678;
-    unsigned int nTargetAddr = 0x0;
-    const int nLoopCount = 10;
-    for (int testCount = 0; testCount < nLoopCount; testCount++)
-    {
-        pSsd->Write(nTargetAddr, nWriteData);
-        if (nWriteData != pSsd->Read(nTargetAddr))
-        {
-            return false;
-        }
-    }
-    return true;
 }
 
 int ShellTestApp::GetSsdSize() {
