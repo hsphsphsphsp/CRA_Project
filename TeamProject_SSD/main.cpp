@@ -1,11 +1,10 @@
 #include "ShellTestApp.h"
+#include "RunnerHandler.h"
 
 using namespace std;
 
 int main()
 {
-	SSD ssd;
-	ShellTestApp shellTestApp(&ssd);
-	shellTestApp.Start();
+	RunnerHandler::getInstance().Runner();
 	return 0;
 }

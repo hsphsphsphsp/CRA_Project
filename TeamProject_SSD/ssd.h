@@ -10,6 +10,7 @@ public:
 	virtual unsigned int Read(unsigned int nLBA);
 	virtual void Write(unsigned int nLBA, unsigned int nValue);
 	virtual int GetSSDSize();
+	virtual unsigned int GetDefaultReadValue();
 
 private:
 	void ValidateParameter(unsigned int nLBA);

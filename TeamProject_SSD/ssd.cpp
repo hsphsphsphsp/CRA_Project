@@ -43,6 +43,11 @@ int SSD::GetSSDSize()
 	return SSD_MAX_LBA + 1; // LBA is 0 base.
 }
 
+unsigned int SSD::GetDefaultReadValue()
+{
+	return DEFAULT_READ_VALUE;
+}
+
 void SSD::ValidateParameter(unsigned int nLBA)
 {
 	if (nLBA < 0 || nLBA > SSD_MAX_LBA)

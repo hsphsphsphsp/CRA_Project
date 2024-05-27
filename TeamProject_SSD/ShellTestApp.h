@@ -11,7 +11,7 @@ public:
     
     void Write(unsigned int nLba, unsigned int nData);
 
-    void Read(unsigned int nLba);
+    unsigned int Read(unsigned int nLba);
 
     void Exit();
 
@@ -25,11 +25,10 @@ public:
 
     void Start();
 
+    int GetSsdSize();
 private:    
     TestScript* testScript;
     SSD* pSsd;
-
-    int GetSsdSize();
 
     void PrintBlockData(unsigned int nLba, unsigned int data);
 };
