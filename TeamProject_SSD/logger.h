@@ -4,8 +4,11 @@
 #include <string>
 #include <iostream>
 #include <Windows.h>
+#include <fstream>
 
 using namespace std;
+
+#define DEFINE_10KB (10*1024)
 
 class Logger
 {
@@ -16,8 +19,10 @@ public:
 	}
 	void CreateNewLog();
 	void TransFileToZip();
-	void Logging(string sLog);
+	void Print(string sLog, string sFunctionName = __builtin_FUNCTION());
 	string ExtractFileName(const string& sFileName);
+	string GetTime();
+	int GetFileSize();
 
 private:
 	queue<string> qLogFiles;
