@@ -65,16 +65,8 @@ class SSDFixture : public testing::Test
 public:
 	void SetUp() override
 	{
-		fResultFile.open(sResultFileName);
+		remove(sResultFileName.c_str());
 		remove(sNANDFileName.c_str());
-	}
-
-	void TearDown() override
-	{
-		if (fResultFile.is_open())
-		{
-			fResultFile.close();
-		}
 	}
 
 	SSD ssd;
@@ -82,5 +74,4 @@ public:
 	const unsigned int INVALID_LBA = 0xFF;
 	string sResultFileName = "result.txt";
 	string sNANDFileName = "nand.txt";
-	ifstream fResultFile;
 };

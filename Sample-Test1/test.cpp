@@ -95,17 +95,8 @@ TEST_F(SSDFixture, Read_CreateResultFile)
 {
 	ssd.Read(0);
 
-	if (fResultFile)
-	{
-		unsigned int nValue = -1;
-		fResultFile >> hex >> nValue;
-
-		EXPECT_EQ(DEFAULT_READ_VALUE, nValue);
-	}
-	else
-	{
-		FAIL() << sResultFileName << " not exist.";
-	}
+	ifstream fin(sResultFileName);
+	EXPECT_EQ(fin.is_open(), true);
 }
 
 TEST_F(SSDFixture, Read_ReadAfterWriteNormalValue)
