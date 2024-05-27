@@ -129,7 +129,9 @@
   <ItemGroup>
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="RunnerHandler.h" />
     <ClCompile Include="RunnerFileHandler.cpp" />
+    <ClCompile Include="RunnerHandler.cpp" />
     <ClCompile Include="ShellTestApp.cpp" />
     <ClCompile Include="ssd.cpp" />
     <ClCompile Include="SSDFileHandler.cpp" />
