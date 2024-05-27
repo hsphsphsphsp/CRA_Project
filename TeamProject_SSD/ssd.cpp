@@ -1,4 +1,5 @@
 #include "ssd.h"
+#include <vector>
 
 unsigned int SSD::Read(unsigned int nLBA)
 {
@@ -23,6 +24,8 @@ void SSD::Write(unsigned int nLBA, unsigned int nValue)
 {
 	ValidateParameter(nLBA);
 
+	AddCommandToBuffer(W, nLBA, nValue);
+
 	unordered_map<unsigned int, unsigned int> umDataSet;
 	ssdFileHandler.ReadFromNANDFile(umDataSet);
 
@@ -44,6 +47,8 @@ void SSD::Erase(unsigned int nLBA, unsigned int nSize)
 	{
 		throw exception("INVALID COMMAND");
 	}
+
+	AddCommandToBuffer(E, nLBA, nSize);
 
 	unordered_map<unsigned int, unsigned int> umDataSet;
 	ssdFileHandler.ReadFromNANDFile(umDataSet);
@@ -78,4 +83,44 @@ void SSD::ValidateParameter(unsigned int nLBA)
 bool SSD::IsLBAWritten(const unsigned int& nLBA, unordered_map<unsigned int, unsigned int>& umDataSet)
 {
 	return umDataSet.find(nLBA) != umDataSet.end();
+}
+
+void SSD::AddCommandToBuffer(int nCmdType, int nLBA, unsigned int nData)
+{
+	unordered_map<MyKey, unsigned int> nCmdBuffer;
+
+	string sCommandBufferFileName = "buffer.txt";
+	ifstream fin(sCommandBufferFileName);
+
+	if (fin.is_open())
+	{
+		while (!fin.eof())
+		{
+			string sCmdType, sLBA, sValue;
+			fin >> sCmdType >> sLBA >> sValue;
+			if (sCmdType == "") break;
+
+			int nCmdType = sCmdType == "W" ? W : E;
+			int nLBA = stoi(sLBA);
+			unsigned int nValue = stoul(sValue, nullptr, 16);
+
+			nCmdBuffer[{ nCmdType, nLBA }] = nValue;
+		}
+	}
+
+	nCmdBuffer[{ nCmdType, nLBA }] = nData;
+
+	ofstream fout(sCommandBufferFileName);
+
+	for (const auto& it : nCmdBuffer)
+	{
+		if (it.first.first == W)
+		{
+			fout << "W" << " " << dec << it.first.second << " " << "0x" << uppercase << hex << setw(8) << setfill('0') << it.second << endl;
+		}
+		else if (it.first.first == E)
+		{
+			fout << "E" << " " << dec << it.first.second << " " << it.second << endl;
+		}
+	}
 }
