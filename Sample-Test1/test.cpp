@@ -234,7 +234,29 @@ TEST_F(ShellTestAppFixture, fullReadFailTest) {
 		.WillRepeatedly(Return(MAX_LBA_NUM));
 
 	EXPECT_CALL(mSsd, Read(_))
+		.Times(1)
 		.WillOnce(testing::Throw(ERROR));
 	
 	pApp->FullRead();
+}
+
+TEST_F(ShellTestAppFixture, fullWriteSuccessTest) {
+	EXPECT_CALL(mSsd, GetSSDSize())
+		.WillRepeatedly(Return(MAX_LBA_NUM));
+
+	EXPECT_CALL(mSsd, Write(_, DATA))
+		.Times(MAX_LBA_NUM);
+
+	pApp->FullWrite(DATA);
+}
+
+TEST_F(ShellTestAppFixture, fullWriteFailTest) {
+	EXPECT_CALL(mSsd, GetSSDSize())
+		.WillRepeatedly(Return(MAX_LBA_NUM));
+
+	EXPECT_CALL(mSsd, Write(_, DATA))
+		.Times(1)
+		.WillOnce(testing::Throw(ERROR));
+
+	pApp->FullWrite(DATA);
 }

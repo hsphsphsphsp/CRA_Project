@@ -79,7 +79,13 @@ void ShellTestApp::Help() {
 }
 
 void ShellTestApp::FullWrite(unsigned int nData) {
-
+    try {
+        for (unsigned int nLba = 0; nLba < GetSsdSize(); nLba++)
+            pSsd->Write(nLba, nData);
+    }
+    catch (std::exception& e) {
+        std::cout << e.what() << std::endl;
+    }
 }
 
 void ShellTestApp::FullRead() {
