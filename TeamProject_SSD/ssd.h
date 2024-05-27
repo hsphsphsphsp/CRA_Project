@@ -9,6 +9,7 @@ class SSD
 public:
 	virtual unsigned int Read(unsigned int nLBA);
 	virtual void Write(unsigned int nLBA, unsigned int nValue);
+	virtual void Erase(unsigned int nLBA, unsigned int nSize);
 	virtual int GetSSDSize();
 
 private:
