@@ -25,6 +25,14 @@ void ShellTestApp::Read(unsigned int nLba) {
     }
 }
 
+void ShellTestApp::Erase(unsigned int nLba, unsigned int nSize) {
+    try {
+        pSsd->Erase(nLba, nSize);
+    } catch (std::exception& e) {
+        std::cout << e.what() << std::endl;
+    }
+}
+
 void ShellTestApp::Exit() {
     std::string sInput;
 
@@ -61,6 +69,12 @@ void ShellTestApp::Help() {
 
     std::cout << "- fullread" << std::endl;
     std::cout << "\tRead all data in NAND and Print" << std::endl;
+
+    std::cout << "- erase [lba: number] [size: number]" << std::endl;
+    std::cout << "\tErase data as much as size from the LBA number BLOCK" << std::endl;
+
+    std::cout << "- erase_range [start lba: number] [end lba: number]" << std::endl;
+    std::cout << "\tErase data from start LBA number BLOCK to end LBA number BLOCK" << std::endl;
 
     std::cout << "- exit" << std::endl;
     std::cout << "\tExit this program" << std::endl;
@@ -144,6 +158,28 @@ void ShellTestApp::Start()
             unsigned int nValue = stoul(qCmdBuffer.front(), nullptr, 16);
             qCmdBuffer.pop();
             Write(nLba, nValue);
+        }
+        else if (sCmd == "erase")
+        {
+            if (qCmdBuffer.size() != 2)
+                throw exception("INVALID CMD");
+
+            unsigned int nLba = stoi(qCmdBuffer.front());
+            qCmdBuffer.pop();
+            unsigned int nSize = stoi(qCmdBuffer.front());
+            qCmdBuffer.pop();
+            Erase(nLba, nSize);
+        }
+        else if (sCmd == "erase_range")
+        {
+            if (qCmdBuffer.size() != 2)
+                throw exception("INVALID CMD");
+
+            unsigned int nStartLba = stoi(qCmdBuffer.front());
+            qCmdBuffer.pop();
+            unsigned int nEndLba = stoi(qCmdBuffer.front());
+            qCmdBuffer.pop();
+            Erase(nStartLba, nEndLba - nStartLba);
         }
         else if (sCmd == "exit")
         {
