@@ -44,6 +44,7 @@ public:
 
 	void LoadCommandBufferFile(unordered_map<MyKey, unsigned int>& nCmdBuffer);
 	void WriteCommandBufferFile(const unordered_map<MyKey, unsigned int>& nCmdBuffer);
+	void removeNANDFile();
 
 private:
 	bool IsNANDFileExist();
