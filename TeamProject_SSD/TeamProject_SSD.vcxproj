@@ -137,7 +137,6 @@
   <ItemGroup>
     <ClInclude Include="logger.h" />
     <ClInclude Include="ShellTestApp.h" />
-    <ClInclude Include="singleton.h" />
     <ClInclude Include="ssd.h" />
     <ClInclude Include="SSDFileHandler.h" />
     <ClInclude Include="testscript.h" />
