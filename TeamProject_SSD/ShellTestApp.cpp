@@ -199,12 +199,60 @@ void ShellTestApp::Start()
         {
             FullRead();
         }
+        else if (sCmd == "run_list.lst")
+        {
+            DoRunner(sCmd);
+        }
         else
         {
             // not defined cmd
         }
-        
     }
+}
+
+void ShellTestApp::DoRunner(std::string& sCmd)
+{
+    RunnerFileHandler runnerFileHandler;
+    if (!runnerFileHandler.IsRunnerListFileExist(sCmd))
+    {
+        cout << sCmd << " file does not exist." << endl;
+        return;
+    }
+
+    DoRunnerTestscenario(runnerFileHandler);
+}
+
+void ShellTestApp::DoRunnerTestscenario(RunnerFileHandler& runnerFileHandler)
+{
+    vector<string> vRunnerCmdList = runnerFileHandler.GetCommandListFromTheRunnerFile();
+
+    for (auto& command : vRunnerCmdList)
+    {
+        bool bIsPassed = true;
+        cout << command << "   ---   Run...";
+
+        TestScriptFactory fTestScriptFactory;
+        TestScript* pTestScript = fTestScriptFactory.createScript(command, *pSsd);
+
+        if (pTestScript == nullptr)
+        {
+            bIsPassed = false;
+        }
+        else
+        {
+            bIsPassed = pTestScript->DoScript();
+        }
+
+        PrintRunnerResult(bIsPassed);
+    }
+}
+
+void ShellTestApp::PrintRunnerResult(bool isPassed)
+{
+    if (isPassed)
+        cout << "Pass" << endl;
+    else
+        cout << "Fail!" << endl;
 }
 
 int ShellTestApp::GetSsdSize() {
