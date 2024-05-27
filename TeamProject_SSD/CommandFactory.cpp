@@ -1,29 +1,32 @@
 #include "CommandFactory.h"
 
-Command* CommandSingletonFactory::create(std::queue<std::string> qCmdBuffer)
+Command* CommandSingletonFactory::create(SSD* pSsd, std::queue<std::string> qCmdBuffer)
 {
     AssertArguments(qCmdBuffer);
 
     if (sCmd == "write") {
-        return new WriteCommand(nLba, nData);
+        return new WriteCommand(pSsd, nLba, nData);
     }
     else if (sCmd == "read") {
-        return new ReadCommand(nLba);
+        return new ReadCommand(pSsd, nLba);
     }
     else if (sCmd == "exit") {
-        return new ExitCommand();
+        return new ExitCommand(pSsd);
     }
     else if (sCmd == "help") {
-        return new HelpCommand();
+        return new HelpCommand(pSsd);
     }
     else if (sCmd == "fullwrite") {
-        return new FullWriteCommand(nData);
+        return new FullWriteCommand(pSsd, nData);
     }
     else if (sCmd == "fullread") {
-        return new FullReadCommand();
+        return new FullReadCommand(pSsd);
+    }
+    else if (sCmd.find("testscript") != std::string::npos) {
+        return new DoScriptCommand(pSsd, sCmd);
     }
 
-    return new WrongCommand();
+    return new WrongCommand(pSsd);
 }
 
 void CommandSingletonFactory::AssertArguments(std::queue<std::string> qCmdBuffer)

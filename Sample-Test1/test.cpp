@@ -41,15 +41,15 @@ TEST_F(TestScriptAppFixture, TestScriptFactoryNull)
 TEST(TestScript, TestShellCallTestScript)
 {
 	NiceMock<MockSSD> mockSSD;
-	ShellTestApp shellTestApp(&mockSSD);
-	
+	DoScriptCommand command(&mockSSD, "testscriptapp1");
+
 	EXPECT_CALL(mockSSD, GetSSDSize())
 		.WillRepeatedly(Return(1));
 
 	EXPECT_CALL(mockSSD, Read)
 		.Times(AtLeast(1));
 
-	shellTestApp.DoScript("testscriptapp1");
+	command.execute();
 }
 
 TEST_F(TestScriptAppFixture, TestScriptApp2_CheckWriteAgingExecutedCount)
@@ -184,61 +184,80 @@ TEST_F(SSDFixture, Write_VerifyWriteFunctionWithRawFileData)
 }
 
 TEST_F(ShellTestAppFixture, writeSuccessTest) {
+	WriteCommand command(&mSsd, LBA, DATA);
+
 	EXPECT_CALL(mSsd, Write(LBA, DATA))
 		.Times(1);
-	pApp->Write(LBA, DATA);
+	command.execute();
 }
 
 TEST_F(ShellTestAppFixture, writeOverLbaFailTest) {
+	WriteCommand command(&mSsd, MAX_LBA_NUM, DATA);
+
 	EXPECT_CALL(mSsd, Write(MAX_LBA_NUM, DATA))
 		.WillOnce(testing::Throw(ERROR));
 
-	pApp->Write(MAX_LBA_NUM, DATA);
+	command.execute();
 }
 
 TEST_F(ShellTestAppFixture, writeInvalidDataFailTest) {
+	WriteCommand command(&mSsd, LBA, INVALID_DATA);
+
 	EXPECT_CALL(mSsd, Write(LBA, INVALID_DATA))
 		.WillOnce(testing::Throw(ERROR));
 
-	pApp->Write(LBA, INVALID_DATA);
+	command.execute();
 }
 
 TEST_F(ShellTestAppFixture, readSuccessTest) {
+	ReadCommand command(&mSsd, LBA);
+
 	EXPECT_CALL(mSsd, Read(LBA))
 		.Times(1);
-	pApp->Read(LBA);
+
+	command.execute();
 }
 
 TEST_F(ShellTestAppFixture, readInvalidDataFailTest) {
+	ReadCommand command(&mSsd, MAX_LBA_NUM);
+
 	EXPECT_CALL(mSsd, Read(MAX_LBA_NUM))
 		.WillOnce(testing::Throw(ERROR));
 
-	pApp->Read(MAX_LBA_NUM);
+	command.execute();
 }
 
 TEST_F(ShellTestAppFixture, DISABLED_exitTest) {
-	pApp->Exit();
+	ExitCommand command(&mSsd);
+
+	command.execute();
 }
 
 TEST_F(ShellTestAppFixture, helpTest) {
+	HelpCommand command(&mSsd);
+
 	EXPECT_CALL(mSsd, GetSSDSize())
 		.Times(1)
 		.WillRepeatedly(Return(MAX_LBA_NUM));
 
-	pApp->Help();
+	command.execute();
 }
 
 TEST_F(ShellTestAppFixture, fullReadSuccessTest) {
+	FullReadCommand command(&mSsd);
+
 	EXPECT_CALL(mSsd, GetSSDSize())
 		.WillRepeatedly(Return(MAX_LBA_NUM));
 
 	EXPECT_CALL(mSsd, Read(_))
 		.Times(MAX_LBA_NUM);
 
-	pApp->FullRead();
+	command.execute();
 }
 
 TEST_F(ShellTestAppFixture, fullReadFailTest) {
+	FullReadCommand command(&mSsd);
+
 	EXPECT_CALL(mSsd, GetSSDSize())
 		.WillRepeatedly(Return(MAX_LBA_NUM));
 
@@ -246,26 +265,30 @@ TEST_F(ShellTestAppFixture, fullReadFailTest) {
 		.Times(1)
 		.WillOnce(testing::Throw(ERROR));
 	
-	pApp->FullRead();
+	command.execute();
 }
 
 TEST_F(ShellTestAppFixture, fullWriteSuccessTest) {
+	FullWriteCommand command(&mSsd, DATA);
+
 	EXPECT_CALL(mSsd, GetSSDSize())
 		.WillRepeatedly(Return(MAX_LBA_NUM));
 
 	EXPECT_CALL(mSsd, Write(_, DATA))
 		.Times(MAX_LBA_NUM);
 
-	pApp->FullWrite(DATA);
+	command.execute();
 }
 
 TEST_F(ShellTestAppFixture, fullWriteFailTest) {
+	FullWriteCommand command(&mSsd, INVALID_DATA);
+
 	EXPECT_CALL(mSsd, GetSSDSize())
 		.WillRepeatedly(Return(MAX_LBA_NUM));
 
-	EXPECT_CALL(mSsd, Write(_, DATA))
+	EXPECT_CALL(mSsd, Write(_, INVALID_DATA))
 		.Times(1)
 		.WillOnce(testing::Throw(ERROR));
 
-	pApp->FullWrite(DATA);
+	command.execute();
 }

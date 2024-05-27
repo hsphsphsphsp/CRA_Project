@@ -6,7 +6,7 @@
 #include "../TeamProject_SSD/ssd.cpp"
 #include "../TeamProject_SSD/SSDFileHandler.cpp"
 #include "../TeamProject_SSD/testscript.cpp"
-#include "../TeamProject_SSD/ShellTestApp.cpp"
+#include "../TeamProject_SSD/Command.cpp"
 
 using namespace std;
 using namespace testing;
@@ -26,10 +26,9 @@ public:
 class ShellTestAppFixture : public testing::Test {
 public:
 	void SetUp() override {
-		pApp = new ShellTestApp(&mSsd);
+
 	}
 
-	ShellTestApp* pApp;
 	MockSSD mSsd;
 	MockTestScript mTestScript;
 

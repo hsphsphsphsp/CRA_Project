@@ -16,7 +16,7 @@ public:
 	CommandSingletonFactory(CommandSingletonFactory&&) = delete;
 	CommandSingletonFactory& operator=(CommandSingletonFactory&&) = delete;
 
-	Command* create(std::queue<std::string> qCmdBuffer);
+	Command* create(SSD* pSsd, std::queue<std::string> qCmdBuffer);
 private:
 	std::string sCmd;
 	int nLba;
