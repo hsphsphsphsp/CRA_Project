@@ -2,6 +2,13 @@
 #include <string>
 #include "ssd.h"
 
+class ITestScenario {
+public:
+	const unsigned int nRefDataForTestScenario = 0x5A5A5A5A;
+	const int nTestScenarioLoopCount = 10;
+	const unsigned int nTargetAddrForTestScenario = 0x0;
+};
+
 class ITestScript {
 public:
 	virtual bool DoScript() = 0;
@@ -46,6 +53,38 @@ public:
 private:
 	const unsigned int IO_RANGE = 6;
 	unsigned int* pTestData;
+};
+
+class FullWriteReadCompare : public TestScript, public ITestScenario
+{
+public:
+	FullWriteReadCompare(SSD* ssd) : TestScript{ ssd } {}
+
+	bool DoScript() override;
+};
+
+class FullRead10AndCompare : public TestScript, public ITestScenario
+{
+public:
+	FullRead10AndCompare(SSD* ssd) : TestScript{ ssd } {}
+
+	bool DoScript() override;
+};
+
+class Write10AndCompare : public TestScript, public ITestScenario
+{
+public:
+	Write10AndCompare(SSD* ssd) : TestScript{ ssd } {}
+
+	bool DoScript() override;
+};
+
+class Loop_WriteAndReadCompare : public TestScript, public ITestScenario
+{
+public:
+	Loop_WriteAndReadCompare(SSD* ssd) : TestScript{ ssd } {}
+
+	bool DoScript() override;
 };
 
 class TestScriptFactory

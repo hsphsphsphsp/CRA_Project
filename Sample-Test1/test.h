@@ -15,6 +15,7 @@ class MockSSD : public SSD {
 public:
 	MOCK_METHOD(unsigned int, Read, (unsigned int), (override));
 	MOCK_METHOD(void, Write, (unsigned int, unsigned int), (override));
+	MOCK_METHOD(void, Erase, (unsigned int, unsigned int), (override));
 	MOCK_METHOD(int, GetSSDSize, (), (override));
 };
 
@@ -34,6 +35,7 @@ public:
 	MockTestScript mTestScript;
 
 	const unsigned int LBA = 0;
+	const unsigned int SIZE = 3;
 	const unsigned int MAX_LBA_NUM = 100; //todo get MAX_LBA_NUM from SSD
 	const unsigned int DATA = 0xFFFFFFFF;
 	const unsigned int INVALID_DATA = 0X00000000;
@@ -67,6 +69,7 @@ public:
 	{
 		remove(sResultFileName.c_str());
 		remove(sNANDFileName.c_str());
+		remove(sCommandBufferFileName.c_str());
 	}
 
 	SSD ssd;
@@ -74,4 +77,5 @@ public:
 	const unsigned int INVALID_LBA = 0xFF;
 	string sResultFileName = "result.txt";
 	string sNANDFileName = "nand.txt";
+	string sCommandBufferFileName = "buffer.txt";
 };
