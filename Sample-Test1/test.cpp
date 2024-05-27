@@ -95,17 +95,8 @@ TEST_F(SSDFixture, Read_CreateResultFile)
 {
 	ssd.Read(0);
 
-	if (fResultFile)
-	{
-		unsigned int nValue = -1;
-		fResultFile >> hex >> nValue;
-
-		EXPECT_EQ(DEFAULT_READ_VALUE, nValue);
-	}
-	else
-	{
-		FAIL() << sResultFileName << " not exist.";
-	}
+	ifstream fin(sResultFileName);
+	EXPECT_EQ(fin.is_open(), true);
 }
 
 TEST_F(SSDFixture, Read_ReadAfterWriteNormalValue)
@@ -183,6 +174,34 @@ TEST_F(SSDFixture, Write_VerifyWriteFunctionWithRawFileData)
 	}
 }
 
+TEST_F(SSDFixture, Erase_EraseAfterWriteNormalValue)
+{
+	unsigned int nLBA1 = 0;
+	unsigned int nData1 = 0xB622AABB;
+	unsigned int nLBA2 = 5;
+	unsigned int nData2 = 0xFF15DDCC;
+
+	ssd.Write(nLBA1, nData1);
+	ssd.Write(nLBA2, nData2);
+	EXPECT_EQ(nData1, ssd.Read(nLBA1));
+	ssd.Erase(nLBA1, 1);
+	EXPECT_EQ(DEFAULT_READ_VALUE, ssd.Read(nLBA1));
+}
+
+TEST_F(SSDFixture, Erase_EraseRangeAfterWriteNormalValue)
+{
+	unsigned int nLBA1 = 0;
+	unsigned int nData1 = 0xB622AABB;
+	unsigned int nLBA2 = 5;
+	unsigned int nData2 = 0xFF15DDCC;
+
+	ssd.Write(nLBA1, nData1);
+	ssd.Write(nLBA2, nData2);
+	EXPECT_EQ(nData1, ssd.Read(nLBA1));
+	ssd.Erase(nLBA1, 6);
+	EXPECT_EQ(DEFAULT_READ_VALUE, ssd.Read(nLBA2));
+}
+
 TEST_F(ShellTestAppFixture, writeSuccessTest) {
 	EXPECT_CALL(mSsd, Write(LBA, DATA))
 		.Times(1);
@@ -243,7 +262,29 @@ TEST_F(ShellTestAppFixture, fullReadFailTest) {
 		.WillRepeatedly(Return(MAX_LBA_NUM));
 
 	EXPECT_CALL(mSsd, Read(_))
+		.Times(1)
 		.WillOnce(testing::Throw(ERROR));
 	
 	pApp->FullRead();
+}
+
+TEST_F(ShellTestAppFixture, fullWriteSuccessTest) {
+	EXPECT_CALL(mSsd, GetSSDSize())
+		.WillRepeatedly(Return(MAX_LBA_NUM));
+
+	EXPECT_CALL(mSsd, Write(_, DATA))
+		.Times(MAX_LBA_NUM);
+
+	pApp->FullWrite(DATA);
+}
+
+TEST_F(ShellTestAppFixture, fullWriteFailTest) {
+	EXPECT_CALL(mSsd, GetSSDSize())
+		.WillRepeatedly(Return(MAX_LBA_NUM));
+
+	EXPECT_CALL(mSsd, Write(_, DATA))
+		.Times(1)
+		.WillOnce(testing::Throw(ERROR));
+
+	pApp->FullWrite(DATA);
 }

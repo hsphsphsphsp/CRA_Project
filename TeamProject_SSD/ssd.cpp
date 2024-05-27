@@ -38,6 +38,30 @@ void SSD::Write(unsigned int nLBA, unsigned int nValue)
 	ssdFileHandler.WriteToNANDFile(umDataSet);
 }
 
+void SSD::Erase(unsigned int nLBA, unsigned int nSize)
+{
+	if (nLBA < 0 || nLBA + nSize - 1 > SSD_MAX_LBA)
+	{
+		throw exception("INVALID COMMAND");
+	}
+
+	unordered_map<unsigned int, unsigned int> umDataSet;
+	ssdFileHandler.ReadFromNANDFile(umDataSet);
+
+	for (int i = 0; i < nSize; i++)
+	{
+		umDataSet.erase(nLBA + i);
+	}
+
+	if (umDataSet.empty())
+	{
+		remove("nand.txt");
+		return;
+	}
+
+	ssdFileHandler.WriteToNANDFile(umDataSet);
+}
+
 int SSD::GetSSDSize()
 {
 	return SSD_MAX_LBA + 1; // LBA is 0 base.
