@@ -32,7 +32,6 @@ private:
     TestScript* testScript;
     SSD* pSsd;
 
-    CommandFactory commandFactory;
     Command* pCommand;
 
     int GetSsdSize();

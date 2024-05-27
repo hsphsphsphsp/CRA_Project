@@ -1,31 +1,13 @@
 #include "CommandFactory.h"
 
-Command* CommandFactory::create(std::queue<std::string> qCmdBuffer)
+Command* CommandSingletonFactory::create(std::queue<std::string> qCmdBuffer)
 {
-    if (qCmdBuffer.empty())
-        return nullptr;
-
-    std::string sCmd = qCmdBuffer.front();
-    qCmdBuffer.pop();
+    AssertArguments(qCmdBuffer);
 
     if (sCmd == "write") {
-        if (qCmdBuffer.size() != 2) {
-            std::cout << "Wrong arguments : write [LBA] [DATA]" << std::endl;
-            return nullptr;
-        }
-
-        int nLba = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
-        int nData = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
-
         return new WriteCommand(nLba, nData);
     }
     else if (sCmd == "read") {
-        if (qCmdBuffer.size() != 1) {
-            std::cout << "Wrong arguments : read [LBA]" << std::endl;
-            return nullptr;
-        }
-        int nLba = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
-
         return new ReadCommand(nLba);
     }
     else if (sCmd == "exit") {
@@ -35,18 +17,40 @@ Command* CommandFactory::create(std::queue<std::string> qCmdBuffer)
         return new HelpCommand();
     }
     else if (sCmd == "fullwrite") {
-        if (qCmdBuffer.size() != 1) {
-            std::cout << "Wrong arguments : fullwrite [DATA]" << std::endl;
-            return nullptr;
-        }
-
-        int nData = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
-
         return new FullWriteCommand(nData);
     }
     else if (sCmd == "fullread") {
         return new FullReadCommand();
     }
-    
+
     return new WrongCommand();
+}
+
+void CommandSingletonFactory::AssertArguments(std::queue<std::string> qCmdBuffer)
+{
+    if (qCmdBuffer.empty())
+        throw std::invalid_argument("Please input command.");
+
+    sCmd = qCmdBuffer.front();
+    qCmdBuffer.pop();
+
+    if (sCmd == "write") {
+        if (qCmdBuffer.size() != 2)
+            throw std::invalid_argument("Wrong arguments : write [LBA] [DATA]");
+
+        nLba = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
+        nData = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
+    }
+    else if (sCmd == "read") {
+        if (qCmdBuffer.size() != 1) {
+            throw std::invalid_argument("Wrong arguments : read [LBA]");
+        }
+        nLba = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
+    }
+    else if (sCmd == "fullwrite") {
+        if (qCmdBuffer.size() != 1) {
+            throw std::invalid_argument("Wrong arguments : fullwrite [DATA]");
+        }
+        nData = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
+    }
 }
