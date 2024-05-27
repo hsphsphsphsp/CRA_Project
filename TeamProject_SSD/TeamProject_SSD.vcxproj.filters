@@ -50,8 +50,5 @@
     <ClInclude Include="logger.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="singleton.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
