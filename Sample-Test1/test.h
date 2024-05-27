@@ -67,6 +67,7 @@ public:
 	{
 		remove(sResultFileName.c_str());
 		remove(sNANDFileName.c_str());
+		remove(sCommandBufferFileName.c_str());
 	}
 
 	SSD ssd;
@@ -74,4 +75,5 @@ public:
 	const unsigned int INVALID_LBA = 0xFF;
 	string sResultFileName = "result.txt";
 	string sNANDFileName = "nand.txt";
+	string sCommandBufferFileName = "buffer.txt";
 };
