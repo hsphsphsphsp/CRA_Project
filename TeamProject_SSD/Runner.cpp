@@ -1,11 +1,11 @@
-#include "RunnerHandler.h"
+#include "Runner.h"
 #include <iostream>
 
-RunnerHandler::RunnerHandler(SSD* pSsd) : pSsd(pSsd)
+Runner::Runner(SSD* pSsd) : pSsd(pSsd)
 {
 }
 
-bool RunnerHandler::CheckRunListFileExist(std::string& sCmd)
+bool Runner::CheckRunListFileExist(std::string& sCmd)
 {
     if (!runnerFileHandler.IsRunnerListFileExist(sCmd))
     {
@@ -15,7 +15,7 @@ bool RunnerHandler::CheckRunListFileExist(std::string& sCmd)
     return true;
 }
 
-void RunnerHandler::DoRunnerTestScenario()
+void Runner::DoRunnerTestScenario()
 {
     vector<string> vRunnerCmdList = runnerFileHandler.GetCommandListFromTheRunnerFile();
 
@@ -27,7 +27,7 @@ void RunnerHandler::DoRunnerTestScenario()
     }
 }
 
-TestScript* RunnerHandler::PrepareForEachTestScenario(std::string& EachCommand)
+TestScript* Runner::PrepareForEachTestScenario(std::string& EachCommand)
 {
     cout << EachCommand << "   ---   Run...";
 
@@ -35,13 +35,13 @@ TestScript* RunnerHandler::PrepareForEachTestScenario(std::string& EachCommand)
     return fTestScriptFactory.createScript(EachCommand, *pSsd);
 }
 
-bool RunnerHandler::StartEachScenarioTest(TestScript* pTestScript)
+bool Runner::StartEachScenarioTest(TestScript* pTestScript)
 {
     if (pTestScript == nullptr) return false;
     return pTestScript->DoScript();
 }
 
-void RunnerHandler::PrintRunnerResult(bool isPassed)
+void Runner::PrintRunnerResult(bool isPassed)
 {
     if (isPassed)
         cout << "Pass" << endl;

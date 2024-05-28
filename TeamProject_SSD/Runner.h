@@ -3,18 +3,18 @@
 #include "RunnerFileHandler.h"
 #include "testscript.h"
 
-class RunnerHandler
+class Runner
 {
 public:
-	RunnerHandler(SSD* pSsd);
+	Runner(SSD* pSsd);
 
 	bool CheckRunListFileExist(std::string& sCmd);
 
 	void DoRunnerTestScenario();
 private:
-	RunnerHandler() { }
-	RunnerHandler& operator=(const RunnerHandler& other) = delete;
-	RunnerHandler(const RunnerHandler& other) = delete;
+	Runner() { }
+	Runner& operator=(const Runner& other) = delete;
+	Runner(const Runner& other) = delete;
 
 	TestScript* PrepareForEachTestScenario(std::string& EachCommand);
 

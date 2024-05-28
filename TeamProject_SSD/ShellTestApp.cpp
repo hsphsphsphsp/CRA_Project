@@ -1,7 +1,7 @@
 #include "ShellTestApp.h"
 #include <sstream>
 #include <queue>
-#include "RunnerHandler.h"
+#include "Runner.h"
 
 ShellTestApp::ShellTestApp(SSD* pSsd) : pSsd{ pSsd } {
 

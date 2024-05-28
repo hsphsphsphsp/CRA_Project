@@ -10,7 +10,7 @@
 #include "../TeamProject_SSD/RunnerFileHandler.cpp"
 #include "../TeamProject_SSD/Command.cpp"
 #include "../TeamProject_SSD/CommandFactory.cpp"
-#include "../TeamProject_SSD/RunnerHandler.cpp"
+#include "../TeamProject_SSD/Runner.cpp"
 
 
 using namespace std;
