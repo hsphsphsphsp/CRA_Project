@@ -10,8 +10,11 @@ Command* CommandSingletonFactory::create(SSD* pSsd, std::queue<std::string> qCmd
     else if (sCmd == "read") {
         return new ReadCommand(pSsd, nLba);
     }
-    else if (sCmd == "erase") {
+    else if (sCmd == "erase" || sCmd == "erase_range") {
         return new EraseCommand(pSsd, nLba, nSize);
+    }
+    else if (sCmd == "flush") {
+        return new FlushCommand(pSsd);
     }
     else if (sCmd == "exit") {
         return new ExitCommand(pSsd);
@@ -62,5 +65,11 @@ void CommandSingletonFactory::AssertArguments(std::queue<std::string> qCmdBuffer
             throw std::invalid_argument("Wrong arguments : erase [LBA] [SIZE]");
         nLba = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
         nSize = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
+    }
+    else if (sCmd == "erase_range") {
+        if (qCmdBuffer.size() != 2)
+            throw std::invalid_argument("Wrong arguments : erase_range [Start LBA] [End LBA]");
+        nLba = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
+        nSize = stoi(qCmdBuffer.front()) - nLba;  qCmdBuffer.pop();
     }
 }

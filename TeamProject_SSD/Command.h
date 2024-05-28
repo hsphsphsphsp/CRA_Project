@@ -73,6 +73,12 @@ private:
 	int nSize;
 };
 
+class FlushCommand : public Command {
+public:
+	FlushCommand(SSD* pSsd);
+	void execute() override;
+};
+
 class RunListCommmand : public Command {
 public:
 	RunListCommmand(SSD* pSsd, std::string sFilename);

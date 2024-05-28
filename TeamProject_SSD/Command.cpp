@@ -50,12 +50,16 @@ void ExitCommand::execute()
         std::cout << "Exit App? (yes, no)" << std::endl;
         std::cin >> sInput;
 
-        if (sInput == "yes")
+        if (sInput == "yes") {
+            pSsd->Flush();
             std::exit(0);
-        else if (sInput == "no")
+        }
+        else if (sInput == "no") {
             return;
-        else
+        }
+        else {
             std::cout << "Please type yes or no" << std::endl;
+        }
     }
 }
 
@@ -93,6 +97,9 @@ void HelpCommand::execute()
 
     std::cout << "- erase_range [start lba: number] [end lba: number]" << std::endl;
     std::cout << "\tErase data from start LBA number BLOCK to end LBA number BLOCK" << std::endl;
+
+    std::cout << "- flush" << std::endl;
+    std::cout << "\tFlush the command buffer" << std::endl;
 
     std::cout << "- exit" << std::endl;
     std::cout << "\tExit this program" << std::endl;
@@ -171,6 +178,16 @@ EraseCommand::EraseCommand(SSD* pSsd, int nLba, int nSize) :
 void EraseCommand::execute()
 {
     pSsd->Erase(nLba, nSize);
+}
+
+FlushCommand::FlushCommand(SSD* pSsd) :
+    Command(pSsd, "Flush")
+{
+}
+
+void FlushCommand::execute()
+{
+    pSsd->Flush();
 }
 
 RunListCommmand::RunListCommmand(SSD* pSsd, std::string sFilename) :
