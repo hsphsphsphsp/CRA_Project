@@ -46,7 +46,7 @@ void ExitCommand::execute()
     std::string sInput;
 
     while (1) {
-        Log.Print(__func__, "Exit App? (yes, no)\n");
+        Log.Print(__func__, "Exit App? (yes, no) : ");
         std::cin >> sInput;
 
         if (sInput == "yes") {
@@ -69,7 +69,7 @@ HelpCommand::HelpCommand(SSD* pSsd) :
 
 void HelpCommand::execute()
 {
-    std::cout << std::endl;
+    Log.Print(__func__, "\n");
     Log.Print(__func__,  "******************************************\n");
     Log.Print(__func__,  "*           Shell Test Program           *\n");
     Log.Print(__func__,  "******************************************\n");

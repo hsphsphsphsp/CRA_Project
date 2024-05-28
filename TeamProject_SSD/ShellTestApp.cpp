@@ -11,7 +11,7 @@ void ShellTestApp::Start()
 {
     queue<string> qCmdBuffer;
 
-    std::cout << std::endl;
+    Log.Print(__func__, "\n");
     Log.Print(__func__,  "******************************************\n");
     Log.Print(__func__,  "*           Shell Test Program           *\n");
     Log.Print(__func__,  "******************************************\n");
@@ -19,7 +19,7 @@ void ShellTestApp::Start()
 
     while (1)
     {
-        cout << "*> ";
+        Log.Print(__func__, "*> ");
 
         qCmdBuffer = queue<string>();
 
@@ -41,8 +41,7 @@ void ShellTestApp::Start()
             Log.Print(__func__,  "*> %s is done!\n", pCommand->sCmdName.c_str());
         }
         catch (std::exception& e) {
-            Log.Print(__func__,  e.what());
-            cout << endl;
+            Log.Print(__func__,  string(e.what()) + "\n");
             Log.Print(__func__,  "*> %s throw error !!!\n", pCommand->sCmdName.c_str());
         }
     }
