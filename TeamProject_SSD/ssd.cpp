@@ -90,20 +90,34 @@ bool SSD::ReadFromCmdBuffer(const unsigned int nLBA, unsigned int& nReadValue)
 
 	if (!umCmdBuffer.empty())
 	{
+		// Read from latest Write
 		auto it = umCmdBuffer.find({ W, nLBA });
-
 		if (it != umCmdBuffer.end())
 		{
 			nReadValue = umCmdBuffer[{W, nLBA}];
 			return true;
 		}
+
+		// Read from latest Erase
+		for (auto it = umCmdBuffer.begin(); it != umCmdBuffer.end(); it++)
+		{
+			if (it->first.first == E)
+			{
+				if (it->first.second <= nLBA && nLBA <= it->first.second + it->second)
+				{
+					nReadValue = DEFAULT_READ_VALUE;
+					return true;
+				}
+			}
+		}
+
 	}
 	return false;
 }
 
 void SSD::ValidateParameter(unsigned int nLBA, unsigned int nSize)
 {
-	if (nLBA < 0 || nLBA + nSize > SSD_MAX_LBA || nSize + 1 >= MAX_ERASE_SIZE)
+	if (nLBA < 0 || nLBA + nSize > SSD_MAX_LBA || nSize >= MAX_ERASE_SIZE)
 	{
 		throw exception("INVALID COMMAND");
 	}
