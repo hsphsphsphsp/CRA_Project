@@ -31,7 +31,7 @@ void SSDFileHandler::WriteHexReadValueToResultFile(unsigned int nValue)
 	fResultFile << "0x" << FormatHex(nValue);
 }
 
-void SSDFileHandler::LoadCommandBufferFile(unordered_map<MyKey, unsigned int>& nCmdBuffer)
+void SSDFileHandler::LoadCommandBufferFile(unordered_map<pair<int, unsigned int>, unsigned int, pair_hash>& nCmdBuffer)
 {
 	ifstream fin(sCommandBufferFileName);
 	string sCmdType, sLBA, sValue;
@@ -51,7 +51,7 @@ void SSDFileHandler::LoadCommandBufferFile(unordered_map<MyKey, unsigned int>& n
 	}
 }
 
-void SSDFileHandler::WriteCommandBufferFile(const unordered_map<MyKey, unsigned int>& nCmdBuffer)
+void SSDFileHandler::WriteCommandBufferFile(const unordered_map<pair<int, unsigned int>, unsigned int, pair_hash>& nCmdBuffer)
 {
 	ofstream fout(sCommandBufferFileName);
 
@@ -85,4 +85,9 @@ string SSDFileHandler::FormatDec(unsigned int nValue)
 bool SSDFileHandler::IsNANDFileExist()
 {
 	return _access(&*sNandFileName.begin(), 0) == 0;
+}
+
+void SSDFileHandler::removeNANDFile()
+{
+	remove(&*sNandFileName.begin());
 }

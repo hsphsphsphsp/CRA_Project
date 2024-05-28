@@ -12,28 +12,14 @@
 
 using namespace std;
 
-struct MyKey {
-	int first;
-	int second;
+struct pair_hash {
+	template <class T1, class T2>
+	std::size_t operator () (const std::pair<T1, T2>& p) const {
+		auto hash1 = std::hash<T1>{}(p.first);
+		auto hash2 = std::hash<T2>{}(p.second);
+		return hash1 ^ (hash2 << 1);
+	}
 };
-
-namespace std {
-	template <>
-	struct hash<MyKey> {
-		size_t operator()(const MyKey& key) const {
-			return hash<int>()(key.first) ^ hash<int>()(key.second);
-		}
-	};
-}
-
-namespace std {
-	template <>
-	struct equal_to<MyKey> {
-		bool operator()(const MyKey& lhs, const MyKey& rhs) const {
-			return lhs.first == rhs.first && lhs.second == rhs.second;
-		}
-	};
-}
 
 class SSDFileHandler
 {
@@ -42,8 +28,9 @@ public:
 	void WriteNANDFile(const unordered_map<unsigned int, unsigned int>& umDataSet);
 	void WriteHexReadValueToResultFile(unsigned int nValue);
 
-	void LoadCommandBufferFile(unordered_map<MyKey, unsigned int>& nCmdBuffer);
-	void WriteCommandBufferFile(const unordered_map<MyKey, unsigned int>& nCmdBuffer);
+	void LoadCommandBufferFile(unordered_map<pair<int, unsigned int>, unsigned int, pair_hash>& nCmdBuffer);
+	void WriteCommandBufferFile(const unordered_map<pair<int, unsigned int>, unsigned int, pair_hash>& nCmdBuffer);
+  void removeNANDFile();
 
 private:
 	bool IsNANDFileExist();

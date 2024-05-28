@@ -42,24 +42,21 @@ void SSD::Write(unsigned int nLBA, unsigned int nValue)
 
 void SSD::Erase(unsigned int nLBA, unsigned int nSize)
 {
-	if (nLBA < 0 || nLBA + nSize - 1 > SSD_MAX_LBA)
-	{
-		throw exception("INVALID COMMAND");
-	}
+	ValidateParameter(nLBA, nSize - 1);
 
 	AddCommandToBuffer(E, nLBA, nSize);
 
 	unordered_map<unsigned int, unsigned int> umDataSet;
 	ssdFileHandler.LoadNANDFile(umDataSet);
 
-	for (int i = 0; i < nSize; i++)
+	for (unsigned int i = 0; i < nSize; i++)
 	{
 		umDataSet.erase(nLBA + i);
 	}
 
 	if (umDataSet.empty())
 	{
-		remove("nand.txt");
+		ssdFileHandler.removeNANDFile();
 		return;
 	}
 
@@ -71,9 +68,9 @@ int SSD::GetSSDSize()
 	return SSD_MAX_LBA + 1; // LBA is 0 base.
 }
 
-void SSD::ValidateParameter(unsigned int nLBA)
+void SSD::ValidateParameter(unsigned int nLBA, unsigned int nSize)
 {
-	if (nLBA < 0 || nLBA > SSD_MAX_LBA)
+	if (nLBA < 0 || nLBA + nSize > SSD_MAX_LBA)
 	{
 		throw exception("INVALID COMMAND");
 	}
@@ -86,7 +83,7 @@ bool SSD::IsLBAWritten(const unsigned int& nLBA, unordered_map<unsigned int, uns
 
 void SSD::AddCommandToBuffer(int nCmdType, int nLBA, unsigned int nData)
 {
-	unordered_map<MyKey, unsigned int> nCmdBuffer;
+	unordered_map<pair<int, unsigned int>, unsigned int, pair_hash> nCmdBuffer;
 
 	ssdFileHandler.LoadCommandBufferFile(nCmdBuffer);
 

@@ -12,11 +12,11 @@ public:
 	virtual int GetSSDSize();
 
 private:
-	void ValidateParameter(unsigned int nLBA);
+	void ValidateParameter(unsigned int nLBA, unsigned int nSize = 0);
 	bool IsLBAWritten(const unsigned int& nLBA, unordered_map<unsigned int, unsigned int>& umDataSet);
 	void AddCommandToBuffer(int nCmdType, int nLBA, unsigned int nData);
 
 	SSDFileHandler ssdFileHandler;
-	const int SSD_MAX_LBA = 99;
-	const int DEFAULT_READ_VALUE = 0x00000000;
+	const unsigned int SSD_MAX_LBA = 99;
+	const unsigned int DEFAULT_READ_VALUE = 0x00000000;
 };

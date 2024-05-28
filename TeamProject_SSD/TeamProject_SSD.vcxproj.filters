@@ -41,6 +41,11 @@
     </ClCompile>
     <ClCompile Include="CommandFactory.cpp">
       <Filter>소스 파일</Filter>
+    <ClCompile Include="RunnerHandler.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="RunnerHandler.h">
+      <Filter>헤더 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -68,5 +73,8 @@
     <ClInclude Include="CommandFactory.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
