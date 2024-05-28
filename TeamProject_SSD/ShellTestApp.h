@@ -6,26 +6,13 @@
 #include "testscript.h"
 #include "RunnerFileHandler.h"
 #include "CommandFactory.h"
+#include "Command.h"
 
 class ShellTestApp {
 public:
     ShellTestApp(SSD* pSsd);
     
-    void Write(unsigned int nLba, unsigned int nData);
-
-    void Read(unsigned int nLba);
-
-    void EraseCommand(unsigned int nLba, unsigned int nSize);
-
-    void Exit();
-
-    void Help();
-
-    void FullWrite(unsigned int nData);
-
-    void FullRead();
-
-    void DoScript(std::string sTestScriptName);
+    void Erase(unsigned int nLba, unsigned int nSize);
 
     void Start();
 
