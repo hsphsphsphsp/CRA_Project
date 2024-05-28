@@ -12,15 +12,14 @@ void ShellTestApp::Start()
     queue<string> qCmdBuffer;
 
     std::cout << std::endl;
-    std::cout << "******************************************" << std::endl;
-    std::cout << "*           Shell Test Program           *" << std::endl;
-    std::cout << "******************************************" << std::endl;
-    std::cout << "*If you need any help, type \"help\"" << std::endl;
+    Log.Print(__func__,  "******************************************\n");
+    Log.Print(__func__,  "*           Shell Test Program           *\n");
+    Log.Print(__func__,  "******************************************\n");
+    Log.Print(__func__,  "*If you need any help, type \"help\"\n");
 
     while (1)
     {
-        std::cout << std::endl;
-        std::cout << "*> ";
+        cout << "*> ";
 
         qCmdBuffer = queue<string>();
 
@@ -39,12 +38,12 @@ void ShellTestApp::Start()
             pCommand = CommandSingletonFactory::GetInstance()
                 .create(pSsd, qCmdBuffer);
             pCommand->execute();
-
-            std::cout << "*> " << pCommand->sCmdName << " is done!" << std::endl;
+            Log.Print(__func__,  "*> %s is done!\n", pCommand->sCmdName.c_str());
         }
         catch (std::exception& e) {
-            std::cout << e.what() << std::endl;
-            std::cout << "*> " << pCommand->sCmdName << " throw error !!!" << std::endl;
+            Log.Print(__func__,  e.what());
+            cout << endl;
+            Log.Print(__func__,  "*> %s throw error !!!\n", pCommand->sCmdName.c_str());
         }
     }
 }
@@ -54,6 +53,5 @@ int ShellTestApp::GetSsdSize() {
 }
 
 void ShellTestApp::PrintBlockData(unsigned int nLba, unsigned int nData) {
-    std::cout << "LBA  = " << dec << nLba << "\t";
-    std::cout << "DATA = 0x" << uppercase << hex << nData << std::endl;
+    Log.Print(__func__,  "LBA = %d\tDATA = %#x\n", nLba, nData);
 }

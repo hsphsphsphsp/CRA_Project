@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <unordered_map>
 #include <sstream>
+#include "logger.h"
 
 #define R 0
 #define W 1
