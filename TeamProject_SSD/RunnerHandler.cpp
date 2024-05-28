@@ -1,9 +1,8 @@
 #include "RunnerHandler.h"
 #include <iostream>
 
-RunnerHandler::RunnerHandler(SSD* pSsd)
+RunnerHandler::RunnerHandler(SSD* pSsd) : pSsd(pSsd)
 {
-    this->pSsd = pSsd;
 }
 
 bool RunnerHandler::CheckRunListFileExist(std::string& sCmd)
