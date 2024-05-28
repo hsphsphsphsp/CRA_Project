@@ -2,13 +2,6 @@
 #include <string>
 #include "ssd.h"
 
-class ITestScenario {
-public:
-	const unsigned int nRefDataForTestScenario = 0x5A5A5A5A;
-	const int nTestScenarioLoopCount = 10;
-	const unsigned int nTargetAddrForTestScenario = 0x0;
-};
-
 class ITestScript {
 public:
 	virtual bool DoScript() = 0;
@@ -25,6 +18,10 @@ public:
 	int GetSSDSize() const { return ssd->GetSSDSize(); }
 
 protected:
+	const unsigned int nRefDataForTestScenario = 0x5A5A5A5A;
+	const unsigned int nTestScenarioLoopCount = 10;
+	const unsigned int nTargetAddrForTestScenario = 0x0;
+
 	SSD* ssd;
 };
 
@@ -55,7 +52,7 @@ private:
 	unsigned int* pTestData;
 };
 
-class FullWriteReadCompare : public TestScript, public ITestScenario
+class FullWriteReadCompare : public TestScript
 {
 public:
 	FullWriteReadCompare(SSD* ssd) : TestScript{ ssd } {}
@@ -63,7 +60,7 @@ public:
 	bool DoScript() override;
 };
 
-class FullRead10AndCompare : public TestScript, public ITestScenario
+class FullRead10AndCompare : public TestScript
 {
 public:
 	FullRead10AndCompare(SSD* ssd) : TestScript{ ssd } {}
@@ -71,7 +68,7 @@ public:
 	bool DoScript() override;
 };
 
-class Write10AndCompare : public TestScript, public ITestScenario
+class Write10AndCompare : public TestScript
 {
 public:
 	Write10AndCompare(SSD* ssd) : TestScript{ ssd } {}
@@ -79,7 +76,7 @@ public:
 	bool DoScript() override;
 };
 
-class Loop_WriteAndReadCompare : public TestScript, public ITestScenario
+class Loop_WriteAndReadCompare : public TestScript
 {
 public:
 	Loop_WriteAndReadCompare(SSD* ssd) : TestScript{ ssd } {}
