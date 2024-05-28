@@ -30,6 +30,7 @@ public:
 
 	void LoadCommandBufferFile(unordered_map<pair<int, unsigned int>, unsigned int, pair_hash>& nCmdBuffer);
 	void WriteCommandBufferFile(const unordered_map<pair<int, unsigned int>, unsigned int, pair_hash>& nCmdBuffer);
+  void removeNANDFile();
 
 private:
 	bool IsNANDFileExist();

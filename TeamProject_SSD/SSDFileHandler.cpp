@@ -86,3 +86,8 @@ bool SSDFileHandler::IsNANDFileExist()
 {
 	return _access(&*sNandFileName.begin(), 0) == 0;
 }
+
+void SSDFileHandler::removeNANDFile()
+{
+	remove(&*sNandFileName.begin());
+}
