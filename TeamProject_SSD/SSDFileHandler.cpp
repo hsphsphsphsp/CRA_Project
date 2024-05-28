@@ -10,7 +10,7 @@ void SSDFileHandler::LoadNANDFile(unordered_map<unsigned int, unsigned int>& umD
 		while (!fin.eof())
 		{
 			fin >> sIndex >> sValue;
-			umDataSet.insert({ HexStringToUInt(sIndex), HexStringToUInt(sValue) });
+			umDataSet.insert({ StringToUInt(sIndex, HEX), StringToUInt(sValue, HEX) });
 		}
 	}
 }
@@ -53,8 +53,8 @@ void SSDFileHandler::LoadCommandBufferFile(CMD_BUFFER_MAP& nCmdBuffer)
 			fin >> sCmdType >> sLBA >> sValue;
 
 			int nCmdType = GetCmdType(sCmdType);
-			unsigned int nLBA = DecStringToUInt(sLBA);
-			unsigned int nValue = HexStringToUInt(sValue);
+			unsigned int nLBA = StringToUInt(sLBA, DEC);
+			unsigned int nValue = StringToUInt(sValue, HEX);
 
 			nCmdBuffer[{ nCmdType, nLBA }] = nValue;
 		}
@@ -102,33 +102,20 @@ string SSDFileHandler::FormatDec(unsigned int nValue)
 	return oss.str();
 }
 
-unsigned int SSDFileHandler::HexStringToUInt(const string& sValue)
+unsigned int SSDFileHandler::StringToUInt(const string& sValue, int numType)
 {
 	try 
 	{
-		return std::stoul(sValue, nullptr, 16);
+		if (numType == HEX)
+			return stoul(sValue, nullptr, 16);
+
+		return stoul(sValue);
 	}
 	catch (const std::invalid_argument& e) 
 	{
 		throw exception("Invalid argument");
 	}
 	catch (const std::out_of_range& e) 
-	{
-		throw exception("Out of range");
-	}
-}
-
-unsigned int SSDFileHandler::DecStringToUInt(const string& sValue)
-{
-	try
-	{
-		return std::stoi(sValue);
-	}
-	catch (const std::invalid_argument& e)
-	{
-		throw exception("Invalid argument");
-	}
-	catch (const std::out_of_range& e)
 	{
 		throw exception("Out of range");
 	}
