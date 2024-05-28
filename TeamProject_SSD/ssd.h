@@ -22,6 +22,7 @@ private:
 
 	SSDFileHandler ssdFileHandler;
 	const unsigned int SSD_MAX_LBA = 99;
+	const unsigned int MAX_ERASE_SIZE = 10;
 	const unsigned int DEFAULT_READ_VALUE = 0x00000000;
 	bool bUseCommandBuffer = true;
 };

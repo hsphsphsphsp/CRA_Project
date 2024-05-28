@@ -76,7 +76,7 @@ int SSD::GetSSDSize()
 
 void SSD::ValidateParameter(unsigned int nLBA, unsigned int nSize)
 {
-	if (nLBA < 0 || nLBA + nSize > SSD_MAX_LBA)
+	if (nLBA < 0 || nLBA + nSize > SSD_MAX_LBA || nSize + 1 >= MAX_ERASE_SIZE)
 	{
 		throw exception("INVALID COMMAND");
 	}
