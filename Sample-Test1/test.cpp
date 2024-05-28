@@ -272,6 +272,52 @@ TEST_F(SSDFixture, CommandBuffer_RemoveWriteCommandWhenEraseIssued)
 	EXPECT_EQ(nCmdBuffer.size(), 2);
 }
 
+TEST_F(SSDFixture, CommandBuffer_MergeEraseCommand)
+{
+	ssd.Write(20, 0xFFFFFFFF);
+	ssd.Erase(10, 2);
+	ssd.Erase(12, 3);
+
+	nCmdBuffer = LoadCmdBuffer();
+
+	EXPECT_EQ(nCmdBuffer.size(), 2);
+}
+
+TEST_F(SSDFixture, CommandBuffer_MergeEraseCommandReverse)
+{
+	ssd.Write(20, 0xFFFFFFFF);
+	ssd.Erase(12, 3);
+	ssd.Erase(10, 2);
+
+	nCmdBuffer = LoadCmdBuffer();
+
+	EXPECT_EQ(nCmdBuffer.size(), 2);
+}
+
+TEST_F(SSDFixture, CommandBuffer_MergeEraseCommandDoNotMerge)
+{
+	ssd.Write(20, 0xFFFFFFFF);
+	ssd.Erase(10, 1);
+	ssd.Erase(12, 3);
+
+	nCmdBuffer = LoadCmdBuffer();
+
+	EXPECT_EQ(nCmdBuffer.size(), 3);
+}
+
+TEST_F(SSDFixture, CommandBuffer_MergeSeveralEraseCommand)
+{
+	ssd.Write(20, 0xFFFFFFFF);
+	ssd.Erase(10, 1);
+	ssd.Erase(12, 3);
+	ssd.Erase(15, 2);
+	ssd.Erase(19, 2);
+
+	nCmdBuffer = LoadCmdBuffer();
+
+	EXPECT_EQ(nCmdBuffer.size(), 3);
+}
+
 TEST_F(ShellTestAppFixture, writeSuccessTest) {
 	WriteCommand cmd(&mSsd, LBA, DATA);
 

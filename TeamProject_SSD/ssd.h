@@ -24,7 +24,9 @@ private:
 	void OptimizeEraseComand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nSize);
 	void OptimizeWriteCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA);
 	void RemovePrevWriteCmdWithSameLBA(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA);
+	void MergeEraseCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int &nLBA, unsigned int &nSize);
 
+	CMD_BUFFER_MAP umPrevEraseCommand;
 	SSDFileHandler ssdFileHandler;
 	const unsigned int SSD_MAX_LBA = 99;
 	const unsigned int MAX_ERASE_SIZE = 10;
