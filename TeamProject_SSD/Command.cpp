@@ -108,6 +108,9 @@ void HelpCommand::execute()
     std::cout << "\tOver Write 0x12345678 to 0~5 LBA" << std::endl;
     std::cout << "\tRead 0~5 LBA" << std::endl;
     std::cout << "\tCheck is 0~5 LBA data overwritted" << std::endl;
+
+    std::cout << "- [run list filename: string].lst" << std::endl;
+    std::cout << "\tRun all scripts in list file" << std::endl;
 }
 
 FullWriteCommand::FullWriteCommand(SSD* pSsd, int nData) :
