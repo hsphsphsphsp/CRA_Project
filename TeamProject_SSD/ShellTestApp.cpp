@@ -202,9 +202,9 @@ void ShellTestApp::Start()
         }
         else if (sCmd == "run_list.lst")
         {
-            RunnerHandler runnerHandler(pSsd);
-            if (!runnerHandler.CheckRunListFileExist(sCmd)) continue;
-            runnerHandler.DoRunnerTestScenario();
+            // RunnerHandler runnerHandler(pSsd);
+            // if (!runnerHandler.CheckRunListFileExist(sCmd)) continue;
+            // runnerHandler.DoRunnerTestScenario();
         }
         else
         {
