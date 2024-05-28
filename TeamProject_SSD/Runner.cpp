@@ -23,7 +23,9 @@ void Runner::DoRunnerTestScenario()
     {
         TestScript* pTestScript;
         pTestScript = PrepareForEachTestScenario(EachCommand);
-        PrintRunnerResult(StartEachScenarioTest(pTestScript));
+        bool isTestScriptPass = StartEachScenarioTest(pTestScript);
+        PrintTestScriptResult(isTestScriptPass);
+        if (false == isTestScriptPass) break;
     }
 }
 
@@ -41,7 +43,7 @@ bool Runner::StartEachScenarioTest(TestScript* pTestScript)
     return pTestScript->DoScript();
 }
 
-void Runner::PrintRunnerResult(bool isPassed)
+void Runner::PrintTestScriptResult(bool isPassed)
 {
     if (isPassed)
         cout << "Pass" << endl;
