@@ -129,10 +129,22 @@ void SSD::AddCommandToBuffer(int nCmdType, unsigned int nLBA, unsigned int nData
 	{
 		OptimizeWriteCommand(nCmdBuffer, nLBA);
 	}
+	else if (nCmdType == E)
+	{
+		OptimizeEraseComand(nCmdBuffer, nLBA, nData);
+	}
 
 	nCmdBuffer[{ nCmdType, nLBA }] = nData;
 
 	ssdFileHandler.WriteCommandBufferFile(nCmdBuffer);
+}
+
+void SSD::OptimizeEraseComand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nData)
+{
+	for (int i = nLBA; i < nLBA + nData; i++)
+	{
+		nCmdBuffer.erase({ W, i });
+	}
 }
 
 void SSD::OptimizeWriteCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA)

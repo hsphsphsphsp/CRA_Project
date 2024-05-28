@@ -260,6 +260,18 @@ TEST_F(SSDFixture, CommandBuffer_ReadFromCommandBuffer)
 	EXPECT_EQ(fin.is_open(), false);
 }
 
+TEST_F(SSDFixture, CommandBuffer_RemoveWriteCommandWhenEraseIssued)
+{
+	ssd.Write(0, 0xFFFFFFFF);
+	ssd.Write(1, 0xFFFFFFFF);
+	ssd.Write(2, 0xFFFFFFFF);
+	ssd.Erase(0, 2);
+
+	nCmdBuffer = LoadCmdBuffer();
+
+	EXPECT_EQ(nCmdBuffer.size(), 2);
+}
+
 TEST_F(ShellTestAppFixture, writeSuccessTest) {
 	WriteCommand cmd(&mSsd, LBA, DATA);
 
