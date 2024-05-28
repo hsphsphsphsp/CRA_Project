@@ -17,8 +17,4 @@ private:
     TestScript* testScript;
     SSD* pSsd;
     Command* pCommand;
-
-    int GetSsdSize();
-
-    void PrintBlockData(unsigned int nLba, unsigned int data);
 };
