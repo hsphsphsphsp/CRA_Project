@@ -42,7 +42,6 @@ void ShellTestApp::Start()
         }
         catch (std::exception& e) {
             Log.Print(__func__,  string(e.what()) + "\n");
-            Log.Print(__func__,  "*> %s throw error !!!\n", pCommand->sCmdName.c_str());
         }
     }
 }
