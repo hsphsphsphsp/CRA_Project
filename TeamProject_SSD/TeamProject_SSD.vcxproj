@@ -148,6 +148,7 @@
     <ClInclude Include="ssd.h" />
     <ClInclude Include="SSDFileHandler.h" />
     <ClInclude Include="testscript.h" />
+    <ClInclude Include="Type.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
