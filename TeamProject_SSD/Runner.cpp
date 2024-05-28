@@ -23,9 +23,9 @@ void Runner::DoRunnerTestScenario()
     {
         TestScript* pTestScript;
         pTestScript = PrepareForEachTestScenario(EachCommand);
-        bool isTestScriptPass = StartEachScenarioTest(pTestScript);
-        PrintTestScriptResult(isTestScriptPass);
-        if (false == isTestScriptPass) break;
+        bool bIsTestScriptPass = StartEachScenarioTest(pTestScript);
+        PrintTestScriptResult(bIsTestScriptPass);
+        if (false == bIsTestScriptPass) break;
     }
 }
 
