@@ -103,7 +103,7 @@ bool SSD::ReadFromCmdBuffer(const unsigned int nLBA, unsigned int& nReadValue)
 
 void SSD::ValidateParameter(unsigned int nLBA, unsigned int nSize)
 {
-	if (nLBA < 0 || nLBA + nSize > SSD_MAX_LBA || nSize + 1 >= MAX_ERASE_SIZE)
+	if (nLBA < 0 || nLBA + nSize > SSD_MAX_LBA || nSize >= MAX_ERASE_SIZE)
 	{
 		throw exception("INVALID COMMAND");
 	}
