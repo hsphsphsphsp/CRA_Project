@@ -261,7 +261,13 @@ TEST_F(ShellTestAppFixture, writeOverLbaFailTest) {
 	EXPECT_CALL(mSsd, Write(MAX_LBA_NUM, DATA))
 		.WillOnce(testing::Throw(ERROR));
 
-	cmd.execute();
+	try {
+		cmd.execute();
+		FAIL();
+	}
+	catch (std::exception& e) {
+		cout << e.what() << endl;
+	}
 }
 
 TEST_F(ShellTestAppFixture, writeInvalidDataFailTest) {
@@ -270,7 +276,13 @@ TEST_F(ShellTestAppFixture, writeInvalidDataFailTest) {
 	EXPECT_CALL(mSsd, Write(LBA, INVALID_DATA))
 		.WillOnce(testing::Throw(ERROR));
 
-	cmd.execute();
+	try {
+		cmd.execute();
+		FAIL();
+	}
+	catch (std::exception& e) {
+		cout << e.what() << endl;
+	}
 }
 
 TEST_F(ShellTestAppFixture, readSuccessTest) {
@@ -288,7 +300,13 @@ TEST_F(ShellTestAppFixture, readInvalidDataFailTest) {
 	EXPECT_CALL(mSsd, Read(MAX_LBA_NUM))
 		.WillOnce(testing::Throw(ERROR));
 
-	cmd.execute();
+	try {
+		cmd.execute();
+		FAIL();
+	}
+	catch (std::exception& e) {
+		cout << e.what() << endl;
+	}
 }
 
 TEST_F(ShellTestAppFixture, eraseSuccessTest) {
@@ -336,7 +354,13 @@ TEST_F(ShellTestAppFixture, fullReadFailTest) {
 		.Times(1)
 		.WillOnce(testing::Throw(ERROR));
 	
-	cmd.execute();
+	try {
+		cmd.execute();
+		FAIL();
+	}
+	catch (std::exception& e) {
+		cout << e.what() << endl;
+	}
 }
 
 TEST_F(ShellTestAppFixture, fullWriteSuccessTest) {
@@ -359,5 +383,11 @@ TEST_F(ShellTestAppFixture, fullWriteFailTest) {
 		.Times(1)
 		.WillOnce(testing::Throw(ERROR));
 
-	cmd.execute();
+	try {
+		cmd.execute();
+		FAIL();
+	}
+	catch (std::exception& e) {
+		cout << e.what() << endl;
+	}
 }
