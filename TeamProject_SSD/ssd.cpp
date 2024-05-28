@@ -122,6 +122,7 @@ void SSD::AddCommandToBuffer(int nCmdType, unsigned int nLBA, unsigned int nData
 
 	if (nCmdBuffer.size() >= 10) {
 		Flush();
+		nCmdBuffer.clear();
 	}
 
 	if (nCmdType == W)
