@@ -285,7 +285,7 @@ TEST_F(ShellTestAppFixture, writeOverLbaFailTest) {
 	WriteCommand cmd(&mSsd, MAX_LBA_NUM, DATA);
 
 	EXPECT_CALL(mSsd, Write(MAX_LBA_NUM, DATA))
-		.WillOnce(testing::Throw(ERROR));
+		.WillOnce(testing::Throw(ERREXCEPTION));
 
 	try {
 		cmd.execute();
@@ -300,7 +300,7 @@ TEST_F(ShellTestAppFixture, writeInvalidDataFailTest) {
 	WriteCommand cmd(&mSsd, LBA, INVALID_DATA);
 
 	EXPECT_CALL(mSsd, Write(LBA, INVALID_DATA))
-		.WillOnce(testing::Throw(ERROR));
+		.WillOnce(testing::Throw(ERREXCEPTION));
 
 	try {
 		cmd.execute();
@@ -324,7 +324,7 @@ TEST_F(ShellTestAppFixture, readInvalidDataFailTest) {
 	ReadCommand cmd(&mSsd, MAX_LBA_NUM);
 
 	EXPECT_CALL(mSsd, Read(MAX_LBA_NUM))
-		.WillOnce(testing::Throw(ERROR));
+		.WillOnce(testing::Throw(ERREXCEPTION));
 
 	try {
 		cmd.execute();
@@ -378,7 +378,7 @@ TEST_F(ShellTestAppFixture, fullReadFailTest) {
 		.WillRepeatedly(Return(MAX_LBA_NUM));
 	EXPECT_CALL(mSsd, Read(_))
 		.Times(1)
-		.WillOnce(testing::Throw(ERROR));
+		.WillOnce(testing::Throw(ERREXCEPTION));
 	
 	try {
 		cmd.execute();
@@ -407,7 +407,7 @@ TEST_F(ShellTestAppFixture, fullWriteFailTest) {
 		.WillRepeatedly(Return(MAX_LBA_NUM));
 	EXPECT_CALL(mSsd, Write(_, INVALID_DATA))
 		.Times(1)
-		.WillOnce(testing::Throw(ERROR));
+		.WillOnce(testing::Throw(ERREXCEPTION));
 
 	try {
 		cmd.execute();

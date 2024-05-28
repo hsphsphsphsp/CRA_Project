@@ -11,6 +11,7 @@
 #include "../TeamProject_SSD/Command.cpp"
 #include "../TeamProject_SSD/CommandFactory.cpp"
 #include "../TeamProject_SSD/Runner.cpp"
+#include "../TeamProject_SSD/Logger.cpp"
 
 
 using namespace std;
@@ -44,7 +45,7 @@ public:
 	const unsigned int MAX_LBA_NUM = 100; //todo get MAX_LBA_NUM from SSD
 	const unsigned int DATA = 0xFFFFFFFF;
 	const unsigned int INVALID_DATA = 0X00000000;
-	const std::exception ERROR;
+	const std::exception ERREXCEPTION;
 	const std::string TESTSCRIPT1 = "testscriptapp2";
 	const std::string TESTSCRIPT2 = "testscriptapp1";
 };
