@@ -13,6 +13,9 @@ public:
 	virtual int GetSSDSize();
 
 private:
+	void ReadFromNAND(const unsigned int nLBA, unsigned int& nReadValue);
+	bool ReadFromCmdBuffer(const unsigned int nLBA, unsigned int& nReadValue);
+
 	void ValidateParameter(unsigned int nLBA, unsigned int nSize = 0);
 	bool IsLBAWritten(const unsigned int& nLBA, unordered_map<unsigned int, unsigned int>& umDataSet);
 
