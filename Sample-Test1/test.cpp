@@ -99,7 +99,7 @@ TEST_F(SSDFixture, Read_CreateResultFile)
 	EXPECT_EQ(fin.is_open(), true);
 }
 
-TEST_F(SSDFixture, DISABLED_Read_ReadAfterWriteNormalValue)
+TEST_F(SSDFixture, Read_ReadAfterWriteNormalValue)
 {
 	unsigned int nValue = 0xB622AABB;
 
@@ -118,7 +118,7 @@ TEST_F(SSDFixture, Write_InvalidLBA)
 	EXPECT_THROW(ssd.Write(INVALID_LBA, nValue), exception);
 }
 
-TEST_F(SSDFixture, DISABLED_Write_OverwriteData)
+TEST_F(SSDFixture, Write_OverwriteData)
 {
 	unsigned int nValue = 0xB622AABB;
 	unsigned int nNewValue = 0xFFFFFFFF;
@@ -173,7 +173,7 @@ TEST_F(SSDFixture, Write_VerifyWriteFunctionWithRawFileData)
 	}
 }
 
-TEST_F(SSDFixture, DISABLED_Erase_EraseAfterWriteNormalValue)
+TEST_F(SSDFixture, Erase_EraseAfterWriteNormalValue)
 {
 	unsigned int nLBA1 = 0;
 	unsigned int nData1 = 0xB622AABB;
@@ -188,7 +188,7 @@ TEST_F(SSDFixture, DISABLED_Erase_EraseAfterWriteNormalValue)
 	EXPECT_EQ(nData2, ssd.Read(nLBA2));
 }
 
-TEST_F(SSDFixture, DISABLED_Erase_EraseRangeAfterWriteNormalValue)
+TEST_F(SSDFixture, Erase_EraseRangeAfterWriteNormalValue)
 {
 	unsigned int nLBA1 = 0;
 	unsigned int nData1 = 0xB622AABB;
