@@ -69,7 +69,7 @@ void Logger::Print(string sFunctionName, string format, ...)
 	va_start(arg, format.c_str());
 	vsprintf_s(sLog, format.c_str(), arg);
 	va_end(arg);
-	
+
 	string sPrintLog = sPrefix + sLog;
 
 	if (this->GetFileSize() + sPrintLog.size() > DEFINE_10KB)
@@ -78,7 +78,7 @@ void Logger::Print(string sFunctionName, string format, ...)
 		CreateNewLog();
 		fout.open(sLogFolderPath + sLatestFileName, ios::app);
 	}
-	
+
 	cout << sPrintLog;
 	fout << sPrintLog;
 	fout.close();
