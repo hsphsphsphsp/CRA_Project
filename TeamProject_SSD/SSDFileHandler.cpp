@@ -10,7 +10,7 @@ void SSDFileHandler::LoadNANDFile(unordered_map<unsigned int, unsigned int>& umD
 		while (!fin.eof())
 		{
 			fin >> sIndex >> sValue;
-			umDataSet.insert({ stoi(sIndex), stoul(sValue, nullptr, 16) });
+			umDataSet.insert({ HexStringToUInt(sIndex), HexStringToUInt(sValue) });
 		}
 	}
 }
@@ -31,7 +31,12 @@ void SSDFileHandler::WriteHexReadValueToResultFile(unsigned int nValue)
 	fResultFile << "0x" << FormatHex(nValue);
 }
 
-void SSDFileHandler::LoadCommandBufferFile(unordered_map<pair<int, unsigned int>, unsigned int, pair_hash>& nCmdBuffer)
+void SSDFileHandler::RemoveNANDFile()
+{
+	remove(&*sNandFileName.begin());
+}
+
+void SSDFileHandler::LoadCommandBufferFile(CMD_BUFFER_MAP& nCmdBuffer)
 {
 	ifstream fin(sCommandBufferFileName);
 	string sCmdType, sLBA, sValue;
@@ -42,16 +47,16 @@ void SSDFileHandler::LoadCommandBufferFile(unordered_map<pair<int, unsigned int>
 		{
 			fin >> sCmdType >> sLBA >> sValue;
 
-			int nCmdType = sCmdType == "W" ? W : E;
-			int nLBA = stoi(sLBA);
-			unsigned int nValue = stoul(sValue, nullptr, 16);
+			int nCmdType = GetCmdType(sCmdType);
+			unsigned int nLBA = HexStringToUInt(sLBA);
+			unsigned int nValue = HexStringToUInt(sValue);
 
 			nCmdBuffer[{ nCmdType, nLBA }] = nValue;
 		}
 	}
 }
 
-void SSDFileHandler::WriteCommandBufferFile(const unordered_map<pair<int, unsigned int>, unsigned int, pair_hash>& nCmdBuffer)
+void SSDFileHandler::WriteCommandBufferFile(const CMD_BUFFER_MAP& nCmdBuffer)
 {
 	ofstream fout(sCommandBufferFileName);
 
@@ -68,26 +73,42 @@ void SSDFileHandler::WriteCommandBufferFile(const unordered_map<pair<int, unsign
 	}
 }
 
-string SSDFileHandler::FormatHex(unsigned int nValue) 
+bool SSDFileHandler::IsNANDFileExist()
+{
+	return _access(&*sNandFileName.begin(), 0) == 0;
+}
+
+int SSDFileHandler::GetCmdType(std::string& sCmdType)
+{
+	return sCmdType == "W" ? W : E;
+}
+
+string SSDFileHandler::FormatHex(unsigned int nValue)
 {
 	std::ostringstream oss;
 	oss << "0x" << uppercase << hex << setw(8) << setfill('0') << nValue;
 	return oss.str();
 }
 
-string SSDFileHandler::FormatDec(unsigned int nValue) 
+string SSDFileHandler::FormatDec(unsigned int nValue)
 {
 	std::ostringstream oss;
 	oss << dec << nValue;
 	return oss.str();
 }
 
-bool SSDFileHandler::IsNANDFileExist()
+unsigned int SSDFileHandler::HexStringToUInt(const string& sValue)
 {
-	return _access(&*sNandFileName.begin(), 0) == 0;
-}
-
-void SSDFileHandler::removeNANDFile()
-{
-	remove(&*sNandFileName.begin());
+	try 
+	{
+		return std::stoul(sValue, nullptr, 16);
+	}
+	catch (const std::invalid_argument& e) 
+	{
+		throw exception("Invalid argument");
+	}
+	catch (const std::out_of_range& e) 
+	{
+		throw exception("Out of range");
+	}
 }

@@ -8,7 +8,10 @@
 #include "../TeamProject_SSD/testscript.cpp"
 #include "../TeamProject_SSD/ShellTestApp.cpp"
 #include "../TeamProject_SSD/RunnerFileHandler.cpp"
+#include "../TeamProject_SSD/Command.cpp"
+#include "../TeamProject_SSD/CommandFactory.cpp"
 #include "../TeamProject_SSD/Runner.cpp"
+
 
 using namespace std;
 using namespace testing;

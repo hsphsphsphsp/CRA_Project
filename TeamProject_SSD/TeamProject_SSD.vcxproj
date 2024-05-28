@@ -127,6 +127,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandFactory.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Runner.cpp" />
@@ -137,6 +139,8 @@
     <ClCompile Include="testscript.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Command.h" />
+    <ClInclude Include="CommandFactory.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="Runner.h" />
     <ClInclude Include="RunnerFileHandler.h" />
