@@ -18,9 +18,12 @@ public:
 	int GetSSDSize() const { return ssd->GetSSDSize(); }
 
 protected:
-	const unsigned int nRefDataForTestScenario = 0x5A5A5A5A;
-	const unsigned int nTestScenarioLoopCount = 10;
-	const unsigned int nTargetAddrForTestScenario = 0x0;
+	const unsigned int nExpectedDataInTestScenario = 0x5A5A5A5A;
+	const unsigned int nLoopCountInTestScenario = 10;
+	const unsigned int nTargetAddrInTestScenario = 0x0;
+
+	void FullWriteInTestScript(unsigned int nWriteData);
+	bool FullReadVerifyInTestScript(unsigned int nExpectedWrittenData);
 
 	SSD* ssd;
 };
@@ -31,8 +34,6 @@ public:
 	TestScriptApp1(SSD* ssd) : TestScript{ ssd } {}
 
 	bool DoScript() override;
-	bool FullReadVerify(unsigned int nWriteValue);
-	void FullWrite(unsigned int nWriteValue);
 };
 
 class TestScriptApp2 : public TestScript

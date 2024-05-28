@@ -1,18 +1,18 @@
 #include "testscript.h"
 
-bool TestScriptApp1::DoScript()
+void TestScript::FullWriteInTestScript(unsigned int nWriteData)
 {
-	unsigned int nWriteValue = 0x0;
-
-	FullWrite(nWriteValue);
-	return FullReadVerify(nWriteValue);
+	for (int addrOffset = 0; addrOffset < ssd->GetSSDSize(); addrOffset++)
+	{
+		ssd->Write(addrOffset, nWriteData);
+	}
 }
 
-bool TestScriptApp1::FullReadVerify(unsigned int nWriteValue)
+bool TestScript::FullReadVerifyInTestScript(unsigned int nExpectedWrittenData)
 {
-	for (int i = 0; i < ssd->GetSSDSize(); i++)
+	for (int addrOffset = 0; addrOffset < ssd->GetSSDSize(); addrOffset++)
 	{
-		if (ssd->Read(i) != nWriteValue)
+		if (nExpectedWrittenData != ssd->Read(addrOffset))
 		{
 			return false;
 		}
@@ -20,12 +20,12 @@ bool TestScriptApp1::FullReadVerify(unsigned int nWriteValue)
 	return true;
 }
 
-void TestScriptApp1::FullWrite(unsigned int nWriteValue)
+bool TestScriptApp1::DoScript()
 {
-	for (int i = 0; i < ssd->GetSSDSize(); i++)
-	{
-		ssd->Write(i, nWriteValue);
-	}
+	unsigned int nWriteValue = 0x0;
+
+	FullWriteInTestScript(nWriteValue);
+	return FullReadVerifyInTestScript(nWriteValue);
 }
 
 bool TestScriptApp2::DoScript()
@@ -73,66 +73,38 @@ bool TestScriptApp2::Verify()
 
 bool FullWriteReadCompare::DoScript()
 {
-	for (register int nandFileOffset = 0; nandFileOffset < ssd->GetSSDSize(); nandFileOffset++)
-	{
-		ssd->Write(nandFileOffset, nRefDataForTestScenario);
-	}
-
-	for (register int nandFileOffset = 0; nandFileOffset < ssd->GetSSDSize(); nandFileOffset++)
-	{
-		if (ssd->Read(nandFileOffset) != nRefDataForTestScenario)
-		{
-			return false;
-		}
-	}
-
-	return true;
+	FullWriteInTestScript(nExpectedDataInTestScenario);
+	return FullReadVerifyInTestScript(nExpectedDataInTestScenario);
 }
 
 bool FullRead10AndCompare::DoScript()
 {
-	for (register int nandFileOffset = 0; nandFileOffset < ssd->GetSSDSize(); nandFileOffset++)
-	{
-		ssd->Write(nandFileOffset, nRefDataForTestScenario);
-	}
+	FullWriteInTestScript(nExpectedDataInTestScenario);
 
-	for (int fullReadCount = 0; nTestScenarioLoopCount; fullReadCount++)
-	{
-		for (register int nandFileOffset = 0; nandFileOffset < ssd->GetSSDSize(); nandFileOffset++)
-		{
-			ssd->Read(nandFileOffset);
-		}
-	}
+	bool isPass = true;
+	for (int fullReadCount = 0; nLoopCountInTestScenario; fullReadCount++)
+		isPass &= FullReadVerifyInTestScript(nExpectedDataInTestScenario);
 
-	for (register int nandFileOffset = 0; nandFileOffset < ssd->GetSSDSize(); nandFileOffset++)
-	{
-		if (ssd->Read(nandFileOffset) != nRefDataForTestScenario)
-		{
-			return false;
-		}
-	}
-	return true;
+	return isPass;
 }
 
 bool Write10AndCompare::DoScript()
 {
-	for (int testCount = 0; testCount < nTestScenarioLoopCount; testCount++)
-	{
-		ssd->Write(nTargetAddrForTestScenario, nRefDataForTestScenario);
-	}
-	if (nRefDataForTestScenario != ssd->Read(nTargetAddrForTestScenario))
-	{
+	for (int testCount = 0; testCount < nLoopCountInTestScenario; testCount++)
+		ssd->Write(nTargetAddrInTestScenario, nExpectedDataInTestScenario);
+
+	if (nExpectedDataInTestScenario != ssd->Read(nTargetAddrInTestScenario))
 		return false;
-	}
+
 	return true;
 }
 
 bool Loop_WriteAndReadCompare::DoScript()
 {
-	for (int testCount = 0; testCount < nTestScenarioLoopCount; testCount++)
+	for (int testCount = 0; testCount < nLoopCountInTestScenario; testCount++)
 	{
-		ssd->Write(nTargetAddrForTestScenario, nRefDataForTestScenario);
-		if (nRefDataForTestScenario != ssd->Read(nTargetAddrForTestScenario))
+		ssd->Write(nTargetAddrInTestScenario, nExpectedDataInTestScenario);
+		if (nExpectedDataInTestScenario != ssd->Read(nTargetAddrInTestScenario))
 		{
 			return false;
 		}
