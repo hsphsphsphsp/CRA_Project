@@ -64,6 +64,14 @@ private:
 	std::string sTestScriptName;
 };
 
+class DoRunnerCommand : public Command {
+public:
+	DoRunnerCommand(SSD* pSsd, std::string sTestScriptName);
+	void execute() override;
+private:
+	std::string sTestScriptName;
+};
+
 class EraseCommand : public Command {
 public:
 	EraseCommand(SSD* pSsd, int nLba, int nSize);

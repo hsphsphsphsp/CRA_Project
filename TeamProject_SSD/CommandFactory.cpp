@@ -28,7 +28,10 @@ Command* CommandSingletonFactory::create(SSD* pSsd, std::queue<std::string> qCmd
     else if (sCmd == "testscriptapp1" || sCmd == "testscriptapp2") {
         return new DoScriptCommand(pSsd, sCmd);
     }
-
+    else if (sCmd == "run_list.lst") {
+        return new DoRunnerCommand(pSsd, sCmd);
+    }
+    
     return new WrongCommand(pSsd);
 }
 

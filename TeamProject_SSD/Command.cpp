@@ -1,4 +1,5 @@
 #include "Command.h"
+#include "Runner.h"
 
 Command::Command(SSD* pSsd, std::string sCmdName) :
     pSsd{ pSsd },
@@ -148,6 +149,19 @@ void DoScriptCommand::execute()
         throw exception("INVALID SCRIPT NAME");
     }
     testScript->DoScript();
+}
+
+DoRunnerCommand::DoRunnerCommand(SSD* pSsd, std::string sTestScriptName) :
+    Command(pSsd, "run_list.lst"),
+    sTestScriptName{ sTestScriptName }
+{
+}
+
+void DoRunnerCommand::execute()
+{
+    Runner runner(pSsd);
+    if (!runner.CheckRunListFileExist(sTestScriptName)) return;
+    runner.DoRunnerTestScenario();
 }
 
 WrongCommand::WrongCommand(SSD* pSsd) :
