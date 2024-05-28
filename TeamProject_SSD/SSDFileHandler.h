@@ -30,6 +30,7 @@ public:
 	void WriteNANDFile(const unordered_map<unsigned int, unsigned int>& umDataSet);
 	void WriteHexReadValueToResultFile(unsigned int nValue);
 	void RemoveNANDFile();
+	void RemoveCommandBufferFile();
 
 	void LoadCommandBufferFile(CMD_BUFFER_MAP& nCmdBuffer);
 	void WriteCommandBufferFile(const CMD_BUFFER_MAP& nCmdBuffer);
@@ -41,6 +42,7 @@ private:
 	string FormatHex(unsigned int nValue);
 	string FormatDec(unsigned int nValue);
 	unsigned int HexStringToUInt(const string& sValue);
+	unsigned int DecStringToUInt(const string& sValue);
 
 	const string sResultFileName = "result.txt";
 	const string sNandFileName = "nand.txt";

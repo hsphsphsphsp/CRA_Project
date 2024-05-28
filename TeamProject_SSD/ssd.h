@@ -9,6 +9,7 @@ public:
 	virtual unsigned int Read(unsigned int nLBA);
 	virtual void Write(unsigned int nLBA, unsigned int nValue);
 	virtual void Erase(unsigned int nLBA, unsigned int nSize);
+	virtual void Flush();
 	virtual int GetSSDSize();
 
 private:
@@ -22,4 +23,5 @@ private:
 	SSDFileHandler ssdFileHandler;
 	const unsigned int SSD_MAX_LBA = 99;
 	const unsigned int DEFAULT_READ_VALUE = 0x00000000;
+	bool bUseCommandBuffer = true;
 };

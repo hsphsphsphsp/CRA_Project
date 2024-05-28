@@ -36,6 +36,11 @@ void SSDFileHandler::RemoveNANDFile()
 	remove(&*sNandFileName.begin());
 }
 
+void SSDFileHandler::RemoveCommandBufferFile()
+{
+	remove(&*sCommandBufferFileName.begin());
+}
+
 void SSDFileHandler::LoadCommandBufferFile(CMD_BUFFER_MAP& nCmdBuffer)
 {
 	ifstream fin(sCommandBufferFileName);
@@ -48,7 +53,7 @@ void SSDFileHandler::LoadCommandBufferFile(CMD_BUFFER_MAP& nCmdBuffer)
 			fin >> sCmdType >> sLBA >> sValue;
 
 			int nCmdType = GetCmdType(sCmdType);
-			unsigned int nLBA = HexStringToUInt(sLBA);
+			unsigned int nLBA = DecStringToUInt(sLBA);
 			unsigned int nValue = HexStringToUInt(sValue);
 
 			nCmdBuffer[{ nCmdType, nLBA }] = nValue;
@@ -108,6 +113,22 @@ unsigned int SSDFileHandler::HexStringToUInt(const string& sValue)
 		throw exception("Invalid argument");
 	}
 	catch (const std::out_of_range& e) 
+	{
+		throw exception("Out of range");
+	}
+}
+
+unsigned int SSDFileHandler::DecStringToUInt(const string& sValue)
+{
+	try
+	{
+		return std::stoi(sValue);
+	}
+	catch (const std::invalid_argument& e)
+	{
+		throw exception("Invalid argument");
+	}
+	catch (const std::out_of_range& e)
 	{
 		throw exception("Out of range");
 	}
