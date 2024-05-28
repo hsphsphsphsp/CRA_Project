@@ -82,7 +82,7 @@ bool FullRead10AndCompare::DoScript()
 	FullWriteInTestScript(nExpectedDataInTestScenario);
 
 	bool isPass = true;
-	for (int fullReadCount = 0; nLoopCountInTestScenario; fullReadCount++)
+	for (int fullReadCount = 0; fullReadCount< nLoopCountInTestScenario; fullReadCount++)
 		isPass &= FullReadVerifyInTestScript(nExpectedDataInTestScenario);
 
 	return isPass;
