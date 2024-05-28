@@ -83,7 +83,7 @@ bool SSD::IsLBAWritten(const unsigned int& nLBA, unordered_map<unsigned int, uns
 
 void SSD::AddCommandToBuffer(int nCmdType, int nLBA, unsigned int nData)
 {
-	unordered_map<MyKey, unsigned int> nCmdBuffer;
+	unordered_map<pair<int, unsigned int>, unsigned int, pair_hash> nCmdBuffer;
 
 	ssdFileHandler.LoadCommandBufferFile(nCmdBuffer);
 

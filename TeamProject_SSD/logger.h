@@ -1,10 +1,11 @@
-#pragma once
+﻿#pragma once
 
 #include <queue>
 #include <string>
 #include <iostream>
 #include <Windows.h>
 #include <fstream>
+#include <sys/timeb.h>​
 
 using namespace std;
 
@@ -20,6 +21,7 @@ public:
 	void CreateNewLog();
 	void TransFileToZip();
 	void Print(string sLog, string sFunctionName = __builtin_FUNCTION());
+	void RenameFile(string& sPathAndOldFileName, string& sNewFileName);
 	string ExtractFileName(const string& sFileName);
 	string GetTime();
 	int GetFileSize();
