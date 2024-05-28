@@ -25,7 +25,7 @@ void ShellTestApp::Read(unsigned int nLba) {
     }
 }
 
-void ShellTestApp::Erase(unsigned int nLba, unsigned int nSize) {
+void ShellTestApp::EraseCommand(unsigned int nLba, unsigned int nSize) {
     try {
         pSsd->Erase(nLba, nSize);
     } catch (std::exception& e) {
@@ -124,11 +124,12 @@ void ShellTestApp::DoScript(std::string sTestScriptName) {
 
 void ShellTestApp::Start()
 {
-    string sCmd;
     queue<string> qCmdBuffer;
 
     while (1)
     {
+        qCmdBuffer = queue<string>();
+
         string sLine;
         getline(cin, sLine);
         istringstream iSS(sLine);
@@ -138,74 +139,13 @@ void ShellTestApp::Start()
         {
             qCmdBuffer.push(sBuffer);
         }
-
-        string sCmd = qCmdBuffer.front();
-        qCmdBuffer.pop();
-
-        if (sCmd == "r")
-        {
-            if (qCmdBuffer.size() != 1)
-                throw exception("INVALID CMD");
-
-            unsigned int nLba = stoi(qCmdBuffer.front());
-            qCmdBuffer.pop();
-            Read(nLba);
+        try {
+            pCommand = CommandSingletonFactory::GetInstance()
+                .create(pSsd, qCmdBuffer);
+            pCommand->execute();
         }
-        else if (sCmd == "w")
-        {
-            unsigned int nLba = stoi(qCmdBuffer.front());
-            qCmdBuffer.pop();
-            unsigned int nValue = stoul(qCmdBuffer.front(), nullptr, 16);
-            qCmdBuffer.pop();
-            Write(nLba, nValue);
-        }
-        else if (sCmd == "erase")
-        {
-            if (qCmdBuffer.size() != 2)
-                throw exception("INVALID CMD");
-
-            unsigned int nLba = stoi(qCmdBuffer.front());
-            qCmdBuffer.pop();
-            unsigned int nSize = stoi(qCmdBuffer.front());
-            qCmdBuffer.pop();
-            Erase(nLba, nSize);
-        }
-        else if (sCmd == "erase_range")
-        {
-            if (qCmdBuffer.size() != 2)
-                throw exception("INVALID CMD");
-
-            unsigned int nStartLba = stoi(qCmdBuffer.front());
-            qCmdBuffer.pop();
-            unsigned int nEndLba = stoi(qCmdBuffer.front());
-            qCmdBuffer.pop();
-            Erase(nStartLba, nEndLba - nStartLba);
-        }
-        else if (sCmd == "exit")
-        {
-            return;
-        }
-        else if (sCmd == "help")
-        {
-            Help();
-        }
-        else if (sCmd == "fullwrite")
-        {
-            unsigned int nValue = stoi(qCmdBuffer.front());
-            qCmdBuffer.pop();
-            FullWrite(nValue);
-        }
-        else if (sCmd == "fullread")
-        {
-            FullRead();
-        }
-        else if (sCmd == "run_list.lst")
-        {
-            DoRunner(sCmd);
-        }
-        else
-        {
-            // not defined cmd
+        catch (std::invalid_argument& e) {
+            std::cout << e.what() << std::endl;
         }
     }
 }

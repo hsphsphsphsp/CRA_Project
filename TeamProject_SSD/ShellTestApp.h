@@ -5,6 +5,7 @@
 
 #include "testscript.h"
 #include "RunnerFileHandler.h"
+#include "CommandFactory.h"
 
 class ShellTestApp {
 public:
@@ -14,7 +15,7 @@ public:
 
     void Read(unsigned int nLba);
 
-    void Erase(unsigned int nLba, unsigned int nSize);
+    void EraseCommand(unsigned int nLba, unsigned int nSize);
 
     void Exit();
 
@@ -39,6 +40,7 @@ public:
 private:    
     TestScript* testScript;
     SSD* pSsd;
+    Command* pCommand;
 
     int GetSsdSize();
 
