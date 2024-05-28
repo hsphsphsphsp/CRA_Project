@@ -56,7 +56,7 @@ void SSD::Erase(unsigned int nLBA, unsigned int nSize)
 
 	if (umDataSet.empty())
 	{
-		ssdFileHandler.removeNANDFile();
+		ssdFileHandler.RemoveNANDFile();
 		return;
 	}
 
@@ -83,7 +83,7 @@ bool SSD::IsLBAWritten(const unsigned int& nLBA, unordered_map<unsigned int, uns
 
 void SSD::AddCommandToBuffer(int nCmdType, int nLBA, unsigned int nData)
 {
-	unordered_map<pair<int, unsigned int>, unsigned int, pair_hash> nCmdBuffer;
+	CMD_BUFFER_MAP nCmdBuffer;
 
 	ssdFileHandler.LoadCommandBufferFile(nCmdBuffer);
 
