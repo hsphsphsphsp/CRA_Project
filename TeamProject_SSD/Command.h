@@ -93,3 +93,12 @@ public:
 	WrongCommand(SSD* pSsd);
 	void execute() override;
 };
+
+class EraseRangeCommand : public Command {
+public:
+	EraseRangeCommand(SSD* pSsd, unsigned int nStartLba, unsigned int nEndLba);
+	void execute() override;
+private:
+	unsigned int nStartLba;
+	unsigned int nEndLba;
+};

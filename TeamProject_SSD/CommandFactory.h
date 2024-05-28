@@ -22,6 +22,8 @@ private:
 	unsigned int nLba;
 	unsigned int nData;
 	unsigned int nSize;
+	unsigned int nStartLba;
+	unsigned int nEndLba;
 
 	void AssertArguments(std::queue<std::string> qCmdBuffer);
 	unsigned int ConvertToNumFrom(std::string sNumber);
