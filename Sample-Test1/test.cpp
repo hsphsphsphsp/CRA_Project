@@ -246,7 +246,7 @@ TEST_F(SSDFixture, CommandBuffer_IgnorePreviousWriteWhenWriteIssued)
 	EXPECT_EQ(nExpectedValue, nSecondWriteValue);
 }
 
-TEST_F(SSDFixture, DISABLED_CommandBuffer_ReadFromCommandBuffer)
+TEST_F(SSDFixture, CommandBuffer_ReadFromCommandBuffer)
 {
 	unsigned int nValue = 0xFFFFFFFF;
 
