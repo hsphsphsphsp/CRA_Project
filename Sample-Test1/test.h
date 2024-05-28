@@ -77,9 +77,35 @@ public:
 		remove(sCommandBufferFileName.c_str());
 	}
 
+	CMD_BUFFER_MAP LoadCmdBuffer()
+	{
+		CMD_BUFFER_MAP nCmdBuffer;
+		ifstream fin(sCommandBufferFileName);
+		string sCmdType, sLBA, sValue;
+
+		if (fin.is_open())
+		{
+			while (!fin.eof())
+			{
+				fin >> sCmdType >> sLBA >> sValue;
+
+				int nCmdType = sCmdType == "W" ? W : E;
+				int nLBA = stoi(sLBA);
+				unsigned int nValue = stoul(sValue, nullptr, 16);
+
+				nCmdBuffer[{ nCmdType, nLBA }] = nValue;
+			}
+		}
+		return nCmdBuffer;
+	}
+
 	SSD ssd;
+	CMD_BUFFER_MAP nCmdBuffer;
+
 	const unsigned int DEFAULT_READ_VALUE = 0x00000000;
 	const unsigned int INVALID_LBA = 0xFF;
+	const unsigned int LBA_0 = 0;
+
 	string sResultFileName = "result.txt";
 	string sNANDFileName = "nand.txt";
 	string sCommandBufferFileName = "buffer.txt";

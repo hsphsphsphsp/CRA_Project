@@ -101,11 +101,10 @@ TEST_F(SSDFixture, Read_CreateResultFile)
 
 TEST_F(SSDFixture, Read_ReadAfterWriteNormalValue)
 {
-	unsigned int nLBA = 0;
-	unsigned int nData = 0xB622AABB;
+	unsigned int nValue = 0xB622AABB;
 
-	ssd.Write(nLBA, nData);
-	EXPECT_EQ(nData, ssd.Read(nLBA));
+	ssd.Write(LBA_0, nValue);
+	EXPECT_EQ(nValue, ssd.Read(LBA_0));
 }
 
 TEST_F(SSDFixture, Read_InvalidLBA)
@@ -115,21 +114,20 @@ TEST_F(SSDFixture, Read_InvalidLBA)
 
 TEST_F(SSDFixture, Write_InvalidLBA)
 {
-	unsigned int nData = 0x1122AABB;
-	EXPECT_THROW(ssd.Write(INVALID_LBA, nData), exception);
+	unsigned int nValue = 0x1122AABB;
+	EXPECT_THROW(ssd.Write(INVALID_LBA, nValue), exception);
 }
 
 TEST_F(SSDFixture, Write_OverwriteData)
 {
-	unsigned int nLBA = 0;
-	unsigned int nData = 0xB622AABB;
-	unsigned int nNewData = 0xFFFFFFFF;
+	unsigned int nValue = 0xB622AABB;
+	unsigned int nNewValue = 0xFFFFFFFF;
 
-	ssd.Write(nLBA, nData);
-	ssd.Write(nLBA, nNewData);
+	ssd.Write(LBA_0, nValue);
+	ssd.Write(LBA_0, nNewValue);
 
-	EXPECT_THAT(nData, Ne(ssd.Read(nLBA)));
-	EXPECT_THAT(nNewData, Eq(ssd.Read(nLBA)));
+	EXPECT_THAT(nValue, Ne(ssd.Read(LBA_0)));
+	EXPECT_THAT(nNewValue, Eq(ssd.Read(LBA_0)));
 }
 
 TEST_F(SSDFixture, Write_VerifyWriteFunctionWithRawFileData)
@@ -186,6 +184,7 @@ TEST_F(SSDFixture, Erase_EraseAfterWriteNormalValue)
 	EXPECT_EQ(nData1, ssd.Read(nLBA1));
 	ssd.Erase(nLBA1, 1);
 	EXPECT_EQ(DEFAULT_READ_VALUE, ssd.Read(nLBA1));
+	EXPECT_EQ(nData2, ssd.Read(nLBA2));
 }
 
 TEST_F(SSDFixture, Erase_EraseRangeAfterWriteNormalValue)
@@ -204,80 +203,60 @@ TEST_F(SSDFixture, Erase_EraseRangeAfterWriteNormalValue)
 
 TEST_F(SSDFixture, CommandBuffer_SimpleWriteCommandIssueTest)
 {
-	unsigned int nLBA = 0;
 	unsigned int nValue = 0xB622AABB;
+	tuple<int, unsigned int, unsigned int> tExpected = { W, LBA_0, nValue };
 
-	tuple<string, unsigned int, unsigned int> tExpectedResult = { "W", nLBA, nValue };
+	ssd.Write(LBA_0, nValue);
 
-	ssd.Write(nLBA, nValue);
-
-	ifstream fin(sCommandBufferFileName);
-	string sCmdType, sLBA, sValue;
-
-	if(fin.is_open())
-	{
-		fin >> sCmdType >> sLBA >> sValue;
-	}
+	nCmdBuffer = LoadCmdBuffer();
+	auto it = nCmdBuffer.begin();
+	tuple<int, unsigned int, unsigned int> tActual = { it->first.first , it->first.second, it->second };
 	
-	tuple<string, unsigned int, unsigned int> tWrittenDataToCmdBuffer = { sCmdType, stoi(sLBA), stoul(sValue, nullptr, 16) };
-
-	EXPECT_THAT(tExpectedResult == tWrittenDataToCmdBuffer, Eq(true));
+	EXPECT_EQ(tExpected, tActual);
 }
 
 TEST_F(SSDFixture, CommandBuffer_SimpleEraseCommandIssueTest)
 {
-	unsigned int nLBA = 0;
 	unsigned int nSize = 5;
+	tuple<int, unsigned int, unsigned int> tExpected = { E, LBA_0, nSize };
 
-	tuple<string, unsigned int, unsigned int> tExpectedResult = { "E", nLBA, nSize };
+	ssd.Erase(LBA_0, nSize);
+	
+	nCmdBuffer = LoadCmdBuffer();
+	auto it = nCmdBuffer.begin();
+	tuple<int, unsigned int, unsigned int> tActual = { it->first.first , it->first.second, it->second };
 
-	ssd.Erase(nLBA, nSize);
-
-	ifstream fin(sCommandBufferFileName);
-	string sCmdType, sLBA, sValue;
-
-	if (fin.is_open())
-	{
-		fin >> sCmdType >> sLBA >> sValue;
-	}
-
-	tuple<string, unsigned int, unsigned int> tWrittenDataToCmdBuffer = { sCmdType, stoi(sLBA), stoul(sValue, nullptr, 16) };
-
-	EXPECT_THAT(tExpectedResult == tWrittenDataToCmdBuffer, Eq(true));
+	EXPECT_EQ(tExpected, tActual);
 }
 
-TEST_F(SSDFixture, CommandBuffer_IgnoreWrite)
+TEST_F(SSDFixture, CommandBuffer_IgnorePreviousWriteWhenWriteIssued)
 {
-	unsigned int nLBA = 0;
 	unsigned int nFirstWriteValue = 0x00000001;
 	unsigned int nSecondWriteValue = 0xFFFFFFFF;
 
-	ssd.Write(nLBA, nFirstWriteValue);
-	ssd.Write(nLBA, nSecondWriteValue);
+	ssd.Write(LBA_0, nFirstWriteValue);
+	ssd.Write(LBA_0, nSecondWriteValue);
 
-	ifstream fin(sCommandBufferFileName);
-	string sCmdType, sLBA, sValue;
-	CMD_BUFFER_MAP nCmdBuffer;
+	nCmdBuffer = LoadCmdBuffer();
 
-	// Load Command Buffer
-	if (fin.is_open())
-	{
-		while (!fin.eof())
-		{
-			fin >> sCmdType >> sLBA >> sValue;
+	EXPECT_EQ(nCmdBuffer.size(), 1);
 
-			int nCmdType = sCmdType == "W" ? W : E;
-			int nLBA = stoi(sLBA);
-			unsigned int nValue = stoul(sValue, nullptr, 16);
-
-			nCmdBuffer[{ nCmdType, nLBA }] = nValue;
-		}
-	}
-	EXPECT_THAT(nCmdBuffer.size(), Eq(1));
-
-	pair<int, unsigned int> key = { W, nLBA };
-	unsigned int nExpectedValue = nCmdBuffer[key];
+	unsigned int nExpectedValue = nCmdBuffer[{ W, LBA_0 }];
 	EXPECT_EQ(nExpectedValue, nSecondWriteValue);
+}
+
+TEST_F(SSDFixture, DISABLED_CommandBuffer_ReadFromCommandBuffer)
+{
+	unsigned int nValue = 0xFFFFFFFF;
+
+	ssd.Write(LBA_0, nValue);
+	unsigned int nEpectedValue = ssd.Read(LBA_0);
+
+	EXPECT_EQ(nValue, nEpectedValue);
+
+	//Do not create nand.txt file because writed at command buffer (buffer.txt)
+	ifstream fin(sNANDFileName);
+	EXPECT_EQ(fin.is_open(), false);
 }
 
 TEST_F(ShellTestAppFixture, writeSuccessTest) {
