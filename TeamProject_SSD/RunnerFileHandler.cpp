@@ -8,8 +8,8 @@ vector<string>& RunnerFileHandler::GetCommandListFromTheRunnerFile()
 	while (!fin.eof())
 	{
 		fin >> sIndex;
-		if (fin.eof()) break;
 		commandList.push_back(sIndex);
+		if (fin.eof()) break;
 	}
 	fin.close();
 	return commandList;

@@ -47,11 +47,3 @@ void ShellTestApp::Start()
         }
     }
 }
-
-int ShellTestApp::GetSsdSize() {
-    return pSsd->GetSSDSize();
-}
-
-void ShellTestApp::PrintBlockData(unsigned int nLba, unsigned int nData) {
-    Log.Print(__func__,  "LBA = %d\tDATA = %#x\n", nLba, nData);
-}

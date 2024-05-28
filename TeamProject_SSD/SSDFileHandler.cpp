@@ -10,7 +10,7 @@ void SSDFileHandler::LoadNANDFile(unordered_map<unsigned int, unsigned int>& umD
 		while (!fin.eof())
 		{
 			fin >> sIndex >> sValue;
-			umDataSet.insert({ StringToUInt(sIndex, HEX), StringToUInt(sValue, HEX) });
+			umDataSet.insert({ StringToUInt(sIndex, DEC), StringToUInt(sValue, HEX) });
 		}
 	}
 }

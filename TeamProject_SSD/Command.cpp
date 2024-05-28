@@ -87,16 +87,18 @@ void HelpCommand::execute()
     Log.Print(__func__, "\tErase data from start LBA number BLOCK to end LBA number BLOCK\n");
     Log.Print(__func__, "- exit\n");
     Log.Print(__func__, "\tExit this program\n");
-    Log.Print(__func__, "- testapp1\n");
+    Log.Print(__func__, "- testscriptapp1\n");
     Log.Print(__func__, "\tDo below Test Sequence\n");
     Log.Print(__func__, "\tfullwrite > fullread\n");
     Log.Print(__func__, "\tCheck is correctly writed\n");
-    Log.Print(__func__, "- testapp2\n");
+    Log.Print(__func__, "- testscriptapp2\n");
     Log.Print(__func__, "\tDo below Test Sequence\n");
     Log.Print(__func__, "\tWrite 0xAAAABBBB to 0~5 LBA\n");
     Log.Print(__func__, "\tOver Write 0x12345678 to 0~5 LBA\n");
     Log.Print(__func__, "\tRead 0~5 LBA\n");
     Log.Print(__func__, "\tCheck is 0~5 LBA data overwritted\n");
+    Log.Print(__func__, "- [run list filename: string].lst\n");
+    Log.Print(__func__, "\tRun all scripts in list file\n");
 }
 
 FullWriteCommand::FullWriteCommand(SSD* pSsd, int nData) :
@@ -162,12 +164,17 @@ void EraseCommand::execute()
     pSsd->Erase(nLba, nSize);
 }
 
-RunListCommmand::RunListCommmand(SSD* pSsd, std::string sFilename) :
+RunListCommmand::RunListCommmand(SSD* pSsd, std::string sFileName) :
     Command(pSsd, "Run List"),
-    sFilename{sFilename}
+    sFileName{sFileName}
 {
 }
 
 void RunListCommmand::execute()
 {
+    Runner runner(pSsd);
+
+    if (!runner.CheckRunListFileExist(sFileName))
+        throw std::exception("List file is not exist");
+    runner.DoRunnerTestScenario();
 }
