@@ -1,7 +1,7 @@
 #include "ShellTestApp.h"
 #include <sstream>
 #include <queue>
-#include "RunnerHandler.h"
+#include "Runner.h"
 
 ShellTestApp::ShellTestApp(SSD* pSsd) : pSsd{ pSsd } {
 
@@ -202,7 +202,7 @@ void ShellTestApp::Start()
         }
         else if (sCmd == "run_list.lst")
         {
-            RunnerHandler runnerHandler(pSsd);
+            Runner runnerHandler(pSsd);
             if (!runnerHandler.CheckRunListFileExist(sCmd)) continue;
             runnerHandler.DoRunnerTestScenario();
         }

@@ -4,7 +4,6 @@
 #include <string>
 
 #include "testscript.h"
-#include "RunnerFileHandler.h"
 
 class ShellTestApp {
 public:

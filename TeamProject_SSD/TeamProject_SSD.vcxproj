@@ -129,9 +129,8 @@
   <ItemGroup>
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="RunnerHandler.h" />
+    <ClCompile Include="Runner.cpp" />
     <ClCompile Include="RunnerFileHandler.cpp" />
-    <ClCompile Include="RunnerHandler.cpp" />
     <ClCompile Include="ShellTestApp.cpp" />
     <ClCompile Include="ssd.cpp" />
     <ClCompile Include="SSDFileHandler.cpp" />
@@ -139,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="logger.h" />
+    <ClInclude Include="Runner.h" />
     <ClInclude Include="RunnerFileHandler.h" />
     <ClInclude Include="ShellTestApp.h" />
     <ClInclude Include="ssd.h" />
