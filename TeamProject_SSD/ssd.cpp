@@ -7,7 +7,7 @@ unsigned int SSD::Read(unsigned int nLBA)
 	unsigned int nReadValue = DEFAULT_READ_VALUE;
 
 	bool bCmdBufferReadSuccessed = ReadFromCmdBuffer(nLBA, nReadValue);
-	
+
 	if (!bCmdBufferReadSuccessed)
 	{
 		ReadFromNAND(nLBA, nReadValue);
@@ -145,12 +145,59 @@ void SSD::AddCommandToBuffer(int nCmdType, unsigned int nLBA, unsigned int nData
 	}
 	else if (nCmdType == E)
 	{
+		if (!umPrevEraseCommand.empty()) {
+			MergeEraseCommand(nCmdBuffer, nLBA, nData);
+		}
+
+		umPrevEraseCommand[{E, nLBA}] = nData;
+
 		OptimizeEraseComand(nCmdBuffer, nLBA, nData);
 	}
 
 	nCmdBuffer[{ nCmdType, nLBA }] = nData;
 
 	ssdFileHandler.WriteCommandBufferFile(nCmdBuffer);
+}
+
+void SSD::MergeEraseCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA, unsigned int& nData)
+{
+	auto it = umPrevEraseCommand.begin();
+
+	unsigned int nPrevStartLBA = it->first.second;
+	unsigned int nPrevEndLBA = it->first.second + it->second - 1;
+	unsigned int nCurStartLBA = nLBA;
+	unsigned int nCurEndLBA = nLBA + nData - 1;
+
+	if (nPrevStartLBA <= nCurStartLBA)
+	{
+		if (nPrevEndLBA + 1 < nCurStartLBA)
+		{
+			umPrevEraseCommand.clear();
+			return;
+		}
+
+		nLBA = nPrevStartLBA;
+	}
+	else
+	{
+		if (nCurEndLBA + 1 < nPrevStartLBA)
+		{
+			umPrevEraseCommand.clear();
+			return;
+		}
+
+		nLBA = nCurStartLBA;
+	}
+
+	if (nPrevEndLBA <= nCurEndLBA) {
+		nData = nCurEndLBA - nPrevStartLBA + 1;
+	}
+	else
+	{
+		nData = nPrevEndLBA - nPrevStartLBA + 1;
+	}
+
+	nCmdBuffer.erase({ E, nPrevStartLBA });
 }
 
 void SSD::OptimizeEraseComand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nData)
