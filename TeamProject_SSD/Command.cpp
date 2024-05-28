@@ -194,3 +194,25 @@ void RunListCommmand::execute()
         throw std::exception("List file is not exist");
     runner.DoRunnerTestScenario();
 }
+
+EraseRangeCommand::EraseRangeCommand(SSD* pSsd, unsigned int nStartLba, unsigned int nEndLba) :
+    Command(pSsd, "Erase Range"),
+    nStartLba{ nStartLba },
+    nEndLba{ nEndLba }
+{
+}
+
+void EraseRangeCommand::execute()
+{
+    const unsigned int MAXSIZE = 10;
+    unsigned int nSize;
+    do {
+        nSize = nEndLba - nStartLba;
+        if (nSize > MAXSIZE)
+            nSize = MAXSIZE;
+
+        pSsd->Erase(nStartLba, nSize);
+        nStartLba += nSize;
+    } while (nSize == MAXSIZE);
+}
+
