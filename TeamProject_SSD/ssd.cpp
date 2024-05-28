@@ -1,5 +1,10 @@
 #include "ssd.h"
 
+SSD::SSD()
+{
+	ssdFileHandler.RemoveCommandBufferFile();
+}
+
 unsigned int SSD::Read(unsigned int nLBA)
 {
 	ValidateParameter(nLBA);
