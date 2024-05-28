@@ -5,12 +5,11 @@
 
 class Command {
 public:
-	Command(SSD* pSsd);
+	Command(SSD* pSsd, std::string sCmdName);
 	virtual void execute() = 0;
-
+	std::string sCmdName = "DefaultCommand";
 protected:
 	SSD* pSsd = nullptr;
-
 	void PrintBlockData(unsigned int nLba, unsigned int nData);
 };
 
@@ -72,6 +71,14 @@ public:
 private:
 	int nLba;
 	int nSize;
+};
+
+class RunListCommmand : public Command {
+public:
+	RunListCommmand(SSD* pSsd, std::string sFilename);
+	void execute() override;
+private:
+	std::string sFilename;
 };
 
 class WrongCommand : public Command {

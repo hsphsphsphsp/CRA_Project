@@ -10,6 +10,9 @@ Command* CommandSingletonFactory::create(SSD* pSsd, std::queue<std::string> qCmd
     else if (sCmd == "read") {
         return new ReadCommand(pSsd, nLba);
     }
+    else if (sCmd == "erase") {
+        return new EraseCommand(pSsd, nLba, nSize);
+    }
     else if (sCmd == "exit") {
         return new ExitCommand(pSsd);
     }
@@ -45,15 +48,19 @@ void CommandSingletonFactory::AssertArguments(std::queue<std::string> qCmdBuffer
         nData = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
     }
     else if (sCmd == "read") {
-        if (qCmdBuffer.size() != 1) {
+        if (qCmdBuffer.size() != 1) 
             throw std::invalid_argument("Wrong arguments : read [LBA]");
-        }
         nLba = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
     }
     else if (sCmd == "fullwrite") {
-        if (qCmdBuffer.size() != 1) {
+        if (qCmdBuffer.size() != 1)
             throw std::invalid_argument("Wrong arguments : fullwrite [DATA]");
-        }
         nData = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
+    }
+    else if (sCmd == "erase") {
+        if (qCmdBuffer.size() != 2)
+            throw std::invalid_argument("Wrong arguments : erase [LBA] [SIZE]");
+        nLba = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
+        nSize = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
     }
 }
