@@ -54,7 +54,7 @@ void SSDFileHandler::LoadCommandBufferFile(CMD_BUFFER_MAP& nCmdBuffer)
 
 			int nCmdType = GetCmdType(sCmdType);
 			unsigned int nLBA = StringToUInt(sLBA, DEC);
-			unsigned int nValue = StringToUInt(sValue, HEX);
+			unsigned int nValue = nCmdType == W? StringToUInt(sValue, HEX): StringToUInt(sValue, DEC);
 
 			nCmdBuffer[{ nCmdType, nLBA }] = nValue;
 		}
