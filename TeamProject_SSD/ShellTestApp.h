@@ -12,8 +12,6 @@ class ShellTestApp {
 public:
     ShellTestApp(SSD* pSsd);
     
-    void Erase(unsigned int nLba, unsigned int nSize);
-
     void Start();
 
     // Methods for Runner

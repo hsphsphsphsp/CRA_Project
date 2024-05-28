@@ -6,14 +6,6 @@ ShellTestApp::ShellTestApp(SSD* pSsd) : pSsd{ pSsd } {
 
 }
 
-void ShellTestApp::Erase(unsigned int nLba, unsigned int nSize) {
-    try {
-        pSsd->Erase(nLba, nSize);
-    } catch (std::exception& e) {
-        std::cout << e.what() << std::endl;
-    }
-}
-
 void ShellTestApp::Start()
 {
     queue<string> qCmdBuffer;
@@ -36,7 +28,7 @@ void ShellTestApp::Start()
                 .create(pSsd, qCmdBuffer);
             pCommand->execute();
         }
-        catch (std::invalid_argument& e) {
+        catch (std::exception& e) {
             std::cout << e.what() << std::endl;
         }
     }
