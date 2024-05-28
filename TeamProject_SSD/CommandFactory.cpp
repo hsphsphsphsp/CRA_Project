@@ -76,7 +76,7 @@ void CommandSingletonFactory::AssertArguments(std::queue<std::string> qCmdBuffer
         if (qCmdBuffer.size() != 2)
             throw std::invalid_argument("Wrong arguments : erase_range [Start LBA] [End LBA]");
         nStartLba = ConvertToNumFrom(qCmdBuffer.front());  qCmdBuffer.pop();
-        nEndLba = ConvertToNumFrom(qCmdBuffer.front());  qCmdBuffer.pop();
+        nEndLba = ConvertToNumFrom(qCmdBuffer.front()) - 1;  qCmdBuffer.pop();
     }
 }
 
