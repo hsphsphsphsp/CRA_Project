@@ -5,6 +5,24 @@ unsigned int SSD::Read(unsigned int nLBA)
 	ValidateParameter(nLBA);
 
 	unsigned int nReadValue = DEFAULT_READ_VALUE;
+
+	// Load Command Buffer
+	CMD_BUFFER_MAP umCmdBuffer;
+	ssdFileHandler.LoadCommandBufferFile(umCmdBuffer);
+	
+	// If commands exist in Command Buffer
+	if (!umCmdBuffer.empty())
+	{
+		// Read from Command Buffer
+		auto it = umCmdBuffer.find({ W, nLBA });
+
+		// If success to find LBA from Command Buffer
+		if (it != umCmdBuffer.end())
+		{
+			nReadValue = umCmdBuffer[{W, nLBA}];
+			return nReadValue;
+		}
+	}
 	
 	unordered_map<unsigned int, unsigned int> umDataSet;
 	ssdFileHandler.LoadNANDFile(umDataSet);
