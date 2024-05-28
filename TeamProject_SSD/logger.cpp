@@ -1,5 +1,8 @@
 #include "logger.h"
 
+
+Logger Log = Logger::getInstance();
+
 string GetExeFilePath()
 {
     wchar_t wExeFilePath[MAX_PATH];
@@ -51,24 +54,31 @@ Logger::Logger()
     sLogFolderPath = GetExeFilePath() + "\\" + "Log\\";
 }
 
-void Logger::Print(string sLog, string sFunctionName)
+void Logger::Print(string sFunctionName, string format, ...)
 {
-	string result;
+	string sPrefix = "";
 	ofstream fout((sLogFolderPath + sLatestFileName), ios::app);
-	result += "[" + GetTime() + "]";
-	result += " " + sFunctionName + "()";
+	sPrefix += "[" + GetTime() + "]";
+	sPrefix += " " + sFunctionName + "()";
 	for (int i = 0; i < 30 - sFunctionName.size(); i++)
-		result.append(" ");
-	result += " : " + sLog;
+		sPrefix.append(" ");
+	sPrefix += " : ";
 
-	if (this->GetFileSize() + result.size() > DEFINE_10KB)
+	char sLog[1024] = "";
+	va_list arg;
+	va_start(arg, format.c_str());
+	vsprintf_s(sLog, format.c_str(), arg);
+	va_end(arg);
+
+	if (this->GetFileSize() + sPrefix.size() > DEFINE_10KB)
 	{
 		fout.close();
 		CreateNewLog();
 		fout.open(sLogFolderPath + sLatestFileName, ios::app);
 	}
-	cout << result << endl;
-	fout << result << endl;
+	string sPrintLog = sPrefix + sLog;
+	cout << sPrintLog;
+	fout << sPrintLog;
 	fout.close();
 	return;
 }

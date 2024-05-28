@@ -9,7 +9,7 @@ bool Runner::CheckRunListFileExist(std::string& sCmd)
 {
     if (!runnerFileHandler.IsRunnerListFileExist(sCmd))
     {
-        std::cout << sCmd << " file does not exist." << endl;
+        Log.Print(__func__,  "%s file does not exist.\n", sCmd);
         return false;
     }
     return true;
@@ -29,7 +29,7 @@ void Runner::DoRunnerTestScenario()
 
 TestScript* Runner::PrepareForEachTestScenario(std::string& EachCommand)
 {
-    cout << EachCommand << "   ---   Run...";
+    Log.Print(__func__,  "%s   ---   Run...", EachCommand);
 
     TestScriptFactory fTestScriptFactory;
     return fTestScriptFactory.createScript(EachCommand, *pSsd);
