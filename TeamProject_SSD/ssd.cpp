@@ -103,7 +103,7 @@ bool SSD::ReadFromCmdBuffer(const unsigned int nLBA, unsigned int& nReadValue)
 		{
 			if (it->first.first == E)
 			{
-				if (it->first.second <= nLBA && nLBA <= it->first.second + it->second)
+				if (it->first.second <= nLBA && nLBA <= it->first.second + (it->second - 1))
 				{
 					nReadValue = DEFAULT_READ_VALUE;
 					return true;
