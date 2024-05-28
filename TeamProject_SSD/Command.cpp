@@ -49,12 +49,16 @@ void ExitCommand::execute()
         Log.Print(__func__, "Exit App? (yes, no)\n");
         std::cin >> sInput;
 
-        if (sInput == "yes")
+        if (sInput == "yes") {
+            pSsd->Flush();
             std::exit(0);
-        else if (sInput == "no")
+        }
+        else if (sInput == "no") {
             return;
-        else
+        }
+        else {
             Log.Print(__func__, "Please type yes or no\n");
+        }
     }
 }
 
@@ -85,6 +89,8 @@ void HelpCommand::execute()
     Log.Print(__func__, "\tErase data as much as size from the LBA number BLOCK\n");
     Log.Print(__func__, "- erase_range [start lba: number] [end lba: number]\n");
     Log.Print(__func__, "\tErase data from start LBA number BLOCK to end LBA number BLOCK\n");
+    Log.Print(__func__, "- flush\n");
+    Log.Print(__func__, "\tFlush the command buffer\n");
     Log.Print(__func__, "- exit\n");
     Log.Print(__func__, "\tExit this program\n");
     Log.Print(__func__, "- testscriptapp1\n");
@@ -162,6 +168,16 @@ EraseCommand::EraseCommand(SSD* pSsd, int nLba, int nSize) :
 void EraseCommand::execute()
 {
     pSsd->Erase(nLba, nSize);
+}
+
+FlushCommand::FlushCommand(SSD* pSsd) :
+    Command(pSsd, "Flush")
+{
+}
+
+void FlushCommand::execute()
+{
+    pSsd->Flush();
 }
 
 RunListCommmand::RunListCommmand(SSD* pSsd, std::string sFileName) :
