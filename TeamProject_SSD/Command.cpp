@@ -198,7 +198,7 @@ void RunListCommmand::execute()
 EraseRangeCommand::EraseRangeCommand(SSD* pSsd, unsigned int nStartLba, unsigned int nEndLba) :
     Command(pSsd, "Erase Range"),
     nStartLba{ nStartLba },
-    nEndLba{ nEndLba - 1 }
+    nEndLba{ nEndLba }
 {
 }
 
@@ -206,13 +206,16 @@ void EraseRangeCommand::execute()
 {
     const unsigned int MAXSIZE = 10;
     unsigned int nSize;
+    
     do {
         nSize = nEndLba - nStartLba + 1;
         if (nSize > MAXSIZE)
             nSize = MAXSIZE;
+        else if (nSize <= 0)
+            break;
 
         pSsd->Erase(nStartLba, nSize);
         nStartLba += nSize;
-    } while (nSize == MAXSIZE);
+    } while (1);
 }
 
