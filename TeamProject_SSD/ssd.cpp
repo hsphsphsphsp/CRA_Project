@@ -81,13 +81,28 @@ bool SSD::IsLBAWritten(const unsigned int& nLBA, unordered_map<unsigned int, uns
 	return umDataSet.find(nLBA) != umDataSet.end();
 }
 
-void SSD::AddCommandToBuffer(int nCmdType, int nLBA, unsigned int nData)
+void SSD::AddCommandToBuffer(int nCmdType, unsigned int nLBA, unsigned int nData)
 {
 	CMD_BUFFER_MAP nCmdBuffer;
 
 	ssdFileHandler.LoadCommandBufferFile(nCmdBuffer);
 
+	if (nCmdType == W)
+	{
+		OptimizeWriteCommand(nCmdBuffer, nLBA);
+	}
+
 	nCmdBuffer[{ nCmdType, nLBA }] = nData;
 
 	ssdFileHandler.WriteCommandBufferFile(nCmdBuffer);
+}
+
+void SSD::OptimizeWriteCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA)
+{
+	RemovePrevWriteCmdWithSameLBA(nCmdBuffer, nLBA);
+}
+
+void SSD::RemovePrevWriteCmdWithSameLBA(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA)
+{
+	nCmdBuffer.erase({ W, nLBA });
 }

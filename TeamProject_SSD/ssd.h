@@ -14,7 +14,10 @@ public:
 private:
 	void ValidateParameter(unsigned int nLBA, unsigned int nSize = 0);
 	bool IsLBAWritten(const unsigned int& nLBA, unordered_map<unsigned int, unsigned int>& umDataSet);
-	void AddCommandToBuffer(int nCmdType, int nLBA, unsigned int nData);
+
+	void AddCommandToBuffer(int nCmdType, unsigned int nLBA, unsigned int nData);
+	void OptimizeWriteCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA);
+	void RemovePrevWriteCmdWithSameLBA(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA);
 
 	SSDFileHandler ssdFileHandler;
 	const unsigned int SSD_MAX_LBA = 99;

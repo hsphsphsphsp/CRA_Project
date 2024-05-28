@@ -246,6 +246,40 @@ TEST_F(SSDFixture, CommandBuffer_SimpleEraseCommandIssueTest)
 	EXPECT_THAT(tExpectedResult == tWrittenDataToCmdBuffer, Eq(true));
 }
 
+TEST_F(SSDFixture, CommandBuffer_IgnoreWrite)
+{
+	unsigned int nLBA = 0;
+	unsigned int nFirstWriteValue = 0x00000001;
+	unsigned int nSecondWriteValue = 0xFFFFFFFF;
+
+	ssd.Write(nLBA, nFirstWriteValue);
+	ssd.Write(nLBA, nSecondWriteValue);
+
+	ifstream fin(sCommandBufferFileName);
+	string sCmdType, sLBA, sValue;
+	CMD_BUFFER_MAP nCmdBuffer;
+
+	// Load Command Buffer
+	if (fin.is_open())
+	{
+		while (!fin.eof())
+		{
+			fin >> sCmdType >> sLBA >> sValue;
+
+			int nCmdType = sCmdType == "W" ? W : E;
+			int nLBA = stoi(sLBA);
+			unsigned int nValue = stoul(sValue, nullptr, 16);
+
+			nCmdBuffer[{ nCmdType, nLBA }] = nValue;
+		}
+	}
+	EXPECT_THAT(nCmdBuffer.size(), Eq(1));
+
+	pair<int, unsigned int> key = { W, nLBA };
+	unsigned int nExpectedValue = nCmdBuffer[key];
+	EXPECT_EQ(nExpectedValue, nSecondWriteValue);
+}
+
 TEST_F(ShellTestAppFixture, writeSuccessTest) {
 	WriteCommand cmd(&mSsd, LBA, DATA);
 
