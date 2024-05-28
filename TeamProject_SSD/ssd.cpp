@@ -5,17 +5,13 @@ unsigned int SSD::Read(unsigned int nLBA)
 	ValidateParameter(nLBA);
 
 	unsigned int nReadValue = DEFAULT_READ_VALUE;
+
+	bool bCmdBufferReadSuccessed = ReadFromCmdBuffer(nLBA, nReadValue);
 	
-	unordered_map<unsigned int, unsigned int> umDataSet;
-	ssdFileHandler.LoadNANDFile(umDataSet);
-
-	if (IsLBAWritten(nLBA, umDataSet))
+	if (!bCmdBufferReadSuccessed)
 	{
-		nReadValue = umDataSet[nLBA];
+		ReadFromNAND(nLBA, nReadValue);
 	}
-
-	ssdFileHandler.WriteHexReadValueToResultFile(nReadValue);
-
 	return nReadValue;
 }
 
@@ -74,6 +70,37 @@ int SSD::GetSSDSize()
 	return SSD_MAX_LBA + 1; // LBA is 0 base.
 }
 
+void SSD::ReadFromNAND(const unsigned int nLBA, unsigned int& nReadValue)
+{
+	unordered_map<unsigned int, unsigned int> umDataSet;
+	ssdFileHandler.LoadNANDFile(umDataSet);
+
+	if (IsLBAWritten(nLBA, umDataSet))
+	{
+		nReadValue = umDataSet[nLBA];
+	}
+
+	ssdFileHandler.WriteHexReadValueToResultFile(nReadValue);
+}
+
+bool SSD::ReadFromCmdBuffer(const unsigned int nLBA, unsigned int& nReadValue)
+{
+	CMD_BUFFER_MAP umCmdBuffer;
+	ssdFileHandler.LoadCommandBufferFile(umCmdBuffer);
+
+	if (!umCmdBuffer.empty())
+	{
+		auto it = umCmdBuffer.find({ W, nLBA });
+
+		if (it != umCmdBuffer.end())
+		{
+			nReadValue = umCmdBuffer[{W, nLBA}];
+			return true;
+		}
+	}
+	return false;
+}
+
 void SSD::ValidateParameter(unsigned int nLBA, unsigned int nSize)
 {
 	if (nLBA < 0 || nLBA + nSize > SSD_MAX_LBA || nSize + 1 >= MAX_ERASE_SIZE)
@@ -95,6 +122,7 @@ void SSD::AddCommandToBuffer(int nCmdType, unsigned int nLBA, unsigned int nData
 
 	if (nCmdBuffer.size() >= 10) {
 		Flush();
+		nCmdBuffer.clear();
 	}
 
 	if (nCmdType == W)

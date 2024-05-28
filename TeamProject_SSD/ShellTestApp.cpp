@@ -48,12 +48,3 @@ void ShellTestApp::Start()
         }
     }
 }
-
-int ShellTestApp::GetSsdSize() {
-    return pSsd->GetSSDSize();
-}
-
-void ShellTestApp::PrintBlockData(unsigned int nLba, unsigned int nData) {
-    std::cout << "LBA  = " << dec << nLba << "\t";
-    std::cout << "DATA = 0x" << uppercase << hex << nData << std::endl;
-}

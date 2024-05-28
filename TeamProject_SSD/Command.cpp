@@ -104,17 +104,20 @@ void HelpCommand::execute()
     std::cout << "- exit" << std::endl;
     std::cout << "\tExit this program" << std::endl;
 
-    std::cout << "- testapp1" << std::endl;
+    std::cout << "- testscriptapp1" << std::endl;
     std::cout << "\tDo below Test Sequence" << std::endl;
     std::cout << "\tfullwrite > fullread" << std::endl;
     std::cout << "\tCheck is correctly writed" << std::endl;
 
-    std::cout << "- testapp2" << std::endl;
+    std::cout << "- testscriptapp2" << std::endl;
     std::cout << "\tDo below Test Sequence" << std::endl;
     std::cout << "\tWrite 0xAAAABBBB to 0~5 LBA" << std::endl;
     std::cout << "\tOver Write 0x12345678 to 0~5 LBA" << std::endl;
     std::cout << "\tRead 0~5 LBA" << std::endl;
     std::cout << "\tCheck is 0~5 LBA data overwritted" << std::endl;
+
+    std::cout << "- [run list filename: string].lst" << std::endl;
+    std::cout << "\tRun all scripts in list file" << std::endl;
 }
 
 FullWriteCommand::FullWriteCommand(SSD* pSsd, int nData) :
@@ -190,12 +193,17 @@ void FlushCommand::execute()
     pSsd->Flush();
 }
 
-RunListCommmand::RunListCommmand(SSD* pSsd, std::string sFilename) :
+RunListCommmand::RunListCommmand(SSD* pSsd, std::string sFileName) :
     Command(pSsd, "Run List"),
-    sFilename{sFilename}
+    sFileName{sFileName}
 {
 }
 
 void RunListCommmand::execute()
 {
+    Runner runner(pSsd);
+
+    if (!runner.CheckRunListFileExist(sFileName))
+        throw std::exception("List file is not exist");
+    runner.DoRunnerTestScenario();
 }

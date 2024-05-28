@@ -2,6 +2,7 @@
 #include<iostream>
 #include "ssd.h"
 #include "testscript.h"
+#include "Runner.h"
 
 class Command {
 public:
@@ -81,10 +82,10 @@ public:
 
 class RunListCommmand : public Command {
 public:
-	RunListCommmand(SSD* pSsd, std::string sFilename);
+	RunListCommmand(SSD* pSsd, std::string sFileName);
 	void execute() override;
 private:
-	std::string sFilename;
+	std::string sFileName;
 };
 
 class WrongCommand : public Command {

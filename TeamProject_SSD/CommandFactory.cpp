@@ -28,8 +28,11 @@ Command* CommandSingletonFactory::create(SSD* pSsd, std::queue<std::string> qCmd
     else if (sCmd == "fullread") {
         return new FullReadCommand(pSsd);
     }
-    else if (sCmd == "testscriptapp1" || sCmd == "testscriptapp2") {
+    else if (sCmd.find("testscript") != std::string::npos) {
         return new DoScriptCommand(pSsd, sCmd);
+    }
+    else if (sCmd.find(".lst") != std::string::npos) {
+        return new RunListCommmand(pSsd, sCmd);
     }
 
     return new WrongCommand(pSsd);
