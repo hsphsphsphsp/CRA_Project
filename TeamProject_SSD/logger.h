@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include <fstream>
 #include <sys/timeb.h>​
+#include <cstdarg>
 
 using namespace std;
 
@@ -20,7 +21,7 @@ public:
 	}
 	void CreateNewLog();
 	void TransFileToZip();
-	void Print(string sLog, string sFunctionName = __builtin_FUNCTION());
+	void Print(string sFunctionName, string format, ...);
 	void RenameFile(string& sPathAndOldFileName, string& sNewFileName);
 	string ExtractFileName(const string& sFileName);
 	string GetTime();
@@ -33,5 +34,6 @@ private:
 
 	Logger();
 	Logger& operator=(const Logger& other) = delete;
-	Logger(const Logger& other) = delete;
 };
+
+extern Logger Log;

@@ -7,8 +7,7 @@ Command::Command(SSD* pSsd, std::string sCmdName) :
 }
 
 void Command::PrintBlockData(unsigned int nLba, unsigned int nData) {
-    std::cout << "LBA  = " << dec << nLba << "\t";
-    std::cout << "DATA = 0x" << uppercase << hex << nData << std::endl;
+    Log.Print(__func__, "LBA = %d \t DATA = %#x\n", nLba, nData);
 }
 
 WriteCommand::WriteCommand(SSD* pSsd, int nLba, int nData) :
@@ -47,7 +46,7 @@ void ExitCommand::execute()
     std::string sInput;
 
     while (1) {
-        std::cout << "Exit App? (yes, no)" << std::endl;
+        Log.Print(__func__, "Exit App? (yes, no) : ");
         std::cin >> sInput;
 
         if (sInput == "yes") {
@@ -58,7 +57,7 @@ void ExitCommand::execute()
             return;
         }
         else {
-            std::cout << "Please type yes or no" << std::endl;
+            Log.Print(__func__, "Please type yes or no\n");
         }
     }
 }
@@ -70,54 +69,42 @@ HelpCommand::HelpCommand(SSD* pSsd) :
 
 void HelpCommand::execute()
 {
-    std::cout << std::endl;
-    std::cout << "******************************************" << std::endl;
-    std::cout << "*           Shell Test Program           *" << std::endl;
-    std::cout << "******************************************" << std::endl;
-    std::cout << std::endl;
-    std::cout << "* Specs **********************************" << std::endl;
-    std::cout << "* Max number of LBA = " << dec << pSsd->GetSSDSize() << std::endl;
-    std::cout << std::endl;
-    std::cout << "* Commands *******************************" << std::endl;
+    Log.Print(__func__, "\n");
+    Log.Print(__func__,  "******************************************\n");
+    Log.Print(__func__,  "*           Shell Test Program           *\n");
+    Log.Print(__func__,  "******************************************\n");
+    Log.Print(__func__,  "* Specs **********************************\n");
+    Log.Print(__func__,  "* Max number of LBA = %d\n", pSsd->GetSSDSize());
+    Log.Print(__func__, "* Commands *******************************\n");
 
-    std::cout << "- write [lba: number] [data: number]" << std::endl;
-    std::cout << "\tWrite data to NAND at LBA number BLOCK" << std::endl;
-
-    std::cout << "- fullwrite [data: number]" << std::endl;
-    std::cout << "\tWrite data to all NAND BLOCK" << std::endl;
-
-    std::cout << "- read [lba: number]" << std::endl;
-    std::cout << "\tRead data from NAND at LBA number BLOCK" << std::endl;
-
-    std::cout << "- fullread" << std::endl;
-    std::cout << "\tRead all data in NAND and Print" << std::endl;
-
-    std::cout << "- erase [lba: number] [size: number]" << std::endl;
-    std::cout << "\tErase data as much as size from the LBA number BLOCK" << std::endl;
-
-    std::cout << "- erase_range [start lba: number] [end lba: number]" << std::endl;
-    std::cout << "\tErase data from start LBA number BLOCK to end LBA number BLOCK" << std::endl;
-
-    std::cout << "- flush" << std::endl;
-    std::cout << "\tFlush the command buffer" << std::endl;
-
-    std::cout << "- exit" << std::endl;
-    std::cout << "\tExit this program" << std::endl;
-
-    std::cout << "- testscriptapp1" << std::endl;
-    std::cout << "\tDo below Test Sequence" << std::endl;
-    std::cout << "\tfullwrite > fullread" << std::endl;
-    std::cout << "\tCheck is correctly writed" << std::endl;
-
-    std::cout << "- testscriptapp2" << std::endl;
-    std::cout << "\tDo below Test Sequence" << std::endl;
-    std::cout << "\tWrite 0xAAAABBBB to 0~5 LBA" << std::endl;
-    std::cout << "\tOver Write 0x12345678 to 0~5 LBA" << std::endl;
-    std::cout << "\tRead 0~5 LBA" << std::endl;
-    std::cout << "\tCheck is 0~5 LBA data overwritted" << std::endl;
-
-    std::cout << "- [run list filename: string].lst" << std::endl;
-    std::cout << "\tRun all scripts in list file" << std::endl;
+    Log.Print(__func__, "- write [lba: number] [data: number]\n");
+    Log.Print(__func__, "\tWrite data to NAND at LBA number BLOCK\n");
+    Log.Print(__func__, "- fullwrite [data: number]\n");
+    Log.Print(__func__, "\tWrite data to all NAND BLOCK\n");
+    Log.Print(__func__, "- read [lba: number]\n");
+    Log.Print(__func__, "\tRead data from NAND at LBA number BLOCK\n");
+    Log.Print(__func__, "- fullread\n");
+    Log.Print(__func__, "\tRead all data in NAND and Print\n");
+    Log.Print(__func__, "- erase [lba: number] [size: number]\n");
+    Log.Print(__func__, "\tErase data as much as size from the LBA number BLOCK\n");
+    Log.Print(__func__, "- erase_range [start lba: number] [end lba: number]\n");
+    Log.Print(__func__, "\tErase data from start LBA number BLOCK to end LBA number BLOCK\n");
+    Log.Print(__func__, "- flush\n");
+    Log.Print(__func__, "\tFlush the command buffer\n");
+    Log.Print(__func__, "- exit\n");
+    Log.Print(__func__, "\tExit this program\n");
+    Log.Print(__func__, "- testscriptapp1\n");
+    Log.Print(__func__, "\tDo below Test Sequence\n");
+    Log.Print(__func__, "\tfullwrite > fullread\n");
+    Log.Print(__func__, "\tCheck is correctly writed\n");
+    Log.Print(__func__, "- testscriptapp2\n");
+    Log.Print(__func__, "\tDo below Test Sequence\n");
+    Log.Print(__func__, "\tWrite 0xAAAABBBB to 0~5 LBA\n");
+    Log.Print(__func__, "\tOver Write 0x12345678 to 0~5 LBA\n");
+    Log.Print(__func__, "\tRead 0~5 LBA\n");
+    Log.Print(__func__, "\tCheck is 0~5 LBA data overwritted\n");
+    Log.Print(__func__, "- [run list filename: string].lst\n");
+    Log.Print(__func__, "\tRun all scripts in list file\n");
 }
 
 FullWriteCommand::FullWriteCommand(SSD* pSsd, int nData) :
@@ -167,7 +154,7 @@ WrongCommand::WrongCommand(SSD* pSsd) :
 
 void WrongCommand::execute()
 {
-    std::cout << "Wrong command, if you need to help, type \"help\"" << std::endl;
+    Log.Print(__func__, "Wrong command, if you need to help, type \"help\"\n");
     throw std::exception("Unknown command...");
 }
 
