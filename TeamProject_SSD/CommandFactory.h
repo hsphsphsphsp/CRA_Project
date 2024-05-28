@@ -2,7 +2,7 @@
 #include <queue>
 #include <string>
 #include <iostream>
-#include "Command.h"
+#include"Command.h"
 
 class CommandSingletonFactory {
 public:
@@ -21,6 +21,7 @@ private:
 	std::string sCmd;
 	int nLba;
 	int nData;
+	int nSize;
 
 	void AssertArguments(std::queue<std::string> qCmdBuffer);
 };

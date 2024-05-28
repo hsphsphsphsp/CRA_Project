@@ -1,7 +1,8 @@
 #include "Command.h"
 
-Command::Command(SSD* pSsd) :
-    pSsd{ pSsd }
+Command::Command(SSD* pSsd, std::string sCmdName) :
+    pSsd{ pSsd },
+    sCmdName{ sCmdName }
 {
 }
 
@@ -11,7 +12,7 @@ void Command::PrintBlockData(unsigned int nLba, unsigned int nData) {
 }
 
 WriteCommand::WriteCommand(SSD* pSsd, int nLba, int nData) :
-    Command(pSsd),
+    Command(pSsd, "Write"),
     nLba{ nLba },
     nData{ nData }
 {
@@ -23,7 +24,7 @@ void WriteCommand::execute()
 }
 
 ReadCommand::ReadCommand(SSD* pSsd, int nLba) :
-    Command(pSsd),
+    Command(pSsd, "Read"),
     nLba{ nLba }
 {
 }
@@ -37,7 +38,7 @@ void ReadCommand::execute()
 }
 
 ExitCommand::ExitCommand(SSD* pSsd) :
-    Command(pSsd)
+    Command(pSsd, "Exit")
 {
 }
 
@@ -59,19 +60,21 @@ void ExitCommand::execute()
 }
 
 HelpCommand::HelpCommand(SSD* pSsd) :
-    Command(pSsd)
+    Command(pSsd, "Help")
 {
 }
 
 void HelpCommand::execute()
 {
-    std::cout << "------------ Shell Test App ------------" << std::endl;
-
-    std::cout << "* Specs ********************************" << std::endl;
-    std::cout << "* Max number of LBA = " << dec << pSsd->GetSSDSize() << std::endl;
-
     std::cout << std::endl;
-    std::cout << "* Commands *****************************" << std::endl;
+    std::cout << "******************************************" << std::endl;
+    std::cout << "*           Shell Test Program           *" << std::endl;
+    std::cout << "******************************************" << std::endl;
+    std::cout << std::endl;
+    std::cout << "* Specs **********************************" << std::endl;
+    std::cout << "* Max number of LBA = " << dec << pSsd->GetSSDSize() << std::endl;
+    std::cout << std::endl;
+    std::cout << "* Commands *******************************" << std::endl;
 
     std::cout << "- write [lba: number] [data: number]" << std::endl;
     std::cout << "\tWrite data to NAND at LBA number BLOCK" << std::endl;
@@ -108,7 +111,7 @@ void HelpCommand::execute()
 }
 
 FullWriteCommand::FullWriteCommand(SSD* pSsd, int nData) :
-    Command(pSsd),
+    Command(pSsd, "Full Write"),
     nData{ nData }
 {
 }
@@ -120,7 +123,7 @@ void FullWriteCommand::execute()
 }
 
 FullReadCommand::FullReadCommand(SSD* pSsd) :
-    Command(pSsd)
+    Command(pSsd, "Full Read")
 {
 }
 
@@ -131,7 +134,7 @@ void FullReadCommand::execute()
 }
 
 DoScriptCommand::DoScriptCommand(SSD* pSsd, std::string sTestScriptName) :
-    Command(pSsd),
+    Command(pSsd, "Script"),
     sTestScriptName{ sTestScriptName }
 {
 }
@@ -148,17 +151,18 @@ void DoScriptCommand::execute()
 }
 
 WrongCommand::WrongCommand(SSD* pSsd) :
-    Command(pSsd)
+    Command(pSsd, "Unknown Command")
 {
 }
 
 void WrongCommand::execute()
 {
     std::cout << "Wrong command, if you need to help, type \"help\"" << std::endl;
+    throw std::exception("Unknown command...");
 }
 
 EraseCommand::EraseCommand(SSD* pSsd, int nLba, int nSize) :
-    Command(pSsd),
+    Command(pSsd, "Erase"),
     nLba{ nLba },
     nSize{ nSize }
 {
@@ -167,4 +171,14 @@ EraseCommand::EraseCommand(SSD* pSsd, int nLba, int nSize) :
 void EraseCommand::execute()
 {
     pSsd->Erase(nLba, nSize);
+}
+
+RunListCommmand::RunListCommmand(SSD* pSsd, std::string sFilename) :
+    Command(pSsd, "Run List"),
+    sFilename{sFilename}
+{
+}
+
+void RunListCommmand::execute()
+{
 }
