@@ -10,7 +10,7 @@ void SSDFileHandler::LoadNANDFile(unordered_map<unsigned int, unsigned int>& umD
 		while (!fin.eof())
 		{
 			fin >> sIndex >> sValue;
-			umDataSet.insert({ HexStringToUInt(sIndex), HexStringToUInt(sValue) });
+			umDataSet.insert({ StringToUInt(sIndex, HEX), StringToUInt(sValue, HEX) });
 		}
 	}
 }
@@ -36,6 +36,11 @@ void SSDFileHandler::RemoveNANDFile()
 	remove(&*sNandFileName.begin());
 }
 
+void SSDFileHandler::RemoveCommandBufferFile()
+{
+	remove(&*sCommandBufferFileName.begin());
+}
+
 void SSDFileHandler::LoadCommandBufferFile(CMD_BUFFER_MAP& nCmdBuffer)
 {
 	ifstream fin(sCommandBufferFileName);
@@ -48,8 +53,8 @@ void SSDFileHandler::LoadCommandBufferFile(CMD_BUFFER_MAP& nCmdBuffer)
 			fin >> sCmdType >> sLBA >> sValue;
 
 			int nCmdType = GetCmdType(sCmdType);
-			unsigned int nLBA = HexStringToUInt(sLBA);
-			unsigned int nValue = HexStringToUInt(sValue);
+			unsigned int nLBA = StringToUInt(sLBA, DEC);
+			unsigned int nValue = StringToUInt(sValue, HEX);
 
 			nCmdBuffer[{ nCmdType, nLBA }] = nValue;
 		}
@@ -97,11 +102,14 @@ string SSDFileHandler::FormatDec(unsigned int nValue)
 	return oss.str();
 }
 
-unsigned int SSDFileHandler::HexStringToUInt(const string& sValue)
+unsigned int SSDFileHandler::StringToUInt(const string& sValue, int numType)
 {
 	try 
 	{
-		return std::stoul(sValue, nullptr, 16);
+		if (numType == HEX)
+			return stoul(sValue, nullptr, 16);
+
+		return stoul(sValue);
 	}
 	catch (const std::invalid_argument& e) 
 	{

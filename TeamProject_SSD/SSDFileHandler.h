@@ -10,6 +10,9 @@
 #define W 1
 #define E 2
 
+#define HEX 0
+#define DEC 1
+
 #define CMD_BUFFER_MAP unordered_map<pair<int, unsigned int>, unsigned int, pair_hash>
 
 using namespace std;
@@ -30,6 +33,7 @@ public:
 	void WriteNANDFile(const unordered_map<unsigned int, unsigned int>& umDataSet);
 	void WriteHexReadValueToResultFile(unsigned int nValue);
 	void RemoveNANDFile();
+	void RemoveCommandBufferFile();
 
 	void LoadCommandBufferFile(CMD_BUFFER_MAP& nCmdBuffer);
 	void WriteCommandBufferFile(const CMD_BUFFER_MAP& nCmdBuffer);
@@ -40,7 +44,7 @@ private:
 
 	string FormatHex(unsigned int nValue);
 	string FormatDec(unsigned int nValue);
-	unsigned int HexStringToUInt(const string& sValue);
+	unsigned int StringToUInt(const string& sValue, int numType);
 
 	const string sResultFileName = "result.txt";
 	const string sNandFileName = "nand.txt";

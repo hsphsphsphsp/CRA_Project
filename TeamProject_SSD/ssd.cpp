@@ -23,7 +23,10 @@ void SSD::Write(unsigned int nLBA, unsigned int nValue)
 {
 	ValidateParameter(nLBA);
 
-	AddCommandToBuffer(W, nLBA, nValue);
+	if (bUseCommandBuffer) {
+		AddCommandToBuffer(W, nLBA, nValue);
+		return;
+	}
 
 	unordered_map<unsigned int, unsigned int> umDataSet;
 	ssdFileHandler.LoadNANDFile(umDataSet);
@@ -44,7 +47,10 @@ void SSD::Erase(unsigned int nLBA, unsigned int nSize)
 {
 	ValidateParameter(nLBA, nSize - 1);
 
-	AddCommandToBuffer(E, nLBA, nSize);
+	if (bUseCommandBuffer) {
+		AddCommandToBuffer(E, nLBA, nSize);
+		return;
+	}
 
 	unordered_map<unsigned int, unsigned int> umDataSet;
 	ssdFileHandler.LoadNANDFile(umDataSet);
@@ -87,6 +93,10 @@ void SSD::AddCommandToBuffer(int nCmdType, unsigned int nLBA, unsigned int nData
 
 	ssdFileHandler.LoadCommandBufferFile(nCmdBuffer);
 
+	if (nCmdBuffer.size() >= 10) {
+		Flush();
+	}
+
 	if (nCmdType == W)
 	{
 		OptimizeWriteCommand(nCmdBuffer, nLBA);
@@ -105,4 +115,26 @@ void SSD::OptimizeWriteCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA)
 void SSD::RemovePrevWriteCmdWithSameLBA(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA)
 {
 	nCmdBuffer.erase({ W, nLBA });
+}
+
+void SSD::Flush()
+{
+	CMD_BUFFER_MAP nCmdBuffer;
+
+	ssdFileHandler.LoadCommandBufferFile(nCmdBuffer);
+
+	bUseCommandBuffer = false;
+	for (const auto& it : nCmdBuffer) {
+		if (it.first.first == W)
+		{
+			Write(it.first.second, it.second);
+		}
+		else if (it.first.first == E)
+		{
+			Erase(it.first.second, it.second);
+		}
+	}
+	bUseCommandBuffer = true;
+
+	ssdFileHandler.RemoveCommandBufferFile();
 }
