@@ -6,6 +6,7 @@ using namespace std;
 class SSD
 {
 public:
+	SSD();
 	virtual unsigned int Read(unsigned int nLBA);
 	virtual void Write(unsigned int nLBA, unsigned int nValue);
 	virtual void Erase(unsigned int nLBA, unsigned int nSize);
