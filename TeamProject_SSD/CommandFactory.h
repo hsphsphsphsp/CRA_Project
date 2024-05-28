@@ -19,9 +19,10 @@ public:
 	Command* create(SSD* pSsd, std::queue<std::string> qCmdBuffer);
 private:
 	std::string sCmd;
-	int nLba;
-	int nData;
-	int nSize;
+	unsigned int nLba;
+	unsigned int nData;
+	unsigned int nSize;
 
 	void AssertArguments(std::queue<std::string> qCmdBuffer);
+	unsigned int ConvertToNumFrom(std::string sNumber);
 };

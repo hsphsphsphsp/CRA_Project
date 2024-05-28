@@ -50,29 +50,42 @@ void CommandSingletonFactory::AssertArguments(std::queue<std::string> qCmdBuffer
         if (qCmdBuffer.size() != 2)
             throw std::invalid_argument("Wrong arguments : write [LBA] [DATA]");
 
-        nLba = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
-        nData = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
+        nLba = ConvertToNumFrom(qCmdBuffer.front());  qCmdBuffer.pop();
+        nData = ConvertToNumFrom(qCmdBuffer.front());  qCmdBuffer.pop();
     }
     else if (sCmd == "read") {
         if (qCmdBuffer.size() != 1) 
             throw std::invalid_argument("Wrong arguments : read [LBA]");
-        nLba = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
+        nLba = ConvertToNumFrom(qCmdBuffer.front());  qCmdBuffer.pop();
     }
     else if (sCmd == "fullwrite") {
         if (qCmdBuffer.size() != 1)
             throw std::invalid_argument("Wrong arguments : fullwrite [DATA]");
-        nData = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
+        nData = ConvertToNumFrom(qCmdBuffer.front());  qCmdBuffer.pop();
     }
     else if (sCmd == "erase") {
         if (qCmdBuffer.size() != 2)
             throw std::invalid_argument("Wrong arguments : erase [LBA] [SIZE]");
-        nLba = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
-        nSize = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
+        nLba = ConvertToNumFrom(qCmdBuffer.front());  qCmdBuffer.pop();
+        nSize = ConvertToNumFrom(qCmdBuffer.front());  qCmdBuffer.pop();
     }
     else if (sCmd == "erase_range") {
         if (qCmdBuffer.size() != 2)
             throw std::invalid_argument("Wrong arguments : erase_range [Start LBA] [End LBA]");
-        nLba = stoi(qCmdBuffer.front());  qCmdBuffer.pop();
-        nSize = stoi(qCmdBuffer.front()) - nLba;  qCmdBuffer.pop();
+        nLba = ConvertToNumFrom(qCmdBuffer.front());  qCmdBuffer.pop();
+        nSize = ConvertToNumFrom(qCmdBuffer.front()) - nLba;  qCmdBuffer.pop();
     }
+}
+
+unsigned int CommandSingletonFactory::ConvertToNumFrom(std::string sNumber) {
+    try {
+        if (sNumber.find("0x") != std::string::npos)
+            return stoul(sNumber, 0, 16);
+        else
+            return stoul(sNumber, 0, 10);
+    }
+    catch (std::exception& e) {
+        throw e;
+    }
+    
 }
