@@ -12,7 +12,7 @@
 #include "../TeamProject_SSD/CommandFactory.cpp"
 #include "../TeamProject_SSD/Runner.cpp"
 #include "../TeamProject_SSD/Logger.cpp"
-
+#include "../TeamProject_SSD/SSDCommandBuffer.cpp"
 
 using namespace std;
 using namespace testing;

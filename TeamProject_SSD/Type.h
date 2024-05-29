@@ -9,6 +9,8 @@
 
 #define CMD_BUFFER_MAP unordered_map<pair<int, unsigned int>, unsigned int, pair_hash>
 
+#define MAX_ERASE_SIZE 10
+
 struct pair_hash {
 	template <class T1, class T2>
 	std::size_t operator () (const std::pair<T1, T2>& p) const {
