@@ -7,7 +7,7 @@ void SSDCommandBuffer::OptimizeWriteCommand(CMD_BUFFER_MAP& nCmdBuffer, const un
 	DoNarrowRangeOfErase(nCmdBuffer, nWriteLBA);
 }
 
-void SSDCommandBuffer::OptimizeEraseComand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nSize)
+void SSDCommandBuffer::OptimizeEraseComand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int &nLBA, unsigned int &nSize)
 {
 	if (!umPrevEraseCommand.empty()) {
 		MergeEraseCommand(nCmdBuffer, nLBA, nSize);
@@ -28,6 +28,7 @@ void SSDCommandBuffer::MergeEraseCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned in
 	unsigned int nCurEndLBA = nLBA + nData - 1;
 	unsigned int nSize = 0;
 
+	umPrevEraseCommand.clear();
 	nSize = GetMergedSize(nPrevEndLBA, nCurEndLBA, nPrevStartLBA, nCurStartLBA);
 
 	if (nPrevStartLBA <= nCurStartLBA)
@@ -58,7 +59,6 @@ bool SSDCommandBuffer::IsMergeable(unsigned int nEndLowLBA, unsigned int nStartH
 {
 	if ((nEndLowLBA + 1 < nStartHighLBA) || (nSize > MAX_ERASE_SIZE))
 	{
-		umPrevEraseCommand.clear();
 		return false;
 	}
 
@@ -68,13 +68,14 @@ bool SSDCommandBuffer::IsMergeable(unsigned int nEndLowLBA, unsigned int nStartH
 unsigned int SSDCommandBuffer::GetMergedSize(unsigned int nPrevEndLBA, unsigned int nCurEndLBA, unsigned int nPrevStartLBA, unsigned int nCurStartLBA)
 {
 	unsigned int nSize = 0;
+	unsigned int nMergedStartLBA = nPrevStartLBA <= nCurStartLBA ? nPrevStartLBA : nCurStartLBA;
 
 	if (nPrevEndLBA <= nCurEndLBA) {
-		nSize = nCurEndLBA - nPrevStartLBA + 1;
+		nSize = nCurEndLBA - nMergedStartLBA + 1;
 	}
 	else
 	{
-		nSize = nPrevEndLBA - nCurStartLBA + 1;
+		nSize = nPrevEndLBA - nMergedStartLBA + 1;
 	}
 
 	return nSize;

@@ -22,7 +22,7 @@ private:
 	bool IsLBAWritten(const unsigned int& nLBA, unordered_map<unsigned int, unsigned int>& umDataSet);
 
 	void AddCommandToBuffer(int nCmdType, unsigned int nLBA, unsigned int nData);
-	void OptimizeCommandBuffer(int nCmdType, CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nData);
+	void OptimizeCommandBuffer(int nCmdType, CMD_BUFFER_MAP& nCmdBuffer, unsigned int &nLBA, unsigned int &nData);
 	void DoFlush(CMD_BUFFER_MAP& nCmdBuffer);
 	bool IsCommandBufferFull(CMD_BUFFER_MAP& nCmdBuffer);
 
