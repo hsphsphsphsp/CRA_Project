@@ -205,30 +205,31 @@ void SSD::MergeEraseCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA, unsi
 	nCmdBuffer.erase({ E, nPrevStartLBA });
 }
 
-void SSD::OptimizeEraseComand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nData)
+void SSD::OptimizeEraseComand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nSize)
 {
-	for (int i = nLBA; i < nLBA + nData; i++)
+	RemovePrevWriteCmdInLBARange(nCmdBuffer, nLBA, nSize);
+}
+
+void SSD::RemovePrevWriteCmdInLBARange(CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nSize)
+{
+	for (int i = nLBA; i < nLBA + nSize; i++)
 	{
 		nCmdBuffer.erase({ W, i });
 	}
 }
 
-void SSD::OptimizeWriteCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA)
+void SSD::OptimizeWriteCommand(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA)
 {
-	RemovePrevWriteCmdWithSameLBA(nCmdBuffer, nLBA);
+	RemovePrevWriteCmdWithSameLBA(nCmdBuffer, nWriteLBA);
 
-	DoNarrowRangeOfErase(nCmdBuffer, nLBA);
+	DoNarrowRangeOfErase(nCmdBuffer, nWriteLBA);
 }
 
-void SSD::DoNarrowRangeOfErase(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA, bool bTraverse)
+void SSD::DoNarrowRangeOfErase(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA, bool bRecursive)
 {
-	if (bTraverse)
+	if (!ShouldExecuteNarrowRangeErase(nCmdBuffer, nWriteLBA, bRecursive))
 	{
-		auto it = nCmdBuffer.find({ W, nWriteLBA });
-		if (it == nCmdBuffer.end())
-		{
-			return;
-		}
+		return;
 	}
 
 	for (auto it = nCmdBuffer.begin(); it != nCmdBuffer.end(); /* no increment here */) {
@@ -268,9 +269,27 @@ void SSD::DoNarrowRangeOfErase(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nW
 	}
 }
 
-void SSD::RemovePrevWriteCmdWithSameLBA(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA)
+bool SSD::ShouldExecuteNarrowRangeErase(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA, bool bRecursive)
 {
-	nCmdBuffer.erase({ W, nLBA });
+	if (bRecursive == false) {
+		return true;
+	}
+
+	if (nCmdBuffer.size() == 0 || nWriteLBA < 0)
+	{
+		return false;
+	}
+
+	auto it = nCmdBuffer.find({ W, nWriteLBA });
+	if (it == nCmdBuffer.end())
+	{
+		return false;
+	}
+}
+
+void SSD::RemovePrevWriteCmdWithSameLBA(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA)
+{
+	nCmdBuffer.erase({ W, nWriteLBA });
 }
 
 void SSD::Flush()
