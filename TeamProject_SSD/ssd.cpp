@@ -174,7 +174,7 @@ void SSD::MergeEraseCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA, unsi
 	unsigned int nCurEndLBA = nLBA + nData - 1;
 	unsigned int nSize = 0;
 
-	nSize = GetMergedSize(nPrevEndLBA, nCurEndLBA, nPrevStartLBA);
+	nSize = GetMergedSize(nPrevEndLBA, nCurEndLBA, nPrevStartLBA, nCurStartLBA);
 
 	if (nPrevStartLBA <= nCurStartLBA)
 	{
@@ -211,7 +211,7 @@ bool SSD::IsMergeable(unsigned int nEndLowLBA, unsigned int nStartHighLBA, unsig
 	return true;
 }
 
-unsigned int SSD::GetMergedSize(unsigned int nPrevEndLBA, unsigned int nCurEndLBA, unsigned int nPrevStartLBA)
+unsigned int SSD::GetMergedSize(unsigned int nPrevEndLBA, unsigned int nCurEndLBA, unsigned int nPrevStartLBA, unsigned int nCurStartLBA)
 {
 	unsigned int nSize = 0;
 
@@ -220,7 +220,7 @@ unsigned int SSD::GetMergedSize(unsigned int nPrevEndLBA, unsigned int nCurEndLB
 	}
 	else
 	{
-		nSize = nPrevEndLBA - nPrevStartLBA + 1;
+		nSize = nPrevEndLBA - nCurStartLBA + 1;
 	}
 
 	return nSize;
