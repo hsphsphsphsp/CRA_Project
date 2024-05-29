@@ -202,7 +202,7 @@ void SSD::MergeEraseCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA, unsi
 
 bool SSD::IsMergeable(unsigned int nEndLowLBA, unsigned int nStartHighLBA, unsigned int nSize)
 {
-	if ((nEndLowLBA + 1 < nStartHighLBA) || (nSize >= MAX_ERASE_SIZE))
+	if ((nEndLowLBA + 1 < nStartHighLBA) || (nSize > MAX_ERASE_SIZE))
 	{
 		umPrevEraseCommand.clear();
 		return false;

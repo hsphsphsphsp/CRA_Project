@@ -322,11 +322,11 @@ TEST_F(SSDFixture, CommandBuffer_MergeEraseDoNotMergeSinceOverMaxEraseSize)
 {
 	ssd.Write(20, 0xFFFFFFFF);
 	ssd.Erase(10, 2);
-	ssd.Erase(12, 8);
+	ssd.Erase(12, 9);
 
 	nCmdBuffer = LoadCmdBuffer();
 
-	EXPECT_EQ(nCmdBuffer.size(), 3);
+	EXPECT_EQ(nCmdBuffer.size(), 2);
 }
 
 TEST_F(ShellTestAppFixture, writeSuccessTest) {
