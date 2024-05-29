@@ -1,5 +1,23 @@
 #include "SSDCommandBuffer.h"
 
+void SSDCommandBuffer::OptimizeWriteCommand(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA)
+{
+	RemovePrevWriteCmdWithSameLBA(nCmdBuffer, nWriteLBA);
+
+	DoNarrowRangeOfErase(nCmdBuffer, nWriteLBA);
+}
+
+void SSDCommandBuffer::OptimizeEraseComand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nSize)
+{
+	if (!umPrevEraseCommand.empty()) {
+		MergeEraseCommand(nCmdBuffer, nLBA, nSize);
+	}
+
+	umPrevEraseCommand[{E, nLBA}] = nSize;
+
+	RemovePrevWriteCmdInLBARange(nCmdBuffer, nLBA, nSize);
+}
+
 void SSDCommandBuffer::MergeEraseCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA, unsigned int& nData)
 {
 	auto it = umPrevEraseCommand.begin();
@@ -62,30 +80,12 @@ unsigned int SSDCommandBuffer::GetMergedSize(unsigned int nPrevEndLBA, unsigned 
 	return nSize;
 }
 
-void SSDCommandBuffer::OptimizeEraseComand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nSize)
-{
-	if (!umPrevEraseCommand.empty()) {
-		MergeEraseCommand(nCmdBuffer, nLBA, nSize);
-	}
-
-	umPrevEraseCommand[{E, nLBA}] = nSize;
-
-	RemovePrevWriteCmdInLBARange(nCmdBuffer, nLBA, nSize);
-}
-
 void SSDCommandBuffer::RemovePrevWriteCmdInLBARange(CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nSize)
 {
 	for (int i = nLBA; i < nLBA + nSize; i++)
 	{
 		nCmdBuffer.erase({ W, i });
 	}
-}
-
-void SSDCommandBuffer::OptimizeWriteCommand(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA)
-{
-	RemovePrevWriteCmdWithSameLBA(nCmdBuffer, nWriteLBA);
-
-	DoNarrowRangeOfErase(nCmdBuffer, nWriteLBA);
 }
 
 void SSDCommandBuffer::DoNarrowRangeOfErase(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA, bool bRecursive)
