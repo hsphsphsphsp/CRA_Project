@@ -22,6 +22,7 @@ public:
 	void CreateNewLog();
 	void TransFileToZip();
 	void Print(string sFunctionName, string format, ...);
+	void GetLogPrefix(std::string& sPrefix, std::string& sFunctionName);
 	void RenameFile(string& sPathAndOldFileName, string& sNewFileName);
 	string ExtractFileName(const string& sFileName);
 	string GetTime();

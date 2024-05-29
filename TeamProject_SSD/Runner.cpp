@@ -46,7 +46,7 @@ bool Runner::StartEachScenarioTest(TestScript* pTestScript)
 void Runner::PrintTestScriptResult(bool isPassed)
 {
     if (isPassed)
-        cout << "Pass" << endl;
+        Log.Print("", "PASS\n");
     else
-        cout << "Fail!" << endl;
+        Log.Print("", "FAIL\n");
 }
