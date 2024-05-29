@@ -25,6 +25,7 @@ void ShellTestApp::Start()
 
         string sLine;
         getline(cin, sLine);
+        Log.Print("", sLine + "\n");
         istringstream iSS(sLine);
         string sBuffer;
 

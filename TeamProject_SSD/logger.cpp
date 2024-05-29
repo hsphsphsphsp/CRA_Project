@@ -57,21 +57,19 @@ Logger::Logger()
 void Logger::Print(string sFunctionName, string format, ...)
 {
 	string sPrefix = "";
-	ofstream fout((sLogFolderPath + sLatestFileName), ios::app);
-	sPrefix += "[" + GetTime() + "]";
-	sPrefix += " " + sFunctionName + "()";
-	for (int i = 0; i < 30 - sFunctionName.size(); i++)
-		sPrefix.append(" ");
-	sPrefix += " : ";
-
+	if (sFunctionName != "")
+	{
+		GetLogPrefix(sPrefix, sFunctionName);
+	}
+	
 	char sLog[1024] = "";
 	va_list arg;
 	va_start(arg, format.c_str());
 	vsprintf_s(sLog, format.c_str(), arg);
 	va_end(arg);
 
+	ofstream fout((sLogFolderPath + sLatestFileName), ios::app);
 	string sPrintLog = sPrefix + sLog;
-
 	if (this->GetFileSize() + sPrintLog.size() > DEFINE_10KB)
 	{
 		fout.close();
@@ -84,6 +82,16 @@ void Logger::Print(string sFunctionName, string format, ...)
 	fout.close();
 	return;
 }
+
+void Logger::GetLogPrefix(std::string& sPrefix, std::string& sFunctionName)
+{
+	sPrefix += "[" + GetTime() + "]";
+	sPrefix += " " + sFunctionName + "()";
+	for (int i = 0; i < 30 - sFunctionName.size(); i++)
+		sPrefix.append(" ");
+	sPrefix += " : ";
+}
+
 string Logger::GetTime()
 {
 	struct timeb timer_msec;
