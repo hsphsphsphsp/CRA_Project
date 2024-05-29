@@ -25,6 +25,8 @@ private:
 	void OptimizeWriteCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA);
 	void RemovePrevWriteCmdWithSameLBA(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA);
 	void MergeEraseCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int &nLBA, unsigned int &nSize);
+	bool IsMergeable(unsigned int nPrevEndLBA, unsigned int nCurStartLBA, unsigned int nSize);
+	unsigned int GetMergedSize(unsigned int nPrevEndLBA, unsigned int nCurEndLBA, unsigned int nPrevStartLBA);
 
 	CMD_BUFFER_MAP umPrevEraseCommand;
 	SSDFileHandler ssdFileHandler;

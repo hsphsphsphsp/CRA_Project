@@ -172,12 +172,14 @@ void SSD::MergeEraseCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA, unsi
 	unsigned int nPrevEndLBA = it->first.second + it->second - 1;
 	unsigned int nCurStartLBA = nLBA;
 	unsigned int nCurEndLBA = nLBA + nData - 1;
+	unsigned int nSize = 0;
+
+	nSize = GetMergedSize(nPrevEndLBA, nCurEndLBA, nPrevStartLBA);
 
 	if (nPrevStartLBA <= nCurStartLBA)
 	{
-		if (nPrevEndLBA + 1 < nCurStartLBA)
+		if (!IsMergeable(nPrevEndLBA, nCurStartLBA, nSize))
 		{
-			umPrevEraseCommand.clear();
 			return;
 		}
 
@@ -185,24 +187,43 @@ void SSD::MergeEraseCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA, unsi
 	}
 	else
 	{
-		if (nCurEndLBA + 1 < nPrevStartLBA)
+		if (!IsMergeable(nCurEndLBA, nPrevStartLBA, nSize))
 		{
-			umPrevEraseCommand.clear();
 			return;
 		}
 
 		nLBA = nCurStartLBA;
 	}
 
+	nData = nSize;
+
+	nCmdBuffer.erase({ E, nPrevStartLBA });
+}
+
+bool SSD::IsMergeable(unsigned int nEndLowLBA, unsigned int nStartHighLBA, unsigned int nSize)
+{
+	if ((nEndLowLBA + 1 < nStartHighLBA) || (nSize >= MAX_ERASE_SIZE))
+	{
+		umPrevEraseCommand.clear();
+		return false;
+	}
+
+	return true;
+}
+
+unsigned int SSD::GetMergedSize(unsigned int nPrevEndLBA, unsigned int nCurEndLBA, unsigned int nPrevStartLBA)
+{
+	unsigned int nSize = 0;
+
 	if (nPrevEndLBA <= nCurEndLBA) {
-		nData = nCurEndLBA - nPrevStartLBA + 1;
+		nSize = nCurEndLBA - nPrevStartLBA + 1;
 	}
 	else
 	{
-		nData = nPrevEndLBA - nPrevStartLBA + 1;
+		nSize = nPrevEndLBA - nPrevStartLBA + 1;
 	}
 
-	nCmdBuffer.erase({ E, nPrevStartLBA });
+	return nSize;
 }
 
 void SSD::OptimizeEraseComand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nData)
