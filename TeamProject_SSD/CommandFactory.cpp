@@ -2,7 +2,7 @@
 
 Command* CommandSingletonFactory::create(SSD* pSsd, std::queue<std::string> qCmdBuffer)
 {
-    AssertArguments(qCmdBuffer);
+    AssertArguments(pSsd, qCmdBuffer);
 
     if (sCmd == "write") {
         return new WriteCommand(pSsd, nLba, nData);
@@ -41,7 +41,7 @@ Command* CommandSingletonFactory::create(SSD* pSsd, std::queue<std::string> qCmd
     return new WrongCommand(pSsd);
 }
 
-void CommandSingletonFactory::AssertArguments(std::queue<std::string> qCmdBuffer)
+void CommandSingletonFactory::AssertArguments(SSD* pSsd, std::queue<std::string> qCmdBuffer)
 {
     if (qCmdBuffer.empty())
         throw std::invalid_argument("Please input command.");
@@ -77,11 +77,19 @@ void CommandSingletonFactory::AssertArguments(std::queue<std::string> qCmdBuffer
             throw std::invalid_argument("Wrong arguments : erase_range [Start LBA] [End LBA]");
         nStartLba = ConvertToNumFrom(qCmdBuffer.front());  qCmdBuffer.pop();
         nEndLba = ConvertToNumFrom(qCmdBuffer.front()) - 1;  qCmdBuffer.pop();
+        if (nEndLba <= nStartLba)
+            throw std::invalid_argument("Wrong arguments : Start LBA must less than End LBA");
+        if (nEndLba > pSsd->GetSSDSize())
+            throw std::invalid_argument("Wrong arguments : End LBA over MAX SIZE");
     }
 }
 
 unsigned int CommandSingletonFactory::ConvertToNumFrom(std::string sNumber) {
+    if (sNumber[0] == '-')
+        throw std::exception("Wrong arguments: signed input");
+
     try {
+
         if (sNumber.find("0x") != std::string::npos)
             return stoul(sNumber, 0, 16);
         else
