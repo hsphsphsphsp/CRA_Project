@@ -172,7 +172,7 @@ void SSD::AddCommandToBuffer(int nCmdType, unsigned int nLBA, unsigned int nData
 	ssdFileHandler.WriteCommandBufferFile(nCmdBuffer);
 }
 
-void SSD::OptimizeCommandBuffer(int nCmdType, CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nData)
+void SSD::OptimizeCommandBuffer(int nCmdType, CMD_BUFFER_MAP& nCmdBuffer, unsigned int &nLBA, unsigned int &nData)
 {
 	if (nCmdType == W)
 	{
