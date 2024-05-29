@@ -329,6 +329,72 @@ TEST_F(SSDFixture, CommandBuffer_MergeEraseDoNotMergeSinceOverMaxEraseSize)
 	EXPECT_EQ(nCmdBuffer.size(), 2);
 }
 
+TEST_F(SSDFixture, CommandBuffer_NarrowRangeOfErase1)
+{
+	ssd.Erase(50, 1);
+	ssd.Erase(40, 5);
+	ssd.Write(50, 0xABCD1234);
+
+	nCmdBuffer = LoadCmdBuffer();
+
+	auto it = nCmdBuffer.find({E, 50});
+	EXPECT_EQ(it != nCmdBuffer.end(), false);
+}
+
+TEST_F(SSDFixture, CommandBuffer_NarrowRangeOfErase2)
+{
+	ssd.Erase(50, 2);
+	ssd.Erase(40, 5);
+	ssd.Write(50, 0xABCD1234);
+
+	nCmdBuffer = LoadCmdBuffer();
+
+	auto it = nCmdBuffer.find({E, 51});
+	EXPECT_EQ(it != nCmdBuffer.end(), true);
+}
+
+TEST_F(SSDFixture, CommandBuffer_NarrowRangeOfErase3)
+{
+	ssd.Erase(50, 2);
+	ssd.Erase(40, 5);
+	ssd.Write(51, 0xABCD1234);
+
+	nCmdBuffer = LoadCmdBuffer();
+
+	auto it = nCmdBuffer.find({E, 50});
+	EXPECT_EQ(it->second, 1);
+	EXPECT_EQ(it != nCmdBuffer.end(), true);
+}
+
+TEST_F(SSDFixture, CommandBuffer_NarrowRangeOfErase4)
+{
+	ssd.Erase(10, 4);
+	ssd.Erase(40, 5);
+	ssd.Write(12, 0xABCD1234);
+	ssd.Write(13, 0xFFFFFFFF);
+
+	nCmdBuffer = LoadCmdBuffer();
+
+	auto it = nCmdBuffer.find({ E, 10 });
+	EXPECT_EQ(it->second, 2);
+	EXPECT_EQ(it != nCmdBuffer.end(), true);
+}
+
+TEST_F(SSDFixture, CommandBuffer_NarrowRangeOfErase5)
+{
+	ssd.Erase(90, 5);
+	ssd.Write(91, 0XFFFFFFFF);
+	ssd.Write(92, 0xFFFFFFFF);
+	ssd.Write(93, 0xFFFFFFFF);
+	ssd.Write(90, 0xFFFFFFFF);
+
+	nCmdBuffer = LoadCmdBuffer();
+
+	auto it = nCmdBuffer.find({ E, 94 });
+	EXPECT_EQ(it->second, 1);
+	EXPECT_EQ(it != nCmdBuffer.end(), true);
+}
+
 TEST_F(ShellTestAppFixture, writeSuccessTest) {
 	WriteCommand cmd(&mSsd, LBA, DATA);
 
