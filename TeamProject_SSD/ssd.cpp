@@ -133,186 +133,6 @@ bool SSD::IsLBAWritten(const unsigned int& nLBA, unordered_map<unsigned int, uns
 	return umDataSet.find(nLBA) != umDataSet.end();
 }
 
-void SSD::AddCommandToBuffer(int nCmdType, unsigned int nLBA, unsigned int nData)
-{
-	CMD_BUFFER_MAP nCmdBuffer;
-
-	ssdFileHandler.LoadCommandBufferFile(nCmdBuffer);
-
-	if (nCmdBuffer.size() >= 10) {
-		Flush();
-		nCmdBuffer.clear();
-	}
-
-	if (nCmdType == W)
-	{
-		OptimizeWriteCommand(nCmdBuffer, nLBA);
-	}
-	else if (nCmdType == E)
-	{
-		if (!umPrevEraseCommand.empty()) {
-			MergeEraseCommand(nCmdBuffer, nLBA, nData);
-		}
-
-		umPrevEraseCommand[{E, nLBA}] = nData;
-
-		OptimizeEraseComand(nCmdBuffer, nLBA, nData);
-	}
-
-	nCmdBuffer[{ nCmdType, nLBA }] = nData;
-
-	ssdFileHandler.WriteCommandBufferFile(nCmdBuffer);
-}
-
-void SSD::MergeEraseCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int& nLBA, unsigned int& nData)
-{
-	auto it = umPrevEraseCommand.begin();
-
-	unsigned int nPrevStartLBA = it->first.second;
-	unsigned int nPrevEndLBA = it->first.second + it->second - 1;
-	unsigned int nCurStartLBA = nLBA;
-	unsigned int nCurEndLBA = nLBA + nData - 1;
-	unsigned int nSize = 0;
-
-	nSize = GetMergedSize(nPrevEndLBA, nCurEndLBA, nPrevStartLBA, nCurStartLBA);
-
-	if (nPrevStartLBA <= nCurStartLBA)
-	{
-		if (!IsMergeable(nPrevEndLBA, nCurStartLBA, nSize))
-		{
-			return;
-		}
-
-		nLBA = nPrevStartLBA;
-	}
-	else
-	{
-		if (!IsMergeable(nCurEndLBA, nPrevStartLBA, nSize))
-		{
-			return;
-		}
-
-		nLBA = nCurStartLBA;
-	}
-
-	nData = nSize;
-
-	nCmdBuffer.erase({ E, nPrevStartLBA });
-}
-
-bool SSD::IsMergeable(unsigned int nEndLowLBA, unsigned int nStartHighLBA, unsigned int nSize)
-{
-	if ((nEndLowLBA + 1 < nStartHighLBA) || (nSize > MAX_ERASE_SIZE))
-	{
-		umPrevEraseCommand.clear();
-		return false;
-	}
-
-	return true;
-}
-
-unsigned int SSD::GetMergedSize(unsigned int nPrevEndLBA, unsigned int nCurEndLBA, unsigned int nPrevStartLBA, unsigned int nCurStartLBA)
-{
-	unsigned int nSize = 0;
-
-	if (nPrevEndLBA <= nCurEndLBA) {
-		nSize = nCurEndLBA - nPrevStartLBA + 1;
-	}
-	else
-	{
-		nSize = nPrevEndLBA - nCurStartLBA + 1;
-	}
-
-	return nSize;
-}
-
-void SSD::OptimizeEraseComand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nSize)
-{
-	RemovePrevWriteCmdInLBARange(nCmdBuffer, nLBA, nSize);
-}
-
-void SSD::RemovePrevWriteCmdInLBARange(CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nSize)
-{
-	for (int i = nLBA; i < nLBA + nSize; i++)
-	{
-		nCmdBuffer.erase({ W, i });
-	}
-}
-
-void SSD::OptimizeWriteCommand(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA)
-{
-	RemovePrevWriteCmdWithSameLBA(nCmdBuffer, nWriteLBA);
-
-	DoNarrowRangeOfErase(nCmdBuffer, nWriteLBA);
-}
-
-void SSD::DoNarrowRangeOfErase(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA, bool bRecursive)
-{
-	if (!ShouldExecuteNarrowRangeErase(nCmdBuffer, nWriteLBA, bRecursive))
-	{
-		return;
-	}
-
-	for (auto it = nCmdBuffer.begin(); it != nCmdBuffer.end(); /* no increment here */) {
-		int nCmdType = it->first.first;
-
-		if (nCmdType == W)
-		{
-			it++;
-			continue;
-		}
-
-		unsigned int nEraseLBA = it->first.second;
-		unsigned int nEraseSize = it->second;
-
-		if (nWriteLBA == nEraseLBA)
-		{
-			if (nEraseSize > 1)
-			{
-				nCmdBuffer[{E, nEraseLBA + 1}] = nEraseSize - 1;
-			}
-			it = nCmdBuffer.erase(it);
-
-			DoNarrowRangeOfErase(nCmdBuffer, nWriteLBA + 1, true);
-			return;
-		}
-		else if (nWriteLBA == (nEraseLBA + (nEraseSize - 1)))
-		{
-			nCmdBuffer[{E, nEraseLBA}] -= 1;
-			DoNarrowRangeOfErase(nCmdBuffer, nWriteLBA - 1, true);
-			return;
-		}
-		else
-		{
-			it++;
-			continue;
-		}
-	}
-}
-
-bool SSD::ShouldExecuteNarrowRangeErase(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA, bool bRecursive)
-{
-	if (bRecursive == false) {
-		return true;
-	}
-
-	if (nCmdBuffer.size() == 0 || nWriteLBA < 0)
-	{
-		return false;
-	}
-
-	auto it = nCmdBuffer.find({ W, nWriteLBA });
-	if (it == nCmdBuffer.end())
-	{
-		return false;
-	}
-}
-
-void SSD::RemovePrevWriteCmdWithSameLBA(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA)
-{
-	nCmdBuffer.erase({ W, nWriteLBA });
-}
-
 void SSD::Flush()
 {
 	CMD_BUFFER_MAP nCmdBuffer;
@@ -333,4 +153,44 @@ void SSD::Flush()
 	bUseCommandBuffer = true;
 
 	ssdFileHandler.RemoveCommandBufferFile();
+}
+
+void SSD::AddCommandToBuffer(int nCmdType, unsigned int nLBA, unsigned int nData)
+{
+	CMD_BUFFER_MAP nCmdBuffer;
+
+	ssdFileHandler.LoadCommandBufferFile(nCmdBuffer);
+
+	if (IsCommandBufferFull(nCmdBuffer)) {
+		DoFlush(nCmdBuffer);
+	}
+
+	OptimizeCommandBuffer(nCmdType, nCmdBuffer, nLBA, nData);
+
+	nCmdBuffer[{ nCmdType, nLBA }] = nData;
+
+	ssdFileHandler.WriteCommandBufferFile(nCmdBuffer);
+}
+
+void SSD::OptimizeCommandBuffer(int nCmdType, CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nData)
+{
+	if (nCmdType == W)
+	{
+		ssdCmdBuffer.OptimizeWriteCommand(nCmdBuffer, nLBA);
+	}
+	else if (nCmdType == E)
+	{
+		ssdCmdBuffer.OptimizeEraseComand(nCmdBuffer, nLBA, nData);
+	}
+}
+
+void SSD::DoFlush(CMD_BUFFER_MAP& nCmdBuffer)
+{
+	Flush();
+	nCmdBuffer.clear();
+}
+
+bool SSD::IsCommandBufferFull(CMD_BUFFER_MAP& nCmdBuffer)
+{
+	return nCmdBuffer.size() >= MAX_ERASE_SIZE;
 }

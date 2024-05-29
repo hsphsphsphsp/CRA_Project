@@ -135,6 +135,7 @@
     <ClCompile Include="RunnerFileHandler.cpp" />
     <ClCompile Include="ShellTestApp.cpp" />
     <ClCompile Include="ssd.cpp" />
+    <ClCompile Include="SSDCommandBuffer.cpp" />
     <ClCompile Include="SSDFileHandler.cpp" />
     <ClCompile Include="testscript.cpp" />
   </ItemGroup>
@@ -146,6 +147,7 @@
     <ClInclude Include="RunnerFileHandler.h" />
     <ClInclude Include="ShellTestApp.h" />
     <ClInclude Include="ssd.h" />
+    <ClInclude Include="SSDCommandBuffer.h" />
     <ClInclude Include="SSDFileHandler.h" />
     <ClInclude Include="testscript.h" />
     <ClInclude Include="Type.h" />

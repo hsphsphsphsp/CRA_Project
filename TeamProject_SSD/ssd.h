@@ -1,5 +1,6 @@
 #pragma once
 #include "SSDFileHandler.h"
+#include "SSDCommandBuffer.h"
 
 using namespace std;
 
@@ -21,20 +22,14 @@ private:
 	bool IsLBAWritten(const unsigned int& nLBA, unordered_map<unsigned int, unsigned int>& umDataSet);
 
 	void AddCommandToBuffer(int nCmdType, unsigned int nLBA, unsigned int nData);
-	void OptimizeEraseComand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nSize);
-	void RemovePrevWriteCmdInLBARange(CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nSize);
-	void OptimizeWriteCommand(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA);
-	void DoNarrowRangeOfErase(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA, bool bRecursive = 0);
-	bool ShouldExecuteNarrowRangeErase(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA, bool bRecursive);
-	void RemovePrevWriteCmdWithSameLBA(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA);
-	void MergeEraseCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int &nLBA, unsigned int &nSize);
-	bool IsMergeable(unsigned int nPrevEndLBA, unsigned int nCurStartLBA, unsigned int nSize);
-	unsigned int GetMergedSize(unsigned int nPrevEndLBA, unsigned int nCurEndLBA, unsigned int nPrevStartLBA, unsigned int nCurStartLBA);
+	void OptimizeCommandBuffer(int nCmdType, CMD_BUFFER_MAP& nCmdBuffer, unsigned int nLBA, unsigned int nData);
+	void DoFlush(CMD_BUFFER_MAP& nCmdBuffer);
+	bool IsCommandBufferFull(CMD_BUFFER_MAP& nCmdBuffer);
 
-	CMD_BUFFER_MAP umPrevEraseCommand;
 	SSDFileHandler ssdFileHandler;
+	SSDCommandBuffer ssdCmdBuffer;
+
 	const unsigned int SSD_MAX_LBA = 99;
-	const unsigned int MAX_ERASE_SIZE = 10;
 	const unsigned int DEFAULT_READ_VALUE = 0x00000000;
 	bool bUseCommandBuffer = true;
 };
