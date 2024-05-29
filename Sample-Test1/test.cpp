@@ -369,6 +369,21 @@ TEST_F(SSDFixture, CommandBuffer_NarrowRangeOfErase4)
 	EXPECT_EQ(it != nCmdBuffer.end(), true);
 }
 
+TEST_F(SSDFixture, CommandBuffer_NarrowRangeOfErase5)
+{
+	ssd.Erase(90, 5);
+	ssd.Write(91, 0XFFFFFFFF);
+	ssd.Write(92, 0xFFFFFFFF);
+	ssd.Write(93, 0xFFFFFFFF);
+	ssd.Write(90, 0xFFFFFFFF);
+
+	nCmdBuffer = LoadCmdBuffer();
+
+	auto it = nCmdBuffer.find({ E, 94 });
+	EXPECT_EQ(it->second, 1);
+	EXPECT_EQ(it != nCmdBuffer.end(), true);
+}
+
 TEST_F(ShellTestAppFixture, writeSuccessTest) {
 	WriteCommand cmd(&mSsd, LBA, DATA);
 

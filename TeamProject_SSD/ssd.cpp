@@ -252,7 +252,7 @@ void SSD::DoNarrowRangeOfErase(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nW
 			}
 			it = nCmdBuffer.erase(it);
 
-			DoNarrowRangeOfErase(nCmdBuffer, nWriteLBA - 1, true);
+			DoNarrowRangeOfErase(nCmdBuffer, nWriteLBA + 1, true);
 			return;
 		}
 		else if (nWriteLBA == (nEraseLBA + (nEraseSize - 1)))
