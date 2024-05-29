@@ -79,7 +79,7 @@ void CommandSingletonFactory::AssertArguments(SSD* pSsd, std::queue<std::string>
         nEndLba = ConvertToNumFrom(qCmdBuffer.front()) - 1;  qCmdBuffer.pop();
         if (nEndLba <= nStartLba)
             throw std::invalid_argument("Wrong arguments : Start LBA must less than End LBA");
-        if (nEndLba > pSsd->GetSSDSize())
+        if (nEndLba >= pSsd->GetSSDSize())
             throw std::invalid_argument("Wrong arguments : End LBA over MAX SIZE");
     }
 }
