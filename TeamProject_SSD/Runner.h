@@ -18,7 +18,7 @@ private:
 
 	TestScript* PrepareForEachTestScenario(std::string& EachCommand);
 
-	void PrintRunnerResult(bool isPassed);
+	void PrintTestScriptResult(bool isPassed);
 	bool StartEachScenarioTest(TestScript* pTestScript);
 
 	SSD* pSsd;
