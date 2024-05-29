@@ -25,6 +25,6 @@ private:
 	unsigned int nStartLba;
 	unsigned int nEndLba;
 
-	void AssertArguments(std::queue<std::string> qCmdBuffer);
+	void AssertArguments(SSD* pSsd, std::queue<std::string> qCmdBuffer);
 	unsigned int ConvertToNumFrom(std::string sNumber);
 };
