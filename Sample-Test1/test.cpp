@@ -318,6 +318,17 @@ TEST_F(SSDFixture, CommandBuffer_MergeSeveralEraseCommand)
 	EXPECT_EQ(nCmdBuffer.size(), 3);
 }
 
+TEST_F(SSDFixture, CommandBuffer_MergeEraseDoNotMergeSinceOverMaxEraseSize)
+{
+	ssd.Write(20, 0xFFFFFFFF);
+	ssd.Erase(10, 2);
+	ssd.Erase(12, 9);
+
+	nCmdBuffer = LoadCmdBuffer();
+
+	EXPECT_EQ(nCmdBuffer.size(), 2);
+}
+
 TEST_F(SSDFixture, CommandBuffer_NarrowRangeOfErase1)
 {
 	ssd.Erase(50, 1);

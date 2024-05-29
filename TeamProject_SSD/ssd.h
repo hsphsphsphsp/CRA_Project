@@ -28,6 +28,8 @@ private:
 	bool ShouldExecuteNarrowRangeErase(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA, bool bRecursive);
 	void RemovePrevWriteCmdWithSameLBA(CMD_BUFFER_MAP& nCmdBuffer, const unsigned int nWriteLBA);
 	void MergeEraseCommand(CMD_BUFFER_MAP& nCmdBuffer, unsigned int &nLBA, unsigned int &nSize);
+	bool IsMergeable(unsigned int nPrevEndLBA, unsigned int nCurStartLBA, unsigned int nSize);
+	unsigned int GetMergedSize(unsigned int nPrevEndLBA, unsigned int nCurEndLBA, unsigned int nPrevStartLBA);
 
 	CMD_BUFFER_MAP umPrevEraseCommand;
 	SSDFileHandler ssdFileHandler;
